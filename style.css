@@ -226,3 +226,18 @@ h2{margin:0 0 8px 0;color:var(--text)}
 .record-category{margin:22px 0 27px}.record-category-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}.record-category-head h3{margin:0;font-size:15px;color:#2f1f57}.record-category-head h3 span{font-size:12px;color:#6948b8;background:#efe8ff;padding:4px 8px;border-radius:7px}.record-category-head small{color:#746989}.raw-tablewrap{overflow:auto}.raw-grade-table{min-width:720px}.raw-grade-table th,.raw-grade-table td{text-align:center;min-width:100px}.raw-grade-table .student-stick{text-align:left;min-width:170px}.raw-grade-table .student-stick small{display:block;margin-top:4px}.raw-grade-table .activity-head{vertical-align:top}.raw-grade-table .activity-head>div{white-space:nowrap;margin-bottom:7px}.raw-grade-table input[type=number]{max-width:96px;width:100%;padding:8px;text-align:center}.raw-grade-table .perfect-score-row th{background:#eee6ff;color:#422583}.assess-toggle{display:flex;align-items:center;gap:5px;justify-content:center;font-size:11px;white-space:nowrap;font-weight:650}.assess-toggle input{width:14px;height:14px;accent-color:#5b33b6}.raw-grade-table .category-total,.raw-grade-table .raw-total{font-weight:800;color:#4b299c;background:#faf8ff}.raw-summary-panel{margin-top:20px;border-color:#cdbbed;background:#faf8ff;box-shadow:none}.raw-summary-panel p{margin-bottom:8px}.raw-summary-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.raw-summary-items>div{display:flex;justify-content:space-between;gap:12px;align-items:center;background:white;border:1px solid #e2d8f5;border-radius:9px;padding:10px}.raw-summary-items strong{color:#4a278f}.raw-summary-items span{font-size:12px}.perfect-score:disabled,.grade-score:disabled{background:#f4f1f9;color:#857c95}@media(max-width:650px){.raw-summary-items{grid-template-columns:1fr}}
 
 .reference-grade{display:block;font-size:11px;font-weight:700;color:#6245a8;margin-top:5px;white-space:nowrap}
+
+/* Phase 3.8: prominent report-card Term Grade */
+.raw-summary-panel{background:#f7f2ff;border:2px solid #9e82e1;padding:21px;box-shadow:0 12px 28px rgba(60,32,118,.09)}
+.raw-summary-panel>div:first-child>b{color:#3c206c;font-size:19px;letter-spacing:-.02em}
+.raw-summary-items{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.raw-summary-items>div.student-term-row{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"name raw" "term term";align-items:center;gap:10px 14px;padding:14px;border:1px solid #d8c9f1;box-shadow:0 3px 10px rgba(52,23,102,.04)}
+.term-student-name{grid-area:name;font-weight:800;font-size:13px!important;color:#342052}
+.initial-grade-preview{grid-area:raw;display:flex;align-items:center;gap:8px;color:#66587c}
+.initial-grade-preview small{font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+.initial-grade-preview strong{font-size:12px;color:#69598a;font-variant-numeric:tabular-nums}
+.term-grade-result{grid-area:term;display:flex!important;align-items:center;justify-content:space-between;border-radius:10px;padding:13px 17px;background:linear-gradient(110deg,#4b258e 0%,#683bc1 100%);color:#fff;box-shadow:0 7px 17px rgba(75,37,142,.18)}
+.term-grade-caption{display:flex;flex-direction:column;gap:4px;color:#fff;font-size:12px!important;letter-spacing:.055em;font-weight:900}
+.term-grade-caption small{display:inline-block;color:#e5d9ff;font-size:9px;font-weight:750;letter-spacing:.09em}
+.term-grade-value{color:#fff!important;font-size:27px!important;font-weight:900;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+@media(max-width:690px){.raw-summary-items{grid-template-columns:1fr}.raw-summary-panel{padding:14px}}
