@@ -202,3 +202,9 @@ h2{margin:0 0 8px 0;color:var(--text)}
 /* Phase 3.2 catalog: readable multi-subject summaries */
 .subject-summary{display:flex;flex-wrap:wrap;gap:5px;max-width:680px}
 .catalog-chip{display:inline-block;font-size:10px;font-weight:650;color:#4b3280;background:#f1ebff;border:1px solid #e2d6fb;padding:5px 7px;border-radius:7px;white-space:nowrap}
+/* Phase 3.3 student registry */
+.student-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:16px 0}
+.student-form-grid input,.student-form-grid select{width:100%}
+#csvFile{max-width:350px;background:#faf8ff}
+#studentSearch{min-width:200px}
+@media(max-width:700px){.student-form-grid{grid-template-columns:1fr}}
