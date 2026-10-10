@@ -208,3 +208,17 @@ h2{margin:0 0 8px 0;color:var(--text)}
 #csvFile{max-width:350px;background:#faf8ff}
 #studentSearch{min-width:200px}
 @media(max-width:700px){.student-form-grid{grid-template-columns:1fr}}
+/* Phase 3.4 grading templates */
+.weight-row{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 14px}
+.weight-item{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#f3edff;border:1px solid #e3d7fa;border-radius:12px;padding:11px 13px;color:#574773;flex:1;min-width:165px;font-size:12px}
+.weight-item strong{color:#4f279f;font-size:16px}
+.grading-table th{min-width:108px;white-space:nowrap}.grading-table th:first-child{min-width:185px}
+.grading-table th small{display:block;text-transform:none;font-size:10px;font-weight:500;letter-spacing:0;color:#8a7ca7;margin-top:4px}
+.grading-table input.grade-score{width:83px;text-align:center;font-variant-numeric:tabular-nums}
+.grading-table .raw-total{font-weight:800;color:#542ea7;white-space:nowrap}
+.grading-table .mono-id{display:block;margin-top:4px;font-size:10px}
+.mape-overview{margin:20px 0 12px;padding:16px;border:1px solid #e4dbf5;background:#faf8ff;border-radius:14px}
+.mape-overview h3{margin:0 0 6px}.mape-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}
+.mape-cell{border:1px solid #ded3f4;background:#fff;padding:11px;border-radius:10px;display:flex;flex-direction:column;gap:5px}
+.mape-cell span{font-size:11px;color:#6b6181}.mape-cell strong{color:#4f279f}
+@media(max-width:680px){.mape-grid{grid-template-columns:1fr 1fr}.weight-item{min-width:140px}}
