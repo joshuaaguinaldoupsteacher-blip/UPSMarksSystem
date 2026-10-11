@@ -1,15 +1,10 @@
-# UPS Marks — Phase 3.13 Formula Reconciliation
+# UPS Marks System — Phase 3.14
 
-This is a **fictional-data frontend** built on Phase 3.12.
+- Retains the high-contrast purple dashboard, raw-score class records, HELPER table, and prominently highlighted Term Grade (provisional *).
+- Adds `excel_parity_workbench.html` for manually comparing fictional scenarios between the original Excel templates and the website, separately checking Initial Grade and Term Grade.
+- Includes an Export CSV function for fictional comparison results; tests remain in browser memory until exported.
+- The comparison tool is **not** an Excel calculation engine; the results cannot certify formula parity without entering source workbook outputs.
+- Outstanding: Islamic aggregation, Arabic/Islamic Term 1–3 AK reference parity, MAPE nine-grade final rounding, full workbook equivalence.
+- No Supabase, no real student records, and no real authentication.
 
-## New
-- `reconciliation_tests.html` invokes the same `calculate()` method used in the gradebook to run independent raw-score scenarios, including invalid input, multiple activities, and Arabic/Islamic whole-percent rounding.
-- The prominent **Term Grade — Report Card** label stays in the UI. Its `*` marker remains because exact workbook parity has **not** been certified.
-- No connection to Supabase, no live identity validation or production-grade editing.
-
-## Still required
-- Verify original Excel workbook recalculation (including Arabic/Islamic column AK references) with identical fictional inputs.
-- Resolve the Islamic Activities multi-item configuration and exact rounding policy.
-- Confirm MAPE final whole-number rounding from nine transmuted component Term Grades.
-
-To update GitHub Pages, extract the ZIP and upload the files together in one commit at the same directory level as `index.html`.
+Upload the files from this folder together into the same GitHub Pages directory as `index.html` in a single commit.
