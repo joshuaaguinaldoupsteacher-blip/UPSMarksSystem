@@ -4,7 +4,7 @@ const GRADE_SCHEMES={
  general:{label:'General Subjects',categories:[['WW','Written Works',20,5],['PT','Performance Tasks',60,3],['EX','Examinations',20,3]]},
  hele:{label:'HELE / TLE',categories:[['WW','Written Works',30,5],['PT','Performance Tasks',50,3],['EX','Examinations',20,3]]},
  arabic:{label:'Arabic Education',categories:[['LS','Listening & Speaking',10,1],['WR','Writing',40,1],['RD','Reading',10,1],['EX','Examinations',40,3]]},
- islamic:{label:'Islamic Education',categories:[['QR','Qur’an Recitation',10,1],['MEM','Memorization',15,1],['VAL','Values',5,1],['WQA','Worksheets / Quizzes / Activities',30,1],['EX','Examinations',40,3]]},
+ islamic:{label:'Islamic Education',categories:[['QR','Qur’an Recitation',10,1],['MEM','Memorization',15,1],['VAL','Values',5,1],['WQA','Worksheets / Quizzes / Activities',30,3],['EX','Examinations',40,3]]},
  mape:{label:'MAPE Component',categories:[['WW','Written Works',20,5],['PT','Performance Tasks',60,3],['EX','Examinations',20,3]]}
 };
 function schemeFor(sub){return sub==='ARABIC'?'arabic':sub==='ISLAMIC'?'islamic':sub==='HELE_TLE'?'hele':sub==='MAPE'?'mape':'general'}

@@ -1,9 +1,16 @@
-# UPS Marks System — Phase 3.26: Raw-Score Parity Lab
+# UPS Marks System — Phase 3.27: Parity Precision
 
-New `raw_score_parity_lab.html` permits input of fictional raw scores and corresponding perfect scores per assessment, including optional slots. It uses a direct extracted copy of the same `calculate()` routine as the production demonstration (`test_engine.js`, derived from `grading.js`).
+This build inherits the complete Phase 3.26 fictional-data website and adds a distinction between **exact Initial Grade parity** and a match caused merely by rounding the displayed Excel grade to two decimals.
 
-Enter **independently calculated original Excel Initial and Term Grades** to check exact parity; mismatch details are shown. Save/export fictional cases as CSV with complete score/denominator evidence. No claim of formula certification and no automatic import of original Excel results. Never use actual student data in this testing tool.
+## Changes
+- `raw_score_parity_lab.js` classifies results as `MATCH` (strict Initial Grade tolerance < 0.000001 plus identical Term Grade), `DISPLAY_ROUNDING_MATCH` (matches only after the website Initial Grade is rounded to 2 decimal places, with identical Term Grade), or `DIFFERENCE`.
+- `DISPLAY_ROUNDING_MATCH` is **not** certification, and is shown as pending.
+- New `parity_precision_tests.html` tests actual grading functions with fictional cases and precision boundaries.
+- Fixed a real stale dependency: `test_engine.js`, used in the raw-score parity lab, previously modeled one Islamic WQA item while the production `grading.js` modeled three. The parity tool now models all three.
+- All grades remain provisional; no original Excel workbooks or Supabase databases have been modified.
 
-Limitations: independent workbook evaluation has not been performed, so full parity is still pending. Arabic/Islamic intermediate rounding, official MAPE final rounding, security authentication and Supabase connectivity remain unapproved. All official outputs provisional.
+## Required remaining work
+Obtain independently calculated matching outputs from corrected original workbooks at full stored precision; verify Arabic and Islamic intermediate rounding, all assessment aggregation, HELPER interval boundaries and proposed nine-component MAPE whole-number rounding; obtain formal approval before any official report-card use.
 
-Upload the extracted files together to the GitHub Pages site in one commit.
+## GitHub Pages
+Extract and upload all files in a single commit into the folder containing `index.html`.
