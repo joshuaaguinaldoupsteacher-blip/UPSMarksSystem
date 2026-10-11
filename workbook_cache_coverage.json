@@ -1,0 +1,416 @@
+{
+  "method": "Direct inspection of source XLSX XML <f> and <v> fields. A saved value is not independent formula recalculation.",
+  "workbooks": [
+    {
+      "workbook": "General",
+      "file": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "General",
+      "file": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "General",
+      "file": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet3.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "General",
+      "file": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet1.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "General",
+      "file": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet5.xml",
+      "formula_cells": 610,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 610
+    },
+    {
+      "workbook": "General",
+      "file": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet7.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "General",
+      "file": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet6.xml",
+      "formula_cells": 756,
+      "numeric_cached_results": 27,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 729
+    },
+    {
+      "workbook": "Arabic",
+      "file": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "formula_cells": 1511,
+      "numeric_cached_results": 1,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1510
+    },
+    {
+      "workbook": "Arabic",
+      "file": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "formula_cells": 1511,
+      "numeric_cached_results": 1,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1510
+    },
+    {
+      "workbook": "Arabic",
+      "file": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet3.xml",
+      "formula_cells": 1511,
+      "numeric_cached_results": 1,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1510
+    },
+    {
+      "workbook": "Arabic",
+      "file": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet1.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "Arabic",
+      "file": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet5.xml",
+      "formula_cells": 610,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 610
+    },
+    {
+      "workbook": "Arabic",
+      "file": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet7.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "Arabic",
+      "file": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet6.xml",
+      "formula_cells": 696,
+      "numeric_cached_results": 27,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 669
+    },
+    {
+      "workbook": "Islamic",
+      "file": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "formula_cells": 1914,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1914
+    },
+    {
+      "workbook": "Islamic",
+      "file": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "formula_cells": 1914,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1914
+    },
+    {
+      "workbook": "Islamic",
+      "file": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet3.xml",
+      "formula_cells": 1914,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 1914
+    },
+    {
+      "workbook": "Islamic",
+      "file": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet1.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "Islamic",
+      "file": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet5.xml",
+      "formula_cells": 610,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 5,
+      "missing_numeric_results": 610
+    },
+    {
+      "workbook": "Islamic",
+      "file": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet7.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "Islamic",
+      "file": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet6.xml",
+      "formula_cells": 606,
+      "numeric_cached_results": 27,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 579
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 4,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1511
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet1.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet3.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet12.xml",
+      "formula_cells": 0,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 0,
+      "missing_numeric_results": 0
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet11.xml",
+      "formula_cells": 1211,
+      "numeric_cached_results": 0,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1211
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet10.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet5.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet6.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet7.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet8.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    },
+    {
+      "workbook": "MAPE",
+      "file": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet9.xml",
+      "formula_cells": 1515,
+      "numeric_cached_results": 3,
+      "non_numeric_cached_results": 6,
+      "missing_numeric_results": 1512
+    }
+  ],
+  "representative_uncached_formulas": [
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "J10",
+      "formula": "IF('INPUT DATA'!E21=\"\",\"\",'INPUT DATA'!E21)",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "Q10",
+      "formula": "IF('INPUT DATA'!E19=\"\",\"\",'INPUT DATA'!E19)",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "AA10",
+      "formula": "IF('INPUT DATA'!E20=\"\",\"\",'INPUT DATA'!E20)",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "K15",
+      "formula": "IF(COUNT(F15:J15)=0,\"\",SUM(F15:J15))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "Q15",
+      "formula": "IF(COUNT(N15:P15)=0,\"\",SUM(N15:P15))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "C18",
+      "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "K18",
+      "formula": "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "L18",
+      "formula": "IF(COUNT(F18:J18)=0,\"\",IFERROR(K18/$K$15*$L$15,\"\"))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "M18",
+      "formula": "IF(L18=\"\",\"\",L18*$M$15)",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "Q18",
+      "formula": "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "R18",
+      "formula": "IF(COUNT(N18:P18)=0,\"\",IFERROR(Q18/$Q$15*$R$15,\"\"))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "S18",
+      "formula": "IF(R18=\"\",\"\",R18*$S$15)",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "W18",
+      "formula": "IF(T18=\"\",\"\",IFERROR(T18/$T$15*$W$15,\"\"))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "X18",
+      "formula": "IF(U18=\"\",\"\",IFERROR(U18/$U$15*$X$15,\"\"))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "Y18",
+      "formula": "IF(V18=\"\",\"\",IFERROR(V18/$V$15*$Y$15,\"\"))",
+      "cached_result": null
+    },
+    {
+      "workbook": "General",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "cell": "Z18",
+      "formula": "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))",
+      "cached_result": null
+    }
+  ]
+}

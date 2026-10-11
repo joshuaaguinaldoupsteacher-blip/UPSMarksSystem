@@ -1,9 +1,17 @@
-# UPS Marks System — Phase 3.32
+# UPS Marks System — Phase 3.33: Source Workbook Output Readiness
 
-Preserves Phase 3.31 website.
+Retains the full Phase 3.32 purple demo and independent mathematical regression fixtures.
 
-**New:** Thirty independently computed fictional grading scenarios (Python Decimal oracle), compared with the production `calculate()` function in `grading.js`. Run `node independent_oracle_tests.js` locally. View `independent_oracle_report.html` for the results. `original_workbook_formula_samples.json` contains raw, nonexecuted sample source formulas for traceability.
+## Real source workbook inspection
 
-These are **not independently calculated Excel workbook results**. The website remains an unverified demo; no grade certification or Supabase connection. Do not use for real pupils.
+`workbook_cache_coverage.csv` and `.json` quantify cached numeric formula outputs in all four original Excel templates, directly using XLSX XML. The `workbook_output_readiness.html` page explains the result. A cached value is not independently executed Excel and may be stale.
 
-Upload the ZIP extracted files to the GitHub Pages repository root in one commit.
+Most original formula cells do not contain usable saved numeric results. Consequently **there are no newly certified Excel-to-JavaScript grade matches** in this release. Prior test passes remain internal mathematical checks only.
+
+## Follow-up required
+
+Recalculate *corrected copies* of the original workbooks with fictional input rows in desktop Excel; capture Initial and transmuted Term Grades and compare with `raw_score_parity_lab.html`. Resolve/approve the remaining Arabic/Islamic category rounding, zero-group differences, and MAPE final rounding before any official use. Do not upload real student data to GitHub Pages.
+
+## Deployment
+
+Extract the ZIP and upload its `index.html` and other website files together at the repository root in one commit.
