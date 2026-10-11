@@ -1,11 +1,15 @@
-# UPS Marks System — Phase 3.24
+# UPS Marks System — Phase 3.25: Certification Gate
 
-**New:** `mape_final.js` and `mape_final_validation.html` provide a nine-grade final-average and proposed Excel-style whole-number rounding preview. The dashboard now displays both the unrounded nine-grade average and the proposed whole-number final with a provisional asterisk.
+## Changes
+- New `grade_certification_gate.html` and `CERTIFICATION_CHECKLIST.csv`. The page lists explicit formula approval requirements and can export a handoff CSV, but it **does not** claim grading certification.
+- A navigation link to the certification gate has been added to the purple dashboard.
+- Existing fictional demonstration, Islamic triple activities, MAPE nine-part calculation and regression pages are preserved.
 
-The approved MAPE aggregation is the **mean of all nine independently transmuted** Music, Arts, and PE component-term grades. The original template's `ROUND(...,0)` suggests Excel-style .5 rounding; **however its formula mistakenly averages only three Term 3 cells**, so an identical comparison to a corrected official workbook has not yet been established.
+## Required before live use
+1. Compare multiple identical fictional score cases from corrected Excel workbooks to the website for General, HELE/TLE, Arabic, Islamic and MAPE. Resolve mismatches.
+2. Approve Arabic/Islamic intermediate rounding, WQA aggregation, and MAPE final whole-number rounding.
+3. Obtain school sign-off and verify authorized identities with proper authentication and Supabase RLS. An email typed into a field is **not** authentication.
 
-Islamic triple-activity input, previously added in Phase 3.23, remains in the live demo. The existing 9 Islamic fictional test cases are preserved.
+Term Grades and MAPE Finals remain provisional and must not be used for student report cards. Source Excel files are unchanged. No live database integration.
 
-**Important:** Whole-number final rule is a candidate, not certified. No workbook modification, live authentication or Supabase integration is included. Do not use demo grades for actual report cards.
-
-**Deploy:** Extract files and upload all of them together in one GitHub commit.
+Upload all extracted site files to GitHub Pages in one commit.

@@ -1,0 +1,9 @@
+Scheme,Control,Evidence needed,Status
+"GENERAL","General / HELE-TLE category arithmetic","Compare varied perfect scores, EX split, intermediate rounding","Pending Excel case comparison"
+"ARABIC","Arabic non-exam category rounding","Match 10%,40%,10%,40% and exact intermediate rounding to Excel","Pending Excel case comparison"
+"ISLAMIC","Islamic WQA aggregation","Verify 3 inputs with unequal perfect scores against source formulas","Pending Excel case comparison"
+"ISLAMIC","Islamic category and EX rounding","Verify recitation, memorization, values, WQA, examinations","Pending Excel case comparison"
+"MAPE","Nine transmuted component-term grades","Confirm use of all 9 approved grade positions, not only Term 3","Approved structure; output parity pending"
+"MAPE","Final whole-number rounding","Compare proposed ROUND(mean-of-9,0) with corrected approved Excel","Approval and parity pending"
+"HELPER","Transmutation boundary parity","Check raw Initial Grade normalization at lookup boundaries","Pending Excel case comparison"
+"ALL","Complete report-card certification","Review all areas, sign off and connect to verified identities only","BLOCKED"
