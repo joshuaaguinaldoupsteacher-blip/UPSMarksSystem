@@ -1,13 +1,11 @@
-# UPS Marks System — Phase 3.23
+# UPS Marks System — Phase 3.24
 
-**New:** The actual Islamic Education gradebook now provides three separate WQA (Worksheets / Quizzes / Activities) raw-score columns. Each column has an independently editable perfect score and an enable/disable switch. The first is enabled initially and the other two can be activated as needed.
+**New:** `mape_final.js` and `mape_final_validation.html` provide a nine-grade final-average and proposed Excel-style whole-number rounding preview. The dashboard now displays both the unrounded nine-grade average and the proposed whole-number final with a provisional asterisk.
 
-**Category arithmetic:** The WQA percentage uses (sum of student earned scores / sum of active maximum scores) × 100, then rounds to the nearest whole percent prior to applying the 30% WQA category weight, consistent with the previously established provisional Islamic calculation method. The exact workbook intermediate formulas still require comparison.
+The approved MAPE aggregation is the **mean of all nine independently transmuted** Music, Arts, and PE component-term grades. The original template's `ROUND(...,0)` suggests Excel-style .5 rounding; **however its formula mistakenly averages only three Term 3 cells**, so an identical comparison to a corrected official workbook has not yet been established.
 
-`islamic_activity_tests.html` exercises nine fictional-data cases against an exact extracted copy of the production calculation functions in `islamic_test_engine.js`.
+Islamic triple-activity input, previously added in Phase 3.23, remains in the live demo. The existing 9 Islamic fictional test cases are preserved.
 
-**MAPE:** The nine independently transmuted Music, Arts and PE term grades continue to be averaged as approved. No final whole-number rounding rule was silently selected; that decision still requires source validation.
+**Important:** Whole-number final rule is a candidate, not certified. No workbook modification, live authentication or Supabase integration is included. Do not use demo grades for actual report cards.
 
-**Safety:** Demonstration data only. The highlighted TERM GRADE is provisional, not approved for official report cards. No Supabase data or original Excel files have been edited.
-
-**Deploy:** Extract and upload all site files in one commit to the GitHub Pages repository.
+**Deploy:** Extract files and upload all of them together in one GitHub commit.
