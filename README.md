@@ -1,14 +1,12 @@
-# UPS Marks System — Phase 3.30: Zero-Score & Rounding Decision Gate
+# UPS Marks System — Phase 3.31: Reproducible Grade QA
 
-Extends Phase 3.29 with `decision_gate.html`, runnable production-function tests (`decision_regression_runner.js`) and `decision_regression_results.json`.
+This is the full prototype website, including Phase 3.30 features. New files:
+- `grade_release_checks.js` — Node.js test runner against the actual production `grading.js` calculate function.
+- `grade_release_results.json` — captured local output, with calculation source SHA-256.
+- `grade_release_report.html` — transparent human-readable results.
 
-## Verified outcomes
-- Existing `grading.js` calculation implements true zeros, missing/whitespace blank handling, category-specific activity totals, candidate half-up Arabic/Islamic category rounding and out-of-range validation.
-- The runner executes production calculation functions extracted directly from `grading.js`, not a separately re-implemented algorithm. Run `node decision_regression_runner.js` to regenerate results.
+To rerun: `node grade_release_checks.js` in the extracted folder; exit code 1 indicates failures.
 
-## Not yet certified
-- Corrected Excel output parity; Arabic/Islamic rounding at category boundaries; approved MAPE whole-number rounding. Neither this report nor passing tests means official grade certification.
-- No Supabase live database, verified identity sign-in or real records.
+**LIMITATION:** These are internal regression tests using fictional marks, not independent corrected-Excel parity cases or school grading approval. Arabic/Islamic rounding remains candidate behavior. MAPE final rounding is unapproved. Term Grade is provisional, Supabase and authentication are not connected, and real student records must not be entered.
 
-## GitHub Pages
-Extract the ZIP preserving the directory contents and upload the contained website files to the repository root in a single commit. Access `decision_gate.html`.
+**GitHub Pages:** upload the full extracted website contents to repo root as one commit; do not upload the enclosing directory unless your site is configured for it.

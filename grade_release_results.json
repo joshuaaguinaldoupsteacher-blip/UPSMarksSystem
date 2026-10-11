@@ -1,0 +1,161 @@
+{
+  "phase": "3.31",
+  "type": "internal-engine-regression-only",
+  "source_sha256": "ee2d78eb4faa95773c59ed53c9f347934de458988e2c5a7b8c9e9e5fdc56cb7c",
+  "passed": 30,
+  "total": 30,
+  "failed": 0,
+  "cases": [
+    {
+      "name": "general: fully zero records retain a true zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "general: all full marks yield 100",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "general: one required blank is incomplete",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "general: over-maximum scores are invalid",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "general: whitespace is not zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "hele: fully zero records retain a true zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "hele: all full marks yield 100",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "hele: one required blank is incomplete",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "hele: over-maximum scores are invalid",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "hele: whitespace is not zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "arabic: fully zero records retain a true zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "arabic: all full marks yield 100",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "arabic: one required blank is incomplete",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "arabic: over-maximum scores are invalid",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "arabic: whitespace is not zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "islamic: fully zero records retain a true zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "islamic: all full marks yield 100",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "islamic: one required blank is incomplete",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "islamic: over-maximum scores are invalid",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "islamic: whitespace is not zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "mape: fully zero records retain a true zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "mape: all full marks yield 100",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "mape: one required blank is incomplete",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "mape: over-maximum scores are invalid",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "mape: whitespace is not zero",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Arabic exposes five slots each for LS/W/R",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Islamic exposes two slots for QR/MEM/VAL, three for WQA",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Islamic extra activity score contributes its individual maximum",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Arabic candidate half-up rounding currently in engine",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "An absent optional slot does not affect grade",
+      "passed": true,
+      "error": ""
+    }
+  ],
+  "certification": "NOT CERTIFIED — no independent corrected-Excel output comparisons"
+}
