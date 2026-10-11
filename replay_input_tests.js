@@ -1,0 +1,21 @@
+(()=>{'use strict';const R=UPS_REPLAY_INPUT;let pass=0;const rows=[];function test(n,fn){let ok=false;try{ok=fn()===true}catch(e){}rows.push([n,ok]);if(ok)pass++}function rejects(fn){try{fn();return false}catch(e){return true}}
+test('Parsed CSV with escaped quote',()=>R.parseCSV('a,b\n"a""b",2\n')[1][0]==='a"b');
+test('Rejects unclosed quote',()=>rejects(()=>R.parseCSV('a,b\n"hello,2')));
+test('Rejects trailing content after quoted field',()=>rejects(()=>R.parseCSV('a,b\n"hello"oops,2')));
+test('Rejects empty numeric field',()=>!R.validNumber('',0,100));
+test('Rejects whitespace numeric field',()=>!R.validNumber(' ',0,100));
+test('Rejects boolean number',()=>!R.validNumber(true,0,100));
+test('Accepts zero',()=>R.validNumber('0',0,100));
+test('Rejects out-of-range',()=>!R.validNumber('101',0,100));
+test('Rejects fractional term',()=>!R.validNumber('89.5',60,100,true));
+test('Rejects blank Excel initial',()=>rejects(()=>R.validEvidence({web_initial:'50',web_term:'75',excel_initial:'',excel_term:'75'})));
+test('Accepts valid evidence',()=>R.validEvidence({web_initial:'50',web_term:'75',excel_initial:'50',excel_term:'75'}));
+const specs=[{key:'WW1',required:false},{key:'ST1',required:true}];
+const p=()=>({values:{'TEST|WW1':'0','TEST|ST1':'8'},assessments:{WW1:{enabled:true,max:10},ST1:{enabled:true,max:10}}});
+test('Accepts valid zero-score payload',()=>R.validatePayload(p(),specs));
+test('Rejects negative score',()=>{const x=p();x.values['TEST|WW1']=-1;return rejects(()=>R.validatePayload(x,specs))});
+test('Rejects missing score',()=>{const x=p();delete x.values['TEST|WW1'];return rejects(()=>R.validatePayload(x,specs))});
+test('Rejects oversized score',()=>{const x=p();x.values['TEST|WW1']='11';return rejects(()=>R.validatePayload(x,specs))});
+test('Rejects disabled required examination',()=>{const x=p();x.assessments.ST1.enabled=false;return rejects(()=>R.validatePayload(x,specs))});
+test('Rejects injected score field',()=>{const x=p();x.values['TEST|UNKNOWN']='2';return rejects(()=>R.validatePayload(x,specs))});
+document.getElementById('results').innerHTML='<h2>'+pass+' / '+rows.length+' tests passed</h2><ul>'+rows.map(([n,ok])=>'<li class="'+(ok?'ok':'bad')+'">'+(ok?'PASS: ':'FAIL: ')+n+'</li>').join('')+'</ul>';})();
