@@ -1,3 +1,12 @@
+# UPS Marks System — Phase 3.20
+
+**Confirmed policy:** Each term and MAPE component must use its own Initial Grade for transmutation, never another term.
+
+- `term_reference_corrections.html` contains the 18-row reference review and 8 corrected row-18 formulas.
+- `term_lookup_correction_plan.csv` contains the original and corrected reference for each representative term.
+- Source workbooks are **not** edited. The correction list is an approved reference policy, not full workbook-to-system parity certification.
+- Existing purple demo and its controls are retained; Term Grades are provisional.
+
 # UPS Marks System — Phase 3.19 source formula parity audit
 
 Preserves the Phase 3.18 purple site and fictional gradebook. New files:
