@@ -15,3 +15,5 @@ Recalculate *corrected copies* of the original workbooks with fictional input ro
 ## Deployment
 
 Extract the ZIP and upload its `index.html` and other website files together at the repository root in one commit.
+
+Phase 3.41: See PHASE_3_41_README.md for evidence consistency checks.
