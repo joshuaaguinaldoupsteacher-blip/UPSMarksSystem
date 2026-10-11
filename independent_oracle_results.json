@@ -1,0 +1,248 @@
+{
+  "phase": "3.32",
+  "type": "independent-python-decimal-oracle-not-excel-parity",
+  "total": 30,
+  "passed": 30,
+  "results": [
+    {
+      "id": "general-zero",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "general-full",
+      "passed": true,
+      "expected": 100,
+      "actual": 100,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "general-half",
+      "passed": true,
+      "expected": 50,
+      "actual": 50,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "general-unequal",
+      "passed": true,
+      "expected": 53.84615384615385,
+      "actual": 53.84615384615384,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "general-rounding_edge",
+      "passed": true,
+      "expected": 33.333333333333336,
+      "actual": 33.33333333333333,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "general-mixed",
+      "passed": true,
+      "expected": 54.46153846153846,
+      "actual": 54.46153846153845,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "hele-zero",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "hele-full",
+      "passed": true,
+      "expected": 100,
+      "actual": 100,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "hele-half",
+      "passed": true,
+      "expected": 50,
+      "actual": 50,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "hele-unequal",
+      "passed": true,
+      "expected": 53.84615384615385,
+      "actual": 53.84615384615385,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "hele-rounding_edge",
+      "passed": true,
+      "expected": 33.333333333333336,
+      "actual": 33.33333333333333,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "hele-mixed",
+      "passed": true,
+      "expected": 54.46153846153846,
+      "actual": 54.46153846153847,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "arabic-zero",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "arabic-full",
+      "passed": true,
+      "expected": 100,
+      "actual": 100,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "arabic-half",
+      "passed": true,
+      "expected": 50,
+      "actual": 50,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "arabic-unequal",
+      "passed": true,
+      "expected": 53.93846153846154,
+      "actual": 53.93846153846154,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "arabic-rounding_edge",
+      "passed": true,
+      "expected": 33.13333333333333,
+      "actual": 33.13333333333333,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "arabic-mixed",
+      "passed": true,
+      "expected": 55.16923076923077,
+      "actual": 55.169230769230765,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "islamic-zero",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "islamic-full",
+      "passed": true,
+      "expected": 100,
+      "actual": 100,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "islamic-half",
+      "passed": true,
+      "expected": 50,
+      "actual": 50,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "islamic-unequal",
+      "passed": true,
+      "expected": 53.93846153846154,
+      "actual": 53.93846153846154,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "islamic-rounding_edge",
+      "passed": true,
+      "expected": 33.13333333333333,
+      "actual": 33.13333333333333,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "islamic-mixed",
+      "passed": true,
+      "expected": 55.16923076923077,
+      "actual": 55.169230769230765,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "mape-zero",
+      "passed": true,
+      "expected": 0,
+      "actual": 0,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "mape-full",
+      "passed": true,
+      "expected": 100,
+      "actual": 100,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "mape-half",
+      "passed": true,
+      "expected": 50,
+      "actual": 50,
+      "delta": 0,
+      "categoryMatches": true
+    },
+    {
+      "id": "mape-unequal",
+      "passed": true,
+      "expected": 53.84615384615385,
+      "actual": 53.84615384615384,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "mape-rounding_edge",
+      "passed": true,
+      "expected": 33.333333333333336,
+      "actual": 33.33333333333333,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    },
+    {
+      "id": "mape-mixed",
+      "passed": true,
+      "expected": 54.46153846153846,
+      "actual": 54.46153846153845,
+      "delta": 7.105427357601002e-15,
+      "categoryMatches": true
+    }
+  ]
+}

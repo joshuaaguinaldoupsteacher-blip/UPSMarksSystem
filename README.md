@@ -1,12 +1,9 @@
-# UPS Marks System — Phase 3.31: Reproducible Grade QA
+# UPS Marks System — Phase 3.32
 
-This is the full prototype website, including Phase 3.30 features. New files:
-- `grade_release_checks.js` — Node.js test runner against the actual production `grading.js` calculate function.
-- `grade_release_results.json` — captured local output, with calculation source SHA-256.
-- `grade_release_report.html` — transparent human-readable results.
+Preserves Phase 3.31 website.
 
-To rerun: `node grade_release_checks.js` in the extracted folder; exit code 1 indicates failures.
+**New:** Thirty independently computed fictional grading scenarios (Python Decimal oracle), compared with the production `calculate()` function in `grading.js`. Run `node independent_oracle_tests.js` locally. View `independent_oracle_report.html` for the results. `original_workbook_formula_samples.json` contains raw, nonexecuted sample source formulas for traceability.
 
-**LIMITATION:** These are internal regression tests using fictional marks, not independent corrected-Excel parity cases or school grading approval. Arabic/Islamic rounding remains candidate behavior. MAPE final rounding is unapproved. Term Grade is provisional, Supabase and authentication are not connected, and real student records must not be entered.
+These are **not independently calculated Excel workbook results**. The website remains an unverified demo; no grade certification or Supabase connection. Do not use for real pupils.
 
-**GitHub Pages:** upload the full extracted website contents to repo root as one commit; do not upload the enclosing directory unless your site is configured for it.
+Upload the ZIP extracted files to the GitHub Pages repository root in one commit.

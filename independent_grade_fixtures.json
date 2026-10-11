@@ -1,0 +1,2227 @@
+{
+  "phase": "3.32",
+  "purpose": "Independent Python Decimal oracle of stated prototype math; NOT Excel calculation or grade certification",
+  "cases": [
+    {
+      "id": "general-zero",
+      "scheme": "general",
+      "scenario": "zero",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "0",
+        "Z|PT1": "0",
+        "Z|ST1": "0",
+        "Z|ST2": "0",
+        "Z|TERM": "0"
+      },
+      "expected_initial_grade": "0.0",
+      "expected_categories": {
+        "WW": "0",
+        "PT": "0",
+        "EX": "0.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "general-full",
+      "scheme": "general",
+      "scenario": "full",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "10",
+        "Z|PT1": "10",
+        "Z|ST1": "10",
+        "Z|ST2": "10",
+        "Z|TERM": "10"
+      },
+      "expected_initial_grade": "100.0",
+      "expected_categories": {
+        "WW": "100",
+        "PT": "100",
+        "EX": "100.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "general-half",
+      "scheme": "general",
+      "scenario": "half",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "5",
+        "Z|PT1": "5",
+        "Z|ST1": "5",
+        "Z|ST2": "5",
+        "Z|TERM": "5"
+      },
+      "expected_initial_grade": "50.00",
+      "expected_categories": {
+        "WW": "50.0",
+        "PT": "50.0",
+        "EX": "50.00"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "general-unequal",
+      "scheme": "general",
+      "scenario": "unequal",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|WW1": "7",
+        "Z|PT1": "7",
+        "Z|ST1": "7",
+        "Z|ST2": "7",
+        "Z|TERM": "7"
+      },
+      "expected_initial_grade": "53.84615384615384615384615385",
+      "expected_categories": {
+        "WW": "53.84615384615384615384615385",
+        "PT": "53.84615384615384615384615385",
+        "EX": "53.84615384615384615384615386"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "general-rounding_edge",
+      "scheme": "general",
+      "scenario": "rounding_edge",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 3
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 3
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 3
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 3
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 3
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 3
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 3
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 3
+        }
+      },
+      "values": {
+        "Z|WW1": "1",
+        "Z|PT1": "1",
+        "Z|ST1": "1",
+        "Z|ST2": "1",
+        "Z|TERM": "1"
+      },
+      "expected_initial_grade": "33.33333333333333333333333334",
+      "expected_categories": {
+        "WW": "33.33333333333333333333333333",
+        "PT": "33.33333333333333333333333333",
+        "EX": "33.33333333333333333333333333"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "general-mixed",
+      "scheme": "general",
+      "scenario": "mixed",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW2": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT2": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|WW1": "8",
+        "Z|WW2": "6",
+        "Z|PT1": "8",
+        "Z|PT2": "6",
+        "Z|ST1": "8",
+        "Z|ST2": "6",
+        "Z|TERM": "8"
+      },
+      "expected_initial_grade": "54.46153846153846153846153846",
+      "expected_categories": {
+        "WW": "53.84615384615384615384615385",
+        "PT": "53.84615384615384615384615385",
+        "EX": "56.92307692307692307692307692"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "hele-zero",
+      "scheme": "hele",
+      "scenario": "zero",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "0",
+        "Z|PT1": "0",
+        "Z|ST1": "0",
+        "Z|ST2": "0",
+        "Z|TERM": "0"
+      },
+      "expected_initial_grade": "0.0",
+      "expected_categories": {
+        "WW": "0",
+        "PT": "0",
+        "EX": "0.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "hele-full",
+      "scheme": "hele",
+      "scenario": "full",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "10",
+        "Z|PT1": "10",
+        "Z|ST1": "10",
+        "Z|ST2": "10",
+        "Z|TERM": "10"
+      },
+      "expected_initial_grade": "100.0",
+      "expected_categories": {
+        "WW": "100",
+        "PT": "100",
+        "EX": "100.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "hele-half",
+      "scheme": "hele",
+      "scenario": "half",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "5",
+        "Z|PT1": "5",
+        "Z|ST1": "5",
+        "Z|ST2": "5",
+        "Z|TERM": "5"
+      },
+      "expected_initial_grade": "50.00",
+      "expected_categories": {
+        "WW": "50.0",
+        "PT": "50.0",
+        "EX": "50.00"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "hele-unequal",
+      "scheme": "hele",
+      "scenario": "unequal",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|WW1": "7",
+        "Z|PT1": "7",
+        "Z|ST1": "7",
+        "Z|ST2": "7",
+        "Z|TERM": "7"
+      },
+      "expected_initial_grade": "53.84615384615384615384615385",
+      "expected_categories": {
+        "WW": "53.84615384615384615384615385",
+        "PT": "53.84615384615384615384615385",
+        "EX": "53.84615384615384615384615386"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "hele-rounding_edge",
+      "scheme": "hele",
+      "scenario": "rounding_edge",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 3
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 3
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 3
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 3
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 3
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 3
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 3
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 3
+        }
+      },
+      "values": {
+        "Z|WW1": "1",
+        "Z|PT1": "1",
+        "Z|ST1": "1",
+        "Z|ST2": "1",
+        "Z|TERM": "1"
+      },
+      "expected_initial_grade": "33.33333333333333333333333333",
+      "expected_categories": {
+        "WW": "33.33333333333333333333333333",
+        "PT": "33.33333333333333333333333333",
+        "EX": "33.33333333333333333333333333"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "hele-mixed",
+      "scheme": "hele",
+      "scenario": "mixed",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW2": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT2": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|WW1": "8",
+        "Z|WW2": "6",
+        "Z|PT1": "8",
+        "Z|PT2": "6",
+        "Z|ST1": "8",
+        "Z|ST2": "6",
+        "Z|TERM": "8"
+      },
+      "expected_initial_grade": "54.46153846153846153846153846",
+      "expected_categories": {
+        "WW": "53.84615384615384615384615385",
+        "PT": "53.84615384615384615384615385",
+        "EX": "56.92307692307692307692307692"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "arabic-zero",
+      "scheme": "arabic",
+      "scenario": "zero",
+      "student_id": "Z",
+      "assessments": {
+        "LS1": {
+          "enabled": true,
+          "max": 10
+        },
+        "LS2": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS3": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS4": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS5": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WR2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR5": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD1": {
+          "enabled": true,
+          "max": 10
+        },
+        "RD2": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD3": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD4": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD5": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|LS1": "0",
+        "Z|WR1": "0",
+        "Z|RD1": "0",
+        "Z|ST1": "0",
+        "Z|ST2": "0",
+        "Z|TERM": "0"
+      },
+      "expected_initial_grade": "0.0",
+      "expected_categories": {
+        "LS": "0",
+        "WR": "0",
+        "RD": "0",
+        "EX": "0.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "arabic-full",
+      "scheme": "arabic",
+      "scenario": "full",
+      "student_id": "Z",
+      "assessments": {
+        "LS1": {
+          "enabled": true,
+          "max": 10
+        },
+        "LS2": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS3": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS4": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS5": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WR2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR5": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD1": {
+          "enabled": true,
+          "max": 10
+        },
+        "RD2": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD3": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD4": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD5": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|LS1": "10",
+        "Z|WR1": "10",
+        "Z|RD1": "10",
+        "Z|ST1": "10",
+        "Z|ST2": "10",
+        "Z|TERM": "10"
+      },
+      "expected_initial_grade": "100.0",
+      "expected_categories": {
+        "LS": "100",
+        "WR": "100",
+        "RD": "100",
+        "EX": "100.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "arabic-half",
+      "scheme": "arabic",
+      "scenario": "half",
+      "student_id": "Z",
+      "assessments": {
+        "LS1": {
+          "enabled": true,
+          "max": 10
+        },
+        "LS2": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS3": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS4": {
+          "enabled": false,
+          "max": 10
+        },
+        "LS5": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WR2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WR5": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD1": {
+          "enabled": true,
+          "max": 10
+        },
+        "RD2": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD3": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD4": {
+          "enabled": false,
+          "max": 10
+        },
+        "RD5": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|LS1": "5",
+        "Z|WR1": "5",
+        "Z|RD1": "5",
+        "Z|ST1": "5",
+        "Z|ST2": "5",
+        "Z|TERM": "5"
+      },
+      "expected_initial_grade": "50.00",
+      "expected_categories": {
+        "LS": "50",
+        "WR": "50",
+        "RD": "50",
+        "EX": "50.00"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "arabic-unequal",
+      "scheme": "arabic",
+      "scenario": "unequal",
+      "student_id": "Z",
+      "assessments": {
+        "LS1": {
+          "enabled": true,
+          "max": 13
+        },
+        "LS2": {
+          "enabled": false,
+          "max": 13
+        },
+        "LS3": {
+          "enabled": false,
+          "max": 13
+        },
+        "LS4": {
+          "enabled": false,
+          "max": 13
+        },
+        "LS5": {
+          "enabled": false,
+          "max": 13
+        },
+        "WR1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WR2": {
+          "enabled": false,
+          "max": 13
+        },
+        "WR3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WR4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WR5": {
+          "enabled": false,
+          "max": 13
+        },
+        "RD1": {
+          "enabled": true,
+          "max": 13
+        },
+        "RD2": {
+          "enabled": false,
+          "max": 13
+        },
+        "RD3": {
+          "enabled": false,
+          "max": 13
+        },
+        "RD4": {
+          "enabled": false,
+          "max": 13
+        },
+        "RD5": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|LS1": "7",
+        "Z|WR1": "7",
+        "Z|RD1": "7",
+        "Z|ST1": "7",
+        "Z|ST2": "7",
+        "Z|TERM": "7"
+      },
+      "expected_initial_grade": "53.93846153846153846153846154",
+      "expected_categories": {
+        "LS": "54",
+        "WR": "54",
+        "RD": "54",
+        "EX": "53.84615384615384615384615386"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "arabic-rounding_edge",
+      "scheme": "arabic",
+      "scenario": "rounding_edge",
+      "student_id": "Z",
+      "assessments": {
+        "LS1": {
+          "enabled": true,
+          "max": 3
+        },
+        "LS2": {
+          "enabled": false,
+          "max": 3
+        },
+        "LS3": {
+          "enabled": false,
+          "max": 3
+        },
+        "LS4": {
+          "enabled": false,
+          "max": 3
+        },
+        "LS5": {
+          "enabled": false,
+          "max": 3
+        },
+        "WR1": {
+          "enabled": true,
+          "max": 3
+        },
+        "WR2": {
+          "enabled": false,
+          "max": 3
+        },
+        "WR3": {
+          "enabled": false,
+          "max": 3
+        },
+        "WR4": {
+          "enabled": false,
+          "max": 3
+        },
+        "WR5": {
+          "enabled": false,
+          "max": 3
+        },
+        "RD1": {
+          "enabled": true,
+          "max": 3
+        },
+        "RD2": {
+          "enabled": false,
+          "max": 3
+        },
+        "RD3": {
+          "enabled": false,
+          "max": 3
+        },
+        "RD4": {
+          "enabled": false,
+          "max": 3
+        },
+        "RD5": {
+          "enabled": false,
+          "max": 3
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 3
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 3
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 3
+        }
+      },
+      "values": {
+        "Z|LS1": "1",
+        "Z|WR1": "1",
+        "Z|RD1": "1",
+        "Z|ST1": "1",
+        "Z|ST2": "1",
+        "Z|TERM": "1"
+      },
+      "expected_initial_grade": "33.13333333333333333333333333",
+      "expected_categories": {
+        "LS": "33",
+        "WR": "33",
+        "RD": "33",
+        "EX": "33.33333333333333333333333333"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "arabic-mixed",
+      "scheme": "arabic",
+      "scenario": "mixed",
+      "student_id": "Z",
+      "assessments": {
+        "LS1": {
+          "enabled": true,
+          "max": 13
+        },
+        "LS2": {
+          "enabled": true,
+          "max": 13
+        },
+        "LS3": {
+          "enabled": false,
+          "max": 13
+        },
+        "LS4": {
+          "enabled": false,
+          "max": 13
+        },
+        "LS5": {
+          "enabled": false,
+          "max": 13
+        },
+        "WR1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WR2": {
+          "enabled": true,
+          "max": 13
+        },
+        "WR3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WR4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WR5": {
+          "enabled": false,
+          "max": 13
+        },
+        "RD1": {
+          "enabled": true,
+          "max": 13
+        },
+        "RD2": {
+          "enabled": true,
+          "max": 13
+        },
+        "RD3": {
+          "enabled": false,
+          "max": 13
+        },
+        "RD4": {
+          "enabled": false,
+          "max": 13
+        },
+        "RD5": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|LS1": "8",
+        "Z|LS2": "6",
+        "Z|WR1": "8",
+        "Z|WR2": "6",
+        "Z|RD1": "8",
+        "Z|RD2": "6",
+        "Z|ST1": "8",
+        "Z|ST2": "6",
+        "Z|TERM": "8"
+      },
+      "expected_initial_grade": "55.16923076923076923076923077",
+      "expected_categories": {
+        "LS": "54",
+        "WR": "54",
+        "RD": "54",
+        "EX": "56.92307692307692307692307692"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "islamic-zero",
+      "scheme": "islamic",
+      "scenario": "zero",
+      "student_id": "Z",
+      "assessments": {
+        "QR1": {
+          "enabled": true,
+          "max": 10
+        },
+        "QR2": {
+          "enabled": false,
+          "max": 10
+        },
+        "MEM1": {
+          "enabled": true,
+          "max": 10
+        },
+        "MEM2": {
+          "enabled": false,
+          "max": 10
+        },
+        "VAL1": {
+          "enabled": true,
+          "max": 10
+        },
+        "VAL2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WQA1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WQA2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WQA3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|QR1": "0",
+        "Z|MEM1": "0",
+        "Z|VAL1": "0",
+        "Z|WQA1": "0",
+        "Z|ST1": "0",
+        "Z|ST2": "0",
+        "Z|TERM": "0"
+      },
+      "expected_initial_grade": "0.0",
+      "expected_categories": {
+        "QR": "0",
+        "MEM": "0",
+        "VAL": "0",
+        "WQA": "0",
+        "EX": "0.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "islamic-full",
+      "scheme": "islamic",
+      "scenario": "full",
+      "student_id": "Z",
+      "assessments": {
+        "QR1": {
+          "enabled": true,
+          "max": 10
+        },
+        "QR2": {
+          "enabled": false,
+          "max": 10
+        },
+        "MEM1": {
+          "enabled": true,
+          "max": 10
+        },
+        "MEM2": {
+          "enabled": false,
+          "max": 10
+        },
+        "VAL1": {
+          "enabled": true,
+          "max": 10
+        },
+        "VAL2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WQA1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WQA2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WQA3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|QR1": "10",
+        "Z|MEM1": "10",
+        "Z|VAL1": "10",
+        "Z|WQA1": "10",
+        "Z|ST1": "10",
+        "Z|ST2": "10",
+        "Z|TERM": "10"
+      },
+      "expected_initial_grade": "100.0",
+      "expected_categories": {
+        "QR": "100",
+        "MEM": "100",
+        "VAL": "100",
+        "WQA": "100",
+        "EX": "100.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "islamic-half",
+      "scheme": "islamic",
+      "scenario": "half",
+      "student_id": "Z",
+      "assessments": {
+        "QR1": {
+          "enabled": true,
+          "max": 10
+        },
+        "QR2": {
+          "enabled": false,
+          "max": 10
+        },
+        "MEM1": {
+          "enabled": true,
+          "max": 10
+        },
+        "MEM2": {
+          "enabled": false,
+          "max": 10
+        },
+        "VAL1": {
+          "enabled": true,
+          "max": 10
+        },
+        "VAL2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WQA1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WQA2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WQA3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|QR1": "5",
+        "Z|MEM1": "5",
+        "Z|VAL1": "5",
+        "Z|WQA1": "5",
+        "Z|ST1": "5",
+        "Z|ST2": "5",
+        "Z|TERM": "5"
+      },
+      "expected_initial_grade": "50.00",
+      "expected_categories": {
+        "QR": "50",
+        "MEM": "50",
+        "VAL": "50",
+        "WQA": "50",
+        "EX": "50.00"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "islamic-unequal",
+      "scheme": "islamic",
+      "scenario": "unequal",
+      "student_id": "Z",
+      "assessments": {
+        "QR1": {
+          "enabled": true,
+          "max": 13
+        },
+        "QR2": {
+          "enabled": false,
+          "max": 13
+        },
+        "MEM1": {
+          "enabled": true,
+          "max": 13
+        },
+        "MEM2": {
+          "enabled": false,
+          "max": 13
+        },
+        "VAL1": {
+          "enabled": true,
+          "max": 13
+        },
+        "VAL2": {
+          "enabled": false,
+          "max": 13
+        },
+        "WQA1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WQA2": {
+          "enabled": false,
+          "max": 13
+        },
+        "WQA3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|QR1": "7",
+        "Z|MEM1": "7",
+        "Z|VAL1": "7",
+        "Z|WQA1": "7",
+        "Z|ST1": "7",
+        "Z|ST2": "7",
+        "Z|TERM": "7"
+      },
+      "expected_initial_grade": "53.93846153846153846153846154",
+      "expected_categories": {
+        "QR": "54",
+        "MEM": "54",
+        "VAL": "54",
+        "WQA": "54",
+        "EX": "53.84615384615384615384615386"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "islamic-rounding_edge",
+      "scheme": "islamic",
+      "scenario": "rounding_edge",
+      "student_id": "Z",
+      "assessments": {
+        "QR1": {
+          "enabled": true,
+          "max": 3
+        },
+        "QR2": {
+          "enabled": false,
+          "max": 3
+        },
+        "MEM1": {
+          "enabled": true,
+          "max": 3
+        },
+        "MEM2": {
+          "enabled": false,
+          "max": 3
+        },
+        "VAL1": {
+          "enabled": true,
+          "max": 3
+        },
+        "VAL2": {
+          "enabled": false,
+          "max": 3
+        },
+        "WQA1": {
+          "enabled": true,
+          "max": 3
+        },
+        "WQA2": {
+          "enabled": false,
+          "max": 3
+        },
+        "WQA3": {
+          "enabled": false,
+          "max": 3
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 3
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 3
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 3
+        }
+      },
+      "values": {
+        "Z|QR1": "1",
+        "Z|MEM1": "1",
+        "Z|VAL1": "1",
+        "Z|WQA1": "1",
+        "Z|ST1": "1",
+        "Z|ST2": "1",
+        "Z|TERM": "1"
+      },
+      "expected_initial_grade": "33.13333333333333333333333333",
+      "expected_categories": {
+        "QR": "33",
+        "MEM": "33",
+        "VAL": "33",
+        "WQA": "33",
+        "EX": "33.33333333333333333333333333"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "islamic-mixed",
+      "scheme": "islamic",
+      "scenario": "mixed",
+      "student_id": "Z",
+      "assessments": {
+        "QR1": {
+          "enabled": true,
+          "max": 13
+        },
+        "QR2": {
+          "enabled": true,
+          "max": 13
+        },
+        "MEM1": {
+          "enabled": true,
+          "max": 13
+        },
+        "MEM2": {
+          "enabled": true,
+          "max": 13
+        },
+        "VAL1": {
+          "enabled": true,
+          "max": 13
+        },
+        "VAL2": {
+          "enabled": true,
+          "max": 13
+        },
+        "WQA1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WQA2": {
+          "enabled": true,
+          "max": 13
+        },
+        "WQA3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|QR1": "8",
+        "Z|QR2": "6",
+        "Z|MEM1": "8",
+        "Z|MEM2": "6",
+        "Z|VAL1": "8",
+        "Z|VAL2": "6",
+        "Z|WQA1": "8",
+        "Z|WQA2": "6",
+        "Z|ST1": "8",
+        "Z|ST2": "6",
+        "Z|TERM": "8"
+      },
+      "expected_initial_grade": "55.16923076923076923076923077",
+      "expected_categories": {
+        "QR": "54",
+        "MEM": "54",
+        "VAL": "54",
+        "WQA": "54",
+        "EX": "56.92307692307692307692307692"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "mape-zero",
+      "scheme": "mape",
+      "scenario": "zero",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "0",
+        "Z|PT1": "0",
+        "Z|ST1": "0",
+        "Z|ST2": "0",
+        "Z|TERM": "0"
+      },
+      "expected_initial_grade": "0.0",
+      "expected_categories": {
+        "WW": "0",
+        "PT": "0",
+        "EX": "0.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "mape-full",
+      "scheme": "mape",
+      "scenario": "full",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "10",
+        "Z|PT1": "10",
+        "Z|ST1": "10",
+        "Z|ST2": "10",
+        "Z|TERM": "10"
+      },
+      "expected_initial_grade": "100.0",
+      "expected_categories": {
+        "WW": "100",
+        "PT": "100",
+        "EX": "100.0"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "mape-half",
+      "scheme": "mape",
+      "scenario": "half",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 10
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 10
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 10
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 10
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 10
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 10
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 10
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 10
+        }
+      },
+      "values": {
+        "Z|WW1": "5",
+        "Z|PT1": "5",
+        "Z|ST1": "5",
+        "Z|ST2": "5",
+        "Z|TERM": "5"
+      },
+      "expected_initial_grade": "50.00",
+      "expected_categories": {
+        "WW": "50.0",
+        "PT": "50.0",
+        "EX": "50.00"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "mape-unequal",
+      "scheme": "mape",
+      "scenario": "unequal",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|WW1": "7",
+        "Z|PT1": "7",
+        "Z|ST1": "7",
+        "Z|ST2": "7",
+        "Z|TERM": "7"
+      },
+      "expected_initial_grade": "53.84615384615384615384615385",
+      "expected_categories": {
+        "WW": "53.84615384615384615384615385",
+        "PT": "53.84615384615384615384615385",
+        "EX": "53.84615384615384615384615386"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "mape-rounding_edge",
+      "scheme": "mape",
+      "scenario": "rounding_edge",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 3
+        },
+        "WW2": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 3
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 3
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 3
+        },
+        "PT2": {
+          "enabled": false,
+          "max": 3
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 3
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 3
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 3
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 3
+        }
+      },
+      "values": {
+        "Z|WW1": "1",
+        "Z|PT1": "1",
+        "Z|ST1": "1",
+        "Z|ST2": "1",
+        "Z|TERM": "1"
+      },
+      "expected_initial_grade": "33.33333333333333333333333334",
+      "expected_categories": {
+        "WW": "33.33333333333333333333333333",
+        "PT": "33.33333333333333333333333333",
+        "EX": "33.33333333333333333333333333"
+      },
+      "expected_term_grade": null
+    },
+    {
+      "id": "mape-mixed",
+      "scheme": "mape",
+      "scenario": "mixed",
+      "student_id": "Z",
+      "assessments": {
+        "WW1": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW2": {
+          "enabled": true,
+          "max": 13
+        },
+        "WW3": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW4": {
+          "enabled": false,
+          "max": 13
+        },
+        "WW5": {
+          "enabled": false,
+          "max": 13
+        },
+        "PT1": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT2": {
+          "enabled": true,
+          "max": 13
+        },
+        "PT3": {
+          "enabled": false,
+          "max": 13
+        },
+        "ST1": {
+          "enabled": true,
+          "max": 13
+        },
+        "ST2": {
+          "enabled": true,
+          "max": 13
+        },
+        "TERM": {
+          "enabled": true,
+          "max": 13
+        }
+      },
+      "values": {
+        "Z|WW1": "8",
+        "Z|WW2": "6",
+        "Z|PT1": "8",
+        "Z|PT2": "6",
+        "Z|ST1": "8",
+        "Z|ST2": "6",
+        "Z|TERM": "8"
+      },
+      "expected_initial_grade": "54.46153846153846153846153846",
+      "expected_categories": {
+        "WW": "53.84615384615384615384615385",
+        "PT": "53.84615384615384615384615385",
+        "EX": "56.92307692307692307692307692"
+      },
+      "expected_term_grade": null
+    }
+  ]
+}

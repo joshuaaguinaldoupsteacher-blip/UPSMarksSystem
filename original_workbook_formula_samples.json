@@ -1,0 +1,780 @@
+{
+  "scope": "read-only XML formula sampling; not evaluated Excel outputs",
+  "sheets": [
+    {
+      "workbook": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IF(COUNT(F18:J18)=0,\"\",IFERROR(K18/$K$15*$L$15,\"\"))"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(L18=\"\",\"\",L18*$M$15)"
+        },
+        {
+          "cell": "Q18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",IFERROR(Q18/$Q$15*$R$15,\"\"))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",R18*$S$15)"
+        },
+        {
+          "cell": "W18",
+          "formula": "IF(T18=\"\",\"\",IFERROR(T18/$T$15*$W$15,\"\"))"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(U18=\"\",\"\",IFERROR(U18/$U$15*$X$15,\"\"))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(V18=\"\",\"\",IFERROR(V18/$V$15*$Y$15,\"\"))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+        },
+        {
+          "cell": "AA18",
+          "formula": "IF(Z18=\"\",\"\",Z18*$AA$15)"
+        },
+        {
+          "cell": "AC18",
+          "formula": "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AC18>=HELPER!$B$8,1,MATCH(AC18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AD18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IF(COUNT(F18:J18)=0,\"\",IFERROR(K18/$K$15*$L$15,\"\"))"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(L18=\"\",\"\",L18*$M$15)"
+        },
+        {
+          "cell": "Q18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",IFERROR(Q18/$Q$15*$R$15,\"\"))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",R18*$S$15)"
+        },
+        {
+          "cell": "W18",
+          "formula": "IF(T18=\"\",\"\",IFERROR(T18/$T$15*$W$15,\"\"))"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(U18=\"\",\"\",IFERROR(U18/$U$15*$X$15,\"\"))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(V18=\"\",\"\",IFERROR(V18/$V$15*$Y$15,\"\"))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+        },
+        {
+          "cell": "AA18",
+          "formula": "IF(Z18=\"\",\"\",Z18*$AA$15)"
+        },
+        {
+          "cell": "AC18",
+          "formula": "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AC18>=HELPER!$B$8,1,MATCH(AC18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AD18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record.xlsx",
+      "sheet_xml": "xl/worksheets/sheet3.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IF(COUNT(F18:J18)=0,\"\",IFERROR(K18/$K$15*$L$15,\"\"))"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(L18=\"\",\"\",L18*$M$15)"
+        },
+        {
+          "cell": "Q18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",IFERROR(Q18/$Q$15*$R$15,\"\"))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",R18*$S$15)"
+        },
+        {
+          "cell": "W18",
+          "formula": "IF(T18=\"\",\"\",IFERROR(T18/$T$15*$W$15,\"\"))"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(U18=\"\",\"\",IFERROR(U18/$U$15*$X$15,\"\"))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(V18=\"\",\"\",IFERROR(V18/$V$15*$Y$15,\"\"))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+        },
+        {
+          "cell": "AA18",
+          "formula": "IF(Z18=\"\",\"\",Z18*$AA$15)"
+        },
+        {
+          "cell": "AC18",
+          "formula": "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AC18>=HELPER!$B$8,1,MATCH(AC18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AD18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(SUM(F18:J18)=0,\"\",ROUND(SUM(F18:J18)/SUM($F$15:$J$15)*100,0))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IFERROR(K18*$L$15,\"\")"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(SUM(M18:Q18)=0,\"\",ROUND(SUM(M18:Q18)/SUM($M$15:$Q$15)*100,0))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IFERROR(R18*$S$15,\"\")"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(SUM(T18:X18)=0,\"\",ROUND(SUM(T18:X18)/SUM($T$15:$X$15)*100,0))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IFERROR(Y18*$Z$15,\"\")"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(AB18/$AB$15*$AE$15,\"\"))"
+        },
+        {
+          "cell": "AF18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(AC18/$AC$15*$AF$15,\"\"))"
+        },
+        {
+          "cell": "AG18",
+          "formula": "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+        },
+        {
+          "cell": "AH18",
+          "formula": "IF(AG18=\"\",\"\",AG18*$AH$15)"
+        },
+        {
+          "cell": "AJ18",
+          "formula": "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+        },
+        {
+          "cell": "AK18",
+          "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AL18",
+          "formula": "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 3'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(SUM(F18:J18)=0,\"\",ROUND(SUM(F18:J18)/SUM($F$15:$J$15)*100,0))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IFERROR(K18*$L$15,\"\")"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(SUM(M18:Q18)=0,\"\",ROUND(SUM(M18:Q18)/SUM($M$15:$Q$15)*100,0))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IFERROR(R18*$S$15,\"\")"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(SUM(T18:X18)=0,\"\",ROUND(SUM(T18:X18)/SUM($T$15:$X$15)*100,0))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IFERROR(Y18*$Z$15,\"\")"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(AB18/$AB$15*$AE$15,\"\"))"
+        },
+        {
+          "cell": "AF18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(AC18/$AC$15*$AF$15,\"\"))"
+        },
+        {
+          "cell": "AG18",
+          "formula": "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+        },
+        {
+          "cell": "AH18",
+          "formula": "IF(AG18=\"\",\"\",AG18*$AH$15)"
+        },
+        {
+          "cell": "AJ18",
+          "formula": "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+        },
+        {
+          "cell": "AK18",
+          "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AL18",
+          "formula": "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - Arabic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet3.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(SUM(F18:J18)=0,\"\",ROUND(SUM(F18:J18)/SUM($F$15:$J$15)*100,0))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IFERROR(K18*$L$15,\"\")"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(SUM(M18:Q18)=0,\"\",ROUND(SUM(M18:Q18)/SUM($M$15:$Q$15)*100,0))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IFERROR(R18*$S$15,\"\")"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(SUM(T18:X18)=0,\"\",ROUND(SUM(T18:X18)/SUM($T$15:$X$15)*100,0))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IFERROR(Y18*$Z$15,\"\")"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(AB18/$AB$15*$AE$15,\"\"))"
+        },
+        {
+          "cell": "AF18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(AC18/$AC$15*$AF$15,\"\"))"
+        },
+        {
+          "cell": "AG18",
+          "formula": "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+        },
+        {
+          "cell": "AH18",
+          "formula": "IF(AG18=\"\",\"\",AG18*$AH$15)"
+        },
+        {
+          "cell": "AJ18",
+          "formula": "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+        },
+        {
+          "cell": "AK18",
+          "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AL18",
+          "formula": "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 2'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "H18",
+          "formula": "IF(SUM(F18:G18)=0,\"\",SUM(F18:G18))"
+        },
+        {
+          "cell": "I18",
+          "formula": "IF(H18=\"\",\"\",ROUND(H18/$H$15*100,0))"
+        },
+        {
+          "cell": "J18",
+          "formula": "IF(I18=\"\",\"\",I18*$J$15)"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(SUM(K18:L18)=0,\"\",SUM(K18:L18))"
+        },
+        {
+          "cell": "N18",
+          "formula": "IF(M18=\"\",\"\",ROUND(M18/$N$15*100,0))"
+        },
+        {
+          "cell": "O18",
+          "formula": "IF(N18=\"\",\"\",N18*$O$15)"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(SUM(P18:Q18)=0,\"\",SUM(P18:Q18))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",ROUND(R18/$S$15*100,0))"
+        },
+        {
+          "cell": "T18",
+          "formula": "IF(S18=\"\",\"\",S18*$T$15)"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(SUM(U18:W18)=0,\"\",SUM(U18:W18))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(X18=\"\",\"\",ROUND(X18/$Y$15*100,0))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(Y18=\"\",\"\",Y18*$Z$15)"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(AB18/$AB$15*$AE$15,\"\"))"
+        },
+        {
+          "cell": "AF18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(AC18/$AC$15*$AF$15,\"\"))"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "H18",
+          "formula": "IF(SUM(F18:G18)=0,\"\",SUM(F18:G18))"
+        },
+        {
+          "cell": "I18",
+          "formula": "IF(H18=\"\",\"\",ROUND(H18/$H$15*100,0))"
+        },
+        {
+          "cell": "J18",
+          "formula": "IF(I18=\"\",\"\",I18*$J$15)"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(SUM(K18:L18)=0,\"\",SUM(K18:L18))"
+        },
+        {
+          "cell": "N18",
+          "formula": "IF(M18=\"\",\"\",ROUND(M18/$N$15*100,0))"
+        },
+        {
+          "cell": "O18",
+          "formula": "IF(N18=\"\",\"\",N18*$O$15)"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(SUM(P18:Q18)=0,\"\",SUM(P18:Q18))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",ROUND(R18/$S$15*100,0))"
+        },
+        {
+          "cell": "T18",
+          "formula": "IF(S18=\"\",\"\",S18*$T$15)"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(SUM(U18:W18)=0,\"\",SUM(U18:W18))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(X18=\"\",\"\",ROUND(X18/$Y$15*100,0))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(Y18=\"\",\"\",Y18*$Z$15)"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(AB18/$AB$15*$AE$15,\"\"))"
+        },
+        {
+          "cell": "AF18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(AC18/$AC$15*$AF$15,\"\"))"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - Islamic.xlsx",
+      "sheet_xml": "xl/worksheets/sheet3.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "H18",
+          "formula": "IF(SUM(F18:G18)=0,\"\",SUM(F18:G18))"
+        },
+        {
+          "cell": "I18",
+          "formula": "IF(H18=\"\",\"\",ROUND(H18/$H$15*100,0))"
+        },
+        {
+          "cell": "J18",
+          "formula": "IF(I18=\"\",\"\",I18*$J$15)"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(SUM(K18:L18)=0,\"\",SUM(K18:L18))"
+        },
+        {
+          "cell": "N18",
+          "formula": "IF(M18=\"\",\"\",ROUND(M18/$N$15*100,0))"
+        },
+        {
+          "cell": "O18",
+          "formula": "IF(N18=\"\",\"\",N18*$O$15)"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(SUM(P18:Q18)=0,\"\",SUM(P18:Q18))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",ROUND(R18/$S$15*100,0))"
+        },
+        {
+          "cell": "T18",
+          "formula": "IF(S18=\"\",\"\",S18*$T$15)"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(SUM(U18:W18)=0,\"\",SUM(U18:W18))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(X18=\"\",\"\",ROUND(X18/$Y$15*100,0))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(Y18=\"\",\"\",Y18*$Z$15)"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+        },
+        {
+          "cell": "AE18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(AB18/$AB$15*$AE$15,\"\"))"
+        },
+        {
+          "cell": "AF18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(AC18/$AC$15*$AF$15,\"\"))"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet4.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IF(COUNT(F18:J18)=0,\"\",IFERROR(K18/$K$15*$L$15,\"\"))"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(L18=\"\",\"\",L18*$M$15)"
+        },
+        {
+          "cell": "Q18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",IFERROR(Q18/$Q$15*$R$15,\"\"))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",R18*$S$15)"
+        },
+        {
+          "cell": "W18",
+          "formula": "IF(T18=\"\",\"\",IFERROR(T18/$T$15*$W$15,\"\"))"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(U18=\"\",\"\",IFERROR(U18/$U$15*$X$15,\"\"))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(V18=\"\",\"\",IFERROR(V18/$V$15*$Y$15,\"\"))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+        },
+        {
+          "cell": "AA18",
+          "formula": "IF(Z18=\"\",\"\",Z18*$AA$15)"
+        },
+        {
+          "cell": "AB18",
+          "formula": "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+        },
+        {
+          "cell": "AC18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AB18>=HELPER!$B$8,1,MATCH(AB18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet2.xml",
+      "sample_row18_formulas": [
+        {
+          "cell": "C18",
+          "formula": "IF('INPUT DATA'!K11=\"\",\"\",'INPUT DATA'!K11)"
+        },
+        {
+          "cell": "K18",
+          "formula": "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+        },
+        {
+          "cell": "L18",
+          "formula": "IF(COUNT(F18:J18)=0,\"\",IFERROR(K18/$K$15*$L$15,\"\"))"
+        },
+        {
+          "cell": "M18",
+          "formula": "IF(L18=\"\",\"\",L18*$M$15)"
+        },
+        {
+          "cell": "Q18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+        },
+        {
+          "cell": "R18",
+          "formula": "IF(COUNT(N18:P18)=0,\"\",IFERROR(Q18/$Q$15*$R$15,\"\"))"
+        },
+        {
+          "cell": "S18",
+          "formula": "IF(R18=\"\",\"\",R18*$S$15)"
+        },
+        {
+          "cell": "W18",
+          "formula": "IF(T18=\"\",\"\",IFERROR(T18/$T$15*$W$15,\"\"))"
+        },
+        {
+          "cell": "X18",
+          "formula": "IF(U18=\"\",\"\",IFERROR(U18/$U$15*$X$15,\"\"))"
+        },
+        {
+          "cell": "Y18",
+          "formula": "IF(V18=\"\",\"\",IFERROR(V18/$V$15*$Y$15,\"\"))"
+        },
+        {
+          "cell": "Z18",
+          "formula": "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+        },
+        {
+          "cell": "AA18",
+          "formula": "IF(Z18=\"\",\"\",Z18*$AA$15)"
+        },
+        {
+          "cell": "AB18",
+          "formula": "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+        },
+        {
+          "cell": "AC18",
+          "formula": "IF(AB18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AB18>=HELPER!$B$8,1,MATCH(AB18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+        },
+        {
+          "cell": "AD18",
+          "formula": "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+        },
+        {
+          "cell": "C118",
+          "formula": "IF('INPUT DATA'!N60=\"\",\"\",'INPUT DATA'!N60)"
+        }
+      ]
+    },
+    {
+      "workbook": "UPS - Grades 2-10 Class Record - (MAPE).xlsx",
+      "sheet_xml": "xl/worksheets/sheet1.xml",
+      "sample_row18_formulas": []
+    }
+  ]
+}
