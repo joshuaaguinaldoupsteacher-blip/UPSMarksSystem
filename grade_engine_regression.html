@@ -1,0 +1,34 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UPS Phase 3.17 — Grade Engine Regression</title><link rel="stylesheet" href="style.css"><style>main{max-width:1120px;margin:30px auto;padding:0 15px}.good{color:#137044;font-weight:800}.bad{color:#b02040;font-weight:800}.hint{background:#fff5df;border-left:4px solid #b17b1a;padding:13px;border-radius:10px}td{font-variant-numeric:tabular-nums}</style></head><body><main><section class="panel"><div class="eyebrow">PHASE 3.17 · EXECUTABLE REGRESSION TESTS</div><h1>Term Grade Calculation Engine</h1><p>Runs test vectors against the <strong>same calculate()</strong> function used by your gradebook. Scenarios use fictional assessment scores and include all grading templates.</p><div class="hint"><strong>Not certified:</strong> These independent arithmetic expectations are regression tests, not evidence of exact parity with the Excel formulas. Official Term Grades remain provisional until workbook-to-website comparisons pass.</div><p><a href="index.html">Back to UPS gradebook</a> · <a href="excel_parity_workbench.html">Compare Excel results</a></p></section><section class="panel"><h2>Live calculated test results</h2><p id="summary">Running…</p><div class="tablewrap"><table><thead><tr><th>Test</th><th>Expected Initial %</th><th>Actual Initial %</th><th>Result</th></tr></thead><tbody id="results"></tbody></table></div></section><section class="panel"><h2>Before report-card certification</h2><p>Reconcile Islamic activities aggregation, category-level rounding in the original workbook, Arabic/Islamic corrected <code>AK</code> Term Grade references, HELPER lookup boundary behavior, and MAPE's nine transmuted component-term grade rounding. Test with matching raw scores and perfect scores inside the original Excel files.</p></section></main><script>const chosen=['CLS-009','MATH'],roster=[['TEST-STUDENT','Fictional Student']];</script><script src="grading.js"></script><script>(function(){
+const schemes=Object.keys(GRADE_SCHEMES);
+const rows=[];
+function make(scheme,kind){
+ const info=GRADE_SCHEMES[scheme],rec={assessments:{},values:{}},specs=specsFor(info);
+ for(const s of specs){const enabled=s.required||s.slot===0;rec.assessments[s.key]={enabled,max:s.category==='EX'?40:20};if(!enabled)continue;
+ let mark=kind==='zero'?0:kind==='perfect'?rec.assessments[s.key].max:kind==='half'?rec.assessments[s.key].max/2:kind==='missing'&&s.category==='EX'&&s.slot===2?'':rec.assessments[s.key].max;
+ if(kind==='over'&&s.category==='EX'&&s.slot===1)mark=41;
+ if(kind==='negative'&&s.category==='EX'&&s.slot===1)mark=-1;
+ rec.values['TEST-STUDENT|'+s.key]=String(mark);
+ }
+ return rec;
+}
+function test(name,scheme,rec,expected){let got;try{got=calculate(rec,GRADE_SCHEMES[scheme],'TEST-STUDENT').value}catch(e){got='ERROR: '+e.message}
+const ok=expected===null?got===null:typeof got==='number'&&Math.abs(got-expected)<1e-7;rows.push([name,expected,got,ok])}
+for(const s of schemes){
+ test(s+' — all perfect scores',s,make(s,'perfect'),100);
+ test(s+' — all zero scores',s,make(s,'zero'),0);
+ test(s+' — every activity 50%',s,make(s,'half'),50);
+ test(s+' — missing end-of-term exam',s,make(s,'missing'),null);
+ test(s+' — score above perfect',s,make(s,'over'),null);
+ test(s+' — negative score',s,make(s,'negative'),null);
+}
+// Independent cross-category expected Initial Grade calculations.
+for(const s of schemes){
+ const rec=make(s,'perfect');for(const spec of specsFor(GRADE_SCHEMES[s]))if(rec.assessments[spec.key].enabled){if(spec.category==='EX')rec.values['TEST-STUDENT|'+spec.key]=String([20,30,40][spec.slot]);else if(spec.category==='WW'||spec.category==='LS'||spec.category==='QR')rec.values['TEST-STUDENT|'+spec.key]='10';}
+ const weights=Object.fromEntries(GRADE_SCHEMES[s].categories.map(x=>[x[0],x[2]]));
+ const expected=(weights.WW??weights.LS??weights.QR)*.5+Object.entries(weights).filter(([k])=>k!=='EX'&&k!=='WW'&&k!=='LS'&&k!=='QR').reduce((acc,[,v])=>acc+v,0)+weights.EX*.775;
+ test(s+' — mixed categories and 30/30/40 EX',s,rec,expected);
+}
+const tbody=document.getElementById('results');let passed=0;
+for(const [name,expected,actual,ok] of rows){passed+=Number(ok);const tr=document.createElement('tr');for(const v of [name,expected===null?'incomplete':expected,actual===null?'incomplete':actual,ok?'PASS':'FAIL']){const td=document.createElement('td');td.textContent=v;tr.appendChild(td)}tr.lastChild.className=ok?'good':'bad';tbody.appendChild(tr)}
+document.getElementById('summary').textContent=`${passed} / ${rows.length} tests passed. These tests do not establish exact Excel workbook parity.`;
+})();</script></body></html>
