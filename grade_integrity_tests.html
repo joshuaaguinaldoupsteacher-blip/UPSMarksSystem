@@ -1,0 +1,56 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UPS Grade Integrity Tests</title><link rel="stylesheet" href="style.css"><style>main{max-width:1050px;margin:22px auto;padding:14px}.good{color:#116b43;font-weight:700}.bad{color:#b52545;font-weight:700}.warn{border-left:4px solid #b77e23;padding:14px;background:#fff7e7;border-radius:10px}</style></head><body><main><div class="panel"><div class="eyebrow">PHASE 3.11 · DEMONSTRATION ONLY</div><h1>Raw-Score Calculation Integrity</h1><p class="warn">These are automated unit tests of the website's grading arithmetic. They do not establish parity with the original Excel formulas or certify official Term Grades. No Supabase data is involved.</p><a href="index.html">Return to UPS Marks System</a> · <a href="formula_comparison.html">Earlier formula comparison</a></div><div class="panel"><h2 id="summary">Running tests…</h2><table><thead><tr><th>Test</th><th>Expected</th><th>Actual</th><th>Result</th></tr></thead><tbody id="results"></tbody></table></div></main><script>
+const GRADE_SCHEMES={general:{categories:[['WW','WW',20,5],['PT','PT',60,3],['EX','EX',20,3]]},hele:{categories:[['WW','WW',30,5],['PT','PT',50,3],['EX','EX',20,3]]},arabic:{categories:[['LS','LS',10,1],['WR','WR',40,1],['RD','RD',10,1],['EX','EX',40,3]]},islamic:{categories:[['QR','QR',10,1],['MEM','MEM',15,1],['VAL','VAL',5,1],['WQA','WQA',30,1],['EX','EX',40,3]]},mape:{categories:[['WW','WW',20,5],['PT','PT',60,3],['EX','EX',20,3]]}};
+function specsFor(scheme){return scheme.categories.flatMap(([cat,name,weight,maxItems])=>Array.from({length:maxItems},(_,i)=>({key:cat==='EX'?['ST1','ST2','TERM'][i]:`${cat}${i+1}`,category:cat,slot:i}))) }
+function assessment(rec,s){if(!rec.assessments[s.key])rec.assessments[s.key]={enabled:s.category==='EX'||s.slot===0,max:20};return rec.assessments[s.key]}
+function calculate(rec,scheme,id,values=rec.values,definitions=rec.assessments){
+ let total=0,complete=true,hasActive=true;
+ const cats={};
+ for(const [cat,label,weight] of scheme.categories){
+  const specs=specsFor(scheme).filter(s=>s.category===cat&&(definitions[s.key]||assessment(rec,s)).enabled);
+  if(!specs.length){complete=false;hasActive=false;cats[cat]=null;continue}
+  let percent=null;
+  if(cat==='EX'){
+   if(specs.length!==3){complete=false;cats[cat]=null;continue}
+   let value=0,valid=true;
+   for(const spec of specs){
+    const max=Number((definitions[spec.key]||assessment(rec,spec)).max),raw=values[id+'|'+spec.key];
+    const mark=Number(raw);
+    if(!Number.isFinite(max)||max<=0||raw===undefined||raw===''||!Number.isFinite(mark)||mark<0||mark>max){complete=false;valid=false;break}
+    value+=mark/max*100*[.3,.3,.4][spec.slot];
+   }
+   if(valid)percent=value;
+  }else{
+   let earned=0,possible=0,valid=true;
+   for(const spec of specs){
+    const max=Number((definitions[spec.key]||assessment(rec,spec)).max),raw=values[id+'|'+spec.key];
+    const mark=Number(raw);
+    if(!Number.isFinite(max)||max<=0||raw===undefined||raw===''||!Number.isFinite(mark)||mark<0||mark>max){complete=false;valid=false;break}
+    earned+=mark;possible+=max;
+   }
+   if(valid&&possible>0){
+    percent=earned/possible*100;
+    if(scheme===GRADE_SCHEMES.arabic||scheme===GRADE_SCHEMES.islamic)percent=Math.floor(percent+0.5);
+   }
+  }
+  cats[cat]=percent;
+  if(percent!==null)total+=percent*weight/100;
+ }
+ return {value:complete&&hasActive?total:null,categories:cats,complete:complete&&hasActive};
+}
+const results=[];
+function setup(name, percents, extras={}){const scheme=GRADE_SCHEMES[name],rec={assessments:{},values:{}},id='S-TEST';for(const [cat,,weight] of scheme.categories){const key=cat==='EX'?'ST1':cat+'1';if(cat==='EX'){for(const k of ['ST1','ST2','TERM']){rec.assessments[k]={enabled:true,max:100};rec.values[id+'|'+k]=String(percents[k]??75)}}else{rec.assessments[key]={enabled:true,max:100};rec.values[id+'|'+key]=String(percents[cat]??90)}}return{rec,scheme,id,...extras}}
+function add(name,expected,actual){const ok=expected===null?actual===null:Math.abs(expected-actual)<1e-8;results.push({name,expected,actual,ok})}
+let x=setup('general',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});add('General category weights',87,calculate(x.rec,x.scheme,x.id).value);
+x=setup('hele',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});add('HELE/TLE weights',87,calculate(x.rec,x.scheme,x.id).value);
+x=setup('general',{WW:90,PT:90,ST1:50,ST2:75,TERM:100});add('Examination 30/30/40',90*.2+90*.6+77.5*.2,calculate(x.rec,x.scheme,x.id).value);
+x=setup('arabic',{LS:2,WR:3,RD:4,ST1:80,ST2:80,TERM:80});x.rec.assessments.LS1.max=3;x.rec.values[x.id+'|LS1']='2';add('Arabic rounds 2/3 to 67%',67,calculate(x.rec,x.scheme,x.id).categories.LS);
+x=setup('islamic',{QR:2,MEM:3,VAL:4,WQA:5,ST1:80,ST2:80,TERM:80});x.rec.assessments.QR1.max=3;x.rec.values[x.id+'|QR1']='2';add('Islamic rounds 2/3 to 67%',67,calculate(x.rec,x.scheme,x.id).categories.QR);
+x=setup('general',{WW:0,PT:0,ST1:0,ST2:0,TERM:0});add('Entered zero is a valid mark',0,calculate(x.rec,x.scheme,x.id).value);
+x=setup('general',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});delete x.rec.values[x.id+'|WW1'];add('Missing active score is incomplete',null,calculate(x.rec,x.scheme,x.id).value);
+x=setup('general',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});x.rec.values[x.id+'|WW1']='101';add('Score above perfect score rejected',null,calculate(x.rec,x.scheme,x.id).value);
+x=setup('general',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});x.rec.values[x.id+'|PT1']='-1';add('Negative score rejected',null,calculate(x.rec,x.scheme,x.id).value);
+x=setup('general',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});x.rec.assessments.WW1.max=0;add('Zero perfect score rejected',null,calculate(x.rec,x.scheme,x.id).value);
+x=setup('general',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});x.rec.assessments.WW2={enabled:true,max:100};add('Enabled activity with no score incomplete',null,calculate(x.rec,x.scheme,x.id).value);
+x=setup('general',{WW:90,PT:90,ST1:75,ST2:75,TERM:75});x.rec.assessments.WW2={enabled:false,max:100};add('Unused activity excluded',87,calculate(x.rec,x.scheme,x.id).value);
+const body=document.getElementById('results');for(const r of results){const tr=document.createElement('tr');for(const v of [r.name,String(r.expected??'incomplete'),String(r.actual??'incomplete'),r.ok?'PASS':'FAIL']){const td=document.createElement('td');td.textContent=v;tr.appendChild(td)}tr.lastChild.className=r.ok?'good':'bad';body.appendChild(tr)}document.getElementById('summary').textContent=results.filter(r=>r.ok).length+' / '+results.length+' arithmetic and completeness tests passed';
+</script></body></html>

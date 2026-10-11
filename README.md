@@ -1,12 +1,9 @@
-# UPS Marks Phase 3.10 — Formula Comparison
+# UPS Marks Phase 3.11 — Calculation Integrity Testing
 
-## Changes
-- Corrected Arabic and Islamic non-examination category percentages to Excel-style `ROUND(x,0)` (positive scores); weighting follows the rounded category percentage.
-- Retains all Purple dashboard features and the prominent **TERM GRADE / REPORT CARD** display with the provisional asterisk.
-- Added `formula_comparison.html` with a formula observation matrix and independent arithmetic test vectors.
-- Existing `parity_report.html` provides separate HELPER lookup interval checks.
-
-## Important limitations
-- This build does **not** independently recalculate original Excel workbooks or guarantee exact official report-card grades. Some source worksheet aggregate references still need investigation.
-- The 9-part MAPE consolidation is illustrative; final rounding pending.
-- Score data are fictional and browser-memory only. No Supabase integration or real user access.
+- Extract all files into the same folder and upload them together in **one GitHub commit**.
+- Gradebook uses complete active assessments only; invalid scores, missing enabled scores, and invalid perfect scores never produce a provisional Term Grade.
+- Open `grade_integrity_tests.html` for 12 automated demo-only calculation and completeness checks.
+- Original Phase 3.10 diagnostics are retained.
+- Purple TERM GRADE / REPORT CARD highlighting is unchanged and remains starred **provisional**.
+- This is not certified Excel formula parity. Original workbook formula checks, corrected Arabic/Islamic AK references and MAPE annual rounding still need independent confirmation.
+- Fictional data only, no Supabase connection; do not use as a production grading system.
