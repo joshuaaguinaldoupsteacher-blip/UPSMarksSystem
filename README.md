@@ -1,7 +1,7 @@
-# UPS Marks System — Phase 3.15
+# UPS Marks System — Phase 3.16: Evidence Import
 
-Preserves Phase 3.14 UI and adds `formula_reconciliation_audit.html` containing a 16-item workbook reconciliation checklist, categorized by template and term, including Arabic/Islamic corrected AK references and MAPE nine-term averaging.
+Includes the latest purple demo and all Phase 3.15 diagnostic pages. The **Excel Parity Workbench** now accepts CSV files previously exported from the workbench, validates their headers, case identifiers, numeric ranges, and uniqueness, and merges the fictional cases into the current in-memory review. A blank `PARITY_TEST_CASE_TEMPLATE.csv` is included.
 
-**Important:** This phase adds a structured evidence-capture/CSV export tool, NOT verified full Excel calculation parity. The original Excel workbook output has not been reconciled case by case, and Term Grades remain provisional (`*`). No Supabase integration or live student access.
+**Certification is not complete.** No comprehensive workbook-calculated test outputs are yet matched against the website. The official transmutation lookup and boundary tests alone do not establish full formula parity. The highlighted Term Grade must remain provisional.
 
-Upload all site files in one GitHub Pages commit. Open the new page directly using `/formula_reconciliation_audit.html`.
+To use, extract the ZIP, open `excel_parity_workbench.html`, add fictional comparisons or import a prior CSV, inspect differences, and export the updated results. All data stays in the browser unless exported; no Supabase access.
