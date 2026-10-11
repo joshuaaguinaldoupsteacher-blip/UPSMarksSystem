@@ -1,0 +1,51 @@
+{
+  "passed": 9,
+  "total": 9,
+  "cases": [
+    {
+      "name": "General exact zero is complete",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "General blank is incomplete",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "Arabic exact zero is complete",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "Islamic exact zero is complete",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "Islamic additional slots aggregate by possible score",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "Arabic category percentage rounds half up (candidate)",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "Islamic category rounds below half down (candidate)",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "Whitespace remains missing",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "name": "Out-of-range remains invalid",
+      "pass": true,
+      "error": ""
+    }
+  ]
+}

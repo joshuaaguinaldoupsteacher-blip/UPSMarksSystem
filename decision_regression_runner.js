@@ -1,0 +1,13 @@
+const vm=require('vm'),fs=require('fs');const source=fs.readFileSync(__dirname+'/grading.js','utf8').split('function renderMapeOverview')[0];const ctx={window:{},console};vm.createContext(ctx);vm.runInContext(source,ctx);let cases=[];function check(name,code){let ok=false,error='';try{ok=!!vm.runInContext(code,ctx)}catch(e){error=e.message}cases.push({name,pass:ok,error})}
+const r=(code)=>vm.runInContext(code,ctx);
+const setup=`function make(scheme,raw,max=20){const rec={values:{},assessments:{}};for(const spec of specsFor(scheme)){const enabled=spec.required||spec.slot===0;rec.assessments[spec.key]={enabled,max};if(enabled)rec.values['X|'+spec.key]=String(raw)}return rec}`;r(setup);
+check('General exact zero is complete',`(()=>{const r=make(GRADE_SCHEMES.general,0);const z=calculate(r,GRADE_SCHEMES.general,'X');return z.complete&&z.value===0})()`);
+check('General blank is incomplete',`(()=>{const r=make(GRADE_SCHEMES.general,0);delete r.values['X|WW1'];return calculate(r,GRADE_SCHEMES.general,'X').value===null})()`);
+check('Arabic exact zero is complete',`(()=>{const r=make(GRADE_SCHEMES.arabic,0);const z=calculate(r,GRADE_SCHEMES.arabic,'X');return z.complete&&z.value===0})()`);
+check('Islamic exact zero is complete',`(()=>{const r=make(GRADE_SCHEMES.islamic,0);const z=calculate(r,GRADE_SCHEMES.islamic,'X');return z.complete&&z.value===0})()`);
+check('Islamic additional slots aggregate by possible score',`(()=>{const r=make(GRADE_SCHEMES.islamic,10);r.assessments.WQA2={enabled:true,max:40};r.values['X|WQA2']='30';let z=calculate(r,GRADE_SCHEMES.islamic,'X');return z.categories.WQA===67})()`);
+check('Arabic category percentage rounds half up (candidate)',`(()=>{const r=make(GRADE_SCHEMES.arabic,10,20);r.values['X|LS1']='10.1';const z=calculate(r,GRADE_SCHEMES.arabic,'X');return z.categories.LS===51})()`);
+check('Islamic category rounds below half down (candidate)',`(()=>{const r=make(GRADE_SCHEMES.islamic,10,20);r.values['X|QR1']='10.09';const z=calculate(r,GRADE_SCHEMES.islamic,'X');return z.categories.QR===50})()`);
+check('Whitespace remains missing',`(()=>{const r=make(GRADE_SCHEMES.islamic,0);r.values['X|QR1']='   ';return calculate(r,GRADE_SCHEMES.islamic,'X').value===null})()`);
+check('Out-of-range remains invalid',`(()=>{const r=make(GRADE_SCHEMES.arabic,0);r.values['X|LS1']='21';return calculate(r,GRADE_SCHEMES.arabic,'X').value===null})()`);
+const fail=cases.filter(x=>!x.pass);fs.writeFileSync(__dirname+'/decision_regression_results.json',JSON.stringify({passed:cases.length-fail.length,total:cases.length,cases},null,2));console.log(cases.length-fail.length+'/'+cases.length,fail);if(fail.length)process.exit(1);

@@ -1,9 +1,14 @@
-# UPS Marks System — Phase 3.29: Zero-Score and Rounding Validation
+# UPS Marks System — Phase 3.30: Zero-Score & Rounding Decision Gate
 
-- New `zero_rounding_tests.html` with 31 deterministic fictional-data checks for all five schemes, true zero, missing, whitespace, null, out-of-range, category aggregation and rounding.
-- Hardens input validation for `null` and whitespace-only scores in both production grading logic and parity engines; these are **missing**, not valid zero.
-- A deliberately entered numerical `0` is **valid**. Blank fields remain blank until teacher confirmation at submission, then become zeros. This follows the user-approved workflow, **not** the source Excel `IF(SUM(...)=0,"",...)` semantics. The discrepancy is explicitly documented.
-- Arabic / Islamic non-exam percent is currently candidate Excel-style half-up integer rounding before category weighting; category rounding and MAPE final rounding are **not certified**.
-- No live Supabase integration; email-only entry is not secure authentication. Demo data only.
+Extends Phase 3.29 with `decision_gate.html`, runnable production-function tests (`decision_regression_runner.js`) and `decision_regression_results.json`.
 
-All original workbooks remain untouched. Upload the ZIP contents in a single GitHub Pages commit, then visit `zero_rounding_tests.html`.
+## Verified outcomes
+- Existing `grading.js` calculation implements true zeros, missing/whitespace blank handling, category-specific activity totals, candidate half-up Arabic/Islamic category rounding and out-of-range validation.
+- The runner executes production calculation functions extracted directly from `grading.js`, not a separately re-implemented algorithm. Run `node decision_regression_runner.js` to regenerate results.
+
+## Not yet certified
+- Corrected Excel output parity; Arabic/Islamic rounding at category boundaries; approved MAPE whole-number rounding. Neither this report nor passing tests means official grade certification.
+- No Supabase live database, verified identity sign-in or real records.
+
+## GitHub Pages
+Extract the ZIP preserving the directory contents and upload the contained website files to the repository root in a single commit. Access `decision_gate.html`.
