@@ -1,7 +1,3 @@
-# UPS Marks — Phase 3.17
+# UPS Marks System Phase 3.18 — Source Formula Evidence
 
-Uses the Phase 3.16 purple website plus `grade_engine_regression.html`, which executes 35 test cases directly against the same `calculate()` function used by the class record: all-perfect, all-zero, half-credit, missing end-of-term, over-maximum, negative and mixed weighted categories for General, HELE/TLE, Arabic, Islamic and MAPE.
-
-Open `grade_engine_regression.html` in a browser to inspect live results. This does **not** certify Excel formula parity. Report-card **Term Grade** remains provisional with an asterisk. No Supabase integration or real student data.
-
-The exact Excel grading formulas and the 9-component final MAPE rounding are still unverified. Continue using fictional records only.
+Retains Phase 3.17 fictional purple frontend. Adds `source_formula_evidence.html` and `source_formula_evidence.json`, extracted directly from the four original `.xlsx` templates. These document example raw Excel formulas, including Arabic and Islamic AK/AD locations where present. This is **an evidence extraction step, not full Excel formula parity certification**. Term Grades remain provisional. No real data, authentication, or Supabase connection.

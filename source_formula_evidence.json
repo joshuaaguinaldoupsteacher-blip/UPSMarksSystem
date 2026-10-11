@@ -1,0 +1,1400 @@
+[
+  {
+    "name": "General",
+    "worksheets": {
+      "TERM 1": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AC18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AE18",
+            "IF(AD18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AC19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AE19",
+            "IF(AD19=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AC20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AE20",
+            "IF(AD20=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 2": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AC18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AE18",
+            "IF(AD18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AC19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AE19",
+            "IF(AD19=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AC20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AE20",
+            "IF(AD20=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 3": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AC18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AE18",
+            "IF(AD18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AC19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AE19",
+            "IF(AD19=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AC20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AE20",
+            "IF(AD20=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AD20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "FINAL GRADES": {
+        "formula_count": 610,
+        "sample": []
+      }
+    },
+    "checks": []
+  },
+  {
+    "name": "Arabic",
+    "worksheets": {
+      "TERM 1": {
+        "formula_count": 1511,
+        "sample": [
+          [
+            "K18",
+            "IF(SUM(F18:J18)=0,\"\",ROUND(SUM(F18:J18)/SUM($F$15:$J$15)*100,0))"
+          ],
+          [
+            "R18",
+            "IF(SUM(M18:Q18)=0,\"\",ROUND(SUM(M18:Q18)/SUM($M$15:$Q$15)*100,0))"
+          ],
+          [
+            "Y18",
+            "IF(SUM(T18:X18)=0,\"\",ROUND(SUM(T18:X18)/SUM($T$15:$X$15)*100,0))"
+          ],
+          [
+            "AG18",
+            "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+          ],
+          [
+            "AJ18",
+            "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+          ],
+          [
+            "AL18",
+            "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "K19",
+            "IF(SUM(F19:J19)=0,\"\",ROUND(SUM(F19:J19)/SUM($F$15:$J$15)*100,0))"
+          ],
+          [
+            "R19",
+            "IF(SUM(M19:Q19)=0,\"\",ROUND(SUM(M19:Q19)/SUM($M$15:$Q$15)*100,0))"
+          ],
+          [
+            "Y19",
+            "IF(SUM(T19:X19)=0,\"\",ROUND(SUM(T19:X19)/SUM($T$15:$X$15)*100,0))"
+          ],
+          [
+            "AG19",
+            "IF(COUNT(AA19:AC19)=0,\"\",SUM(AD19:AF19))"
+          ],
+          [
+            "AJ19",
+            "IF(COUNT(F19:J19,N19:U19,AA19:AC19)=0,\"\",SUM(M19,Z19,AH19))"
+          ],
+          [
+            "AL19",
+            "IF(AK19=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AK19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "AG20",
+            "IF(COUNT(AA20:AC20)=0,\"\",SUM(AD20:AF20))"
+          ],
+          [
+            "AJ20",
+            "IF(COUNT(F20:J20,N20:U20,AA20:AC20)=0,\"\",SUM(M20,Z20,AH20))"
+          ],
+          [
+            "AL20",
+            "IF(AK20=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AK20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 2": {
+        "formula_count": 1511,
+        "sample": [
+          [
+            "K18",
+            "IF(SUM(F18:J18)=0,\"\",ROUND(SUM(F18:J18)/SUM($F$15:$J$15)*100,0))"
+          ],
+          [
+            "R18",
+            "IF(SUM(M18:Q18)=0,\"\",ROUND(SUM(M18:Q18)/SUM($M$15:$Q$15)*100,0))"
+          ],
+          [
+            "Y18",
+            "IF(SUM(T18:X18)=0,\"\",ROUND(SUM(T18:X18)/SUM($T$15:$X$15)*100,0))"
+          ],
+          [
+            "AG18",
+            "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+          ],
+          [
+            "AJ18",
+            "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+          ],
+          [
+            "AL18",
+            "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 2'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "K19",
+            "IF(SUM(F19:J19)=0,\"\",ROUND(SUM(F19:J19)/SUM($F$15:$J$15)*100,0))"
+          ],
+          [
+            "R19",
+            "IF(SUM(M19:Q19)=0,\"\",ROUND(SUM(M19:Q19)/SUM($M$15:$Q$15)*100,0))"
+          ],
+          [
+            "Y19",
+            "IF(SUM(T19:X19)=0,\"\",ROUND(SUM(T19:X19)/SUM($T$15:$X$15)*100,0))"
+          ],
+          [
+            "AG19",
+            "IF(COUNT(AA19:AC19)=0,\"\",SUM(AD19:AF19))"
+          ],
+          [
+            "AJ19",
+            "IF(COUNT(F19:J19,N19:U19,AA19:AC19)=0,\"\",SUM(M19,Z19,AH19))"
+          ],
+          [
+            "AL19",
+            "IF(AK19=\"\",\"\",IFERROR(VLOOKUP('TERM 2'!AK19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "AG20",
+            "IF(COUNT(AA20:AC20)=0,\"\",SUM(AD20:AF20))"
+          ],
+          [
+            "AJ20",
+            "IF(COUNT(F20:J20,N20:U20,AA20:AC20)=0,\"\",SUM(M20,Z20,AH20))"
+          ],
+          [
+            "AL20",
+            "IF(AK20=\"\",\"\",IFERROR(VLOOKUP('TERM 2'!AK20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 3": {
+        "formula_count": 1511,
+        "sample": [
+          [
+            "K18",
+            "IF(SUM(F18:J18)=0,\"\",ROUND(SUM(F18:J18)/SUM($F$15:$J$15)*100,0))"
+          ],
+          [
+            "R18",
+            "IF(SUM(M18:Q18)=0,\"\",ROUND(SUM(M18:Q18)/SUM($M$15:$Q$15)*100,0))"
+          ],
+          [
+            "Y18",
+            "IF(SUM(T18:X18)=0,\"\",ROUND(SUM(T18:X18)/SUM($T$15:$X$15)*100,0))"
+          ],
+          [
+            "AG18",
+            "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+          ],
+          [
+            "AJ18",
+            "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+          ],
+          [
+            "AL18",
+            "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 3'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "K19",
+            "IF(SUM(F19:J19)=0,\"\",ROUND(SUM(F19:J19)/SUM($F$15:$J$15)*100,0))"
+          ],
+          [
+            "R19",
+            "IF(SUM(M19:Q19)=0,\"\",ROUND(SUM(M19:Q19)/SUM($M$15:$Q$15)*100,0))"
+          ],
+          [
+            "Y19",
+            "IF(SUM(T19:X19)=0,\"\",ROUND(SUM(T19:X19)/SUM($T$15:$X$15)*100,0))"
+          ],
+          [
+            "AG19",
+            "IF(COUNT(AA19:AC19)=0,\"\",SUM(AD19:AF19))"
+          ],
+          [
+            "AJ19",
+            "IF(COUNT(F19:J19,N19:U19,AA19:AC19)=0,\"\",SUM(M19,Z19,AH19))"
+          ],
+          [
+            "AL19",
+            "IF(AK19=\"\",\"\",IFERROR(VLOOKUP('TERM 3'!AK19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "AG20",
+            "IF(COUNT(AA20:AC20)=0,\"\",SUM(AD20:AF20))"
+          ],
+          [
+            "AJ20",
+            "IF(COUNT(F20:J20,N20:U20,AA20:AC20)=0,\"\",SUM(M20,Z20,AH20))"
+          ],
+          [
+            "AL20",
+            "IF(AK20=\"\",\"\",IFERROR(VLOOKUP('TERM 3'!AK20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "FINAL GRADES": {
+        "formula_count": 610,
+        "sample": [
+          [
+            "F16",
+            "IF('TERM 1'!AK20=\"\",\"\",'TERM 1'!AK20)"
+          ],
+          [
+            "F17",
+            "IF('TERM 1'!AK21=\"\",\"\",'TERM 1'!AK21)"
+          ],
+          [
+            "F18",
+            "IF('TERM 1'!AK22=\"\",\"\",'TERM 1'!AK22)"
+          ],
+          [
+            "F19",
+            "IF('TERM 1'!AK23=\"\",\"\",'TERM 1'!AK23)"
+          ],
+          [
+            "F20",
+            "IF('TERM 1'!AK24=\"\",\"\",'TERM 1'!AK24)"
+          ]
+        ]
+      }
+    },
+    "checks": [
+      {
+        "term": "TERM 1",
+        "cell": "AK18",
+        "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 1",
+        "cell": "AK19",
+        "formula": "IF(AJ19=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ19>=HELPER!$B$8,1,MATCH(AJ19,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 1",
+        "cell": "AD18",
+        "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 1",
+        "cell": "AD19",
+        "formula": "IF(AA19=\"\",\"\",IFERROR(AA19/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AK18",
+        "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AK19",
+        "formula": "IF(AJ19=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ19>=HELPER!$B$8,1,MATCH(AJ19,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AD18",
+        "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AD19",
+        "formula": "IF(AA19=\"\",\"\",IFERROR(AA19/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AK18",
+        "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AK19",
+        "formula": "IF(AJ19=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ19>=HELPER!$B$8,1,MATCH(AJ19,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AD18",
+        "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AD19",
+        "formula": "IF(AA19=\"\",\"\",IFERROR(AA19/$AA$15*$AD$15,\"\"))"
+      }
+    ]
+  },
+  {
+    "name": "Islamic",
+    "worksheets": {
+      "TERM 1": {
+        "formula_count": 1914,
+        "sample": [
+          [
+            "H18",
+            "IF(SUM(F18:G18)=0,\"\",SUM(F18:G18))"
+          ],
+          [
+            "I18",
+            "IF(H18=\"\",\"\",ROUND(H18/$H$15*100,0))"
+          ],
+          [
+            "M18",
+            "IF(SUM(K18:L18)=0,\"\",SUM(K18:L18))"
+          ],
+          [
+            "N18",
+            "IF(M18=\"\",\"\",ROUND(M18/$N$15*100,0))"
+          ],
+          [
+            "R18",
+            "IF(SUM(P18:Q18)=0,\"\",SUM(P18:Q18))"
+          ],
+          [
+            "S18",
+            "IF(R18=\"\",\"\",ROUND(R18/$S$15*100,0))"
+          ],
+          [
+            "X18",
+            "IF(SUM(U18:W18)=0,\"\",SUM(U18:W18))"
+          ],
+          [
+            "Y18",
+            "IF(X18=\"\",\"\",ROUND(X18/$Y$15*100,0))"
+          ],
+          [
+            "AG18",
+            "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+          ],
+          [
+            "AJ18",
+            "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+          ],
+          [
+            "AL18",
+            "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "H19",
+            "IF(SUM(F19:G19)=0,\"\",SUM(F19:G19))"
+          ],
+          [
+            "I19",
+            "IF(H19=\"\",\"\",ROUND(H19/$H$15*100,0))"
+          ],
+          [
+            "M19",
+            "IF(SUM(K19:L19)=0,\"\",SUM(K19:L19))"
+          ],
+          [
+            "N19",
+            "IF(M19=\"\",\"\",ROUND(M19/$N$15*100,0))"
+          ],
+          [
+            "R19",
+            "IF(SUM(P19:Q19)=0,\"\",SUM(P19:Q19))"
+          ],
+          [
+            "S19",
+            "IF(R19=\"\",\"\",ROUND(R19/$S$15*100,0))"
+          ],
+          [
+            "X19",
+            "IF(SUM(U19:W19)=0,\"\",SUM(U19:W19))"
+          ],
+          [
+            "Y19",
+            "IF(X19=\"\",\"\",ROUND(X19/$Y$15*100,0))"
+          ],
+          [
+            "AG19",
+            "IF(COUNT(AA19:AC19)=0,\"\",SUM(AD19:AF19))"
+          ],
+          [
+            "AJ19",
+            "IF(COUNT(F19:J19,N19:U19,AA19:AC19)=0,\"\",SUM(M19,Z19,AH19))"
+          ],
+          [
+            "AL19",
+            "IF(AK19=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AK19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "AG20",
+            "IF(COUNT(AA20:AC20)=0,\"\",SUM(AD20:AF20))"
+          ],
+          [
+            "AJ20",
+            "IF(COUNT(F20:J20,N20:U20,AA20:AC20)=0,\"\",SUM(M20,Z20,AH20))"
+          ],
+          [
+            "AL20",
+            "IF(AK20=\"\",\"\",IFERROR(VLOOKUP('TERM 1'!AK20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 2": {
+        "formula_count": 1914,
+        "sample": [
+          [
+            "H18",
+            "IF(SUM(F18:G18)=0,\"\",SUM(F18:G18))"
+          ],
+          [
+            "I18",
+            "IF(H18=\"\",\"\",ROUND(H18/$H$15*100,0))"
+          ],
+          [
+            "M18",
+            "IF(SUM(K18:L18)=0,\"\",SUM(K18:L18))"
+          ],
+          [
+            "N18",
+            "IF(M18=\"\",\"\",ROUND(M18/$N$15*100,0))"
+          ],
+          [
+            "R18",
+            "IF(SUM(P18:Q18)=0,\"\",SUM(P18:Q18))"
+          ],
+          [
+            "S18",
+            "IF(R18=\"\",\"\",ROUND(R18/$S$15*100,0))"
+          ],
+          [
+            "X18",
+            "IF(SUM(U18:W18)=0,\"\",SUM(U18:W18))"
+          ],
+          [
+            "Y18",
+            "IF(X18=\"\",\"\",ROUND(X18/$Y$15*100,0))"
+          ],
+          [
+            "AG18",
+            "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+          ],
+          [
+            "AJ18",
+            "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+          ],
+          [
+            "AL18",
+            "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 2'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "H19",
+            "IF(SUM(F19:G19)=0,\"\",SUM(F19:G19))"
+          ],
+          [
+            "I19",
+            "IF(H19=\"\",\"\",ROUND(H19/$H$15*100,0))"
+          ],
+          [
+            "M19",
+            "IF(SUM(K19:L19)=0,\"\",SUM(K19:L19))"
+          ],
+          [
+            "N19",
+            "IF(M19=\"\",\"\",ROUND(M19/$N$15*100,0))"
+          ],
+          [
+            "R19",
+            "IF(SUM(P19:Q19)=0,\"\",SUM(P19:Q19))"
+          ],
+          [
+            "S19",
+            "IF(R19=\"\",\"\",ROUND(R19/$S$15*100,0))"
+          ],
+          [
+            "X19",
+            "IF(SUM(U19:W19)=0,\"\",SUM(U19:W19))"
+          ],
+          [
+            "Y19",
+            "IF(X19=\"\",\"\",ROUND(X19/$Y$15*100,0))"
+          ],
+          [
+            "AG19",
+            "IF(COUNT(AA19:AC19)=0,\"\",SUM(AD19:AF19))"
+          ],
+          [
+            "AJ19",
+            "IF(COUNT(F19:J19,N19:U19,AA19:AC19)=0,\"\",SUM(M19,Z19,AH19))"
+          ],
+          [
+            "AL19",
+            "IF(AK19=\"\",\"\",IFERROR(VLOOKUP('TERM 2'!AK19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "AG20",
+            "IF(COUNT(AA20:AC20)=0,\"\",SUM(AD20:AF20))"
+          ],
+          [
+            "AJ20",
+            "IF(COUNT(F20:J20,N20:U20,AA20:AC20)=0,\"\",SUM(M20,Z20,AH20))"
+          ],
+          [
+            "AL20",
+            "IF(AK20=\"\",\"\",IFERROR(VLOOKUP('TERM 2'!AK20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 3": {
+        "formula_count": 1914,
+        "sample": [
+          [
+            "H18",
+            "IF(SUM(F18:G18)=0,\"\",SUM(F18:G18))"
+          ],
+          [
+            "I18",
+            "IF(H18=\"\",\"\",ROUND(H18/$H$15*100,0))"
+          ],
+          [
+            "M18",
+            "IF(SUM(K18:L18)=0,\"\",SUM(K18:L18))"
+          ],
+          [
+            "N18",
+            "IF(M18=\"\",\"\",ROUND(M18/$N$15*100,0))"
+          ],
+          [
+            "R18",
+            "IF(SUM(P18:Q18)=0,\"\",SUM(P18:Q18))"
+          ],
+          [
+            "S18",
+            "IF(R18=\"\",\"\",ROUND(R18/$S$15*100,0))"
+          ],
+          [
+            "X18",
+            "IF(SUM(U18:W18)=0,\"\",SUM(U18:W18))"
+          ],
+          [
+            "Y18",
+            "IF(X18=\"\",\"\",ROUND(X18/$Y$15*100,0))"
+          ],
+          [
+            "AG18",
+            "IF(COUNT(AA18:AC18)=0,\"\",SUM(AD18:AF18))"
+          ],
+          [
+            "AJ18",
+            "IF(COUNT(F18:J18,N18:U18,AA18:AC18)=0,\"\",SUM(M18,Z18,AH18))"
+          ],
+          [
+            "AL18",
+            "IF(AK18=\"\",\"\",IFERROR(VLOOKUP('TERM 3'!AK18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "H19",
+            "IF(SUM(F19:G19)=0,\"\",SUM(F19:G19))"
+          ],
+          [
+            "I19",
+            "IF(H19=\"\",\"\",ROUND(H19/$H$15*100,0))"
+          ],
+          [
+            "M19",
+            "IF(SUM(K19:L19)=0,\"\",SUM(K19:L19))"
+          ],
+          [
+            "N19",
+            "IF(M19=\"\",\"\",ROUND(M19/$N$15*100,0))"
+          ],
+          [
+            "R19",
+            "IF(SUM(P19:Q19)=0,\"\",SUM(P19:Q19))"
+          ],
+          [
+            "S19",
+            "IF(R19=\"\",\"\",ROUND(R19/$S$15*100,0))"
+          ],
+          [
+            "X19",
+            "IF(SUM(U19:W19)=0,\"\",SUM(U19:W19))"
+          ],
+          [
+            "Y19",
+            "IF(X19=\"\",\"\",ROUND(X19/$Y$15*100,0))"
+          ],
+          [
+            "AG19",
+            "IF(COUNT(AA19:AC19)=0,\"\",SUM(AD19:AF19))"
+          ],
+          [
+            "AJ19",
+            "IF(COUNT(F19:J19,N19:U19,AA19:AC19)=0,\"\",SUM(M19,Z19,AH19))"
+          ],
+          [
+            "AL19",
+            "IF(AK19=\"\",\"\",IFERROR(VLOOKUP('TERM 3'!AK19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "AG20",
+            "IF(COUNT(AA20:AC20)=0,\"\",SUM(AD20:AF20))"
+          ],
+          [
+            "AJ20",
+            "IF(COUNT(F20:J20,N20:U20,AA20:AC20)=0,\"\",SUM(M20,Z20,AH20))"
+          ],
+          [
+            "AL20",
+            "IF(AK20=\"\",\"\",IFERROR(VLOOKUP('TERM 3'!AK20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "FINAL GRADES": {
+        "formula_count": 610,
+        "sample": [
+          [
+            "F16",
+            "IF('TERM 1'!AK20=\"\",\"\",'TERM 1'!AK20)"
+          ],
+          [
+            "F17",
+            "IF('TERM 1'!AK21=\"\",\"\",'TERM 1'!AK21)"
+          ],
+          [
+            "F18",
+            "IF('TERM 1'!AK22=\"\",\"\",'TERM 1'!AK22)"
+          ],
+          [
+            "F19",
+            "IF('TERM 1'!AK23=\"\",\"\",'TERM 1'!AK23)"
+          ],
+          [
+            "F20",
+            "IF('TERM 1'!AK24=\"\",\"\",'TERM 1'!AK24)"
+          ]
+        ]
+      }
+    },
+    "checks": [
+      {
+        "term": "TERM 1",
+        "cell": "AK18",
+        "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 1",
+        "cell": "AK19",
+        "formula": "IF(AJ19=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ19>=HELPER!$B$8,1,MATCH(AJ19,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 1",
+        "cell": "AD18",
+        "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 1",
+        "cell": "AD19",
+        "formula": "IF(AA19=\"\",\"\",IFERROR(AA19/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AK18",
+        "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AK19",
+        "formula": "IF(AJ19=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ19>=HELPER!$B$8,1,MATCH(AJ19,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AD18",
+        "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 2",
+        "cell": "AD19",
+        "formula": "IF(AA19=\"\",\"\",IFERROR(AA19/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AK18",
+        "formula": "IF(AJ18=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ18>=HELPER!$B$8,1,MATCH(AJ18,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AK19",
+        "formula": "IF(AJ19=\"\",\"\",IFERROR(INDEX(HELPER!$D$8:$D$48,IF(AJ19>=HELPER!$B$8,1,MATCH(AJ19,HELPER!$B$8:$B$48,-1)+1)),\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AD18",
+        "formula": "IF(AA18=\"\",\"\",IFERROR(AA18/$AA$15*$AD$15,\"\"))"
+      },
+      {
+        "term": "TERM 3",
+        "cell": "AD19",
+        "formula": "IF(AA19=\"\",\"\",IFERROR(AA19/$AA$15*$AD$15,\"\"))"
+      }
+    ]
+  },
+  {
+    "name": "MAPE",
+    "worksheets": {
+      "TERM 1 M": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 2 M": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 3 M": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 M'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 1 A": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 2 A": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 3 A": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 A'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 1 PE": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 2 PE": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "TERM 3 PE": {
+        "formula_count": 1515,
+        "sample": [
+          [
+            "K18",
+            "IF(COUNT($F18:$J18)=0,\"\",SUM($F18:$J18))"
+          ],
+          [
+            "Q18",
+            "IF(COUNT(N18:P18)=0,\"\",SUM(N18:P18))"
+          ],
+          [
+            "Z18",
+            "IF(COUNT(T18:V18)=0,\"\",SUM(W18:Y18))"
+          ],
+          [
+            "AB18",
+            "IF(COUNT(F18:J18,N18:P18,T18:V18)=0,\"\",SUM(M18,S18,AA18))"
+          ],
+          [
+            "AD18",
+            "IF(AC18=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC18,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q19",
+            "IF(COUNT(N19:P19)=0,\"\",SUM(N19:P19))"
+          ],
+          [
+            "Z19",
+            "IF(COUNT(T19:V19)=0,\"\",SUM(W19:Y19))"
+          ],
+          [
+            "AB19",
+            "IF(COUNT(F19:J19,N19:P19,T19:V19)=0,\"\",SUM(M19,S19,AA19))"
+          ],
+          [
+            "AD19",
+            "IF(AC19=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC19,HELPER!F:H,2,FALSE),\"\"))"
+          ],
+          [
+            "Q20",
+            "IF(COUNT(N20:P20)=0,\"\",SUM(N20:P20))"
+          ],
+          [
+            "Z20",
+            "IF(COUNT(T20:V20)=0,\"\",SUM(W20:Y20))"
+          ],
+          [
+            "AB20",
+            "IF(COUNT(F20:J20,N20:P20,T20:V20)=0,\"\",SUM(M20,S20,AA20))"
+          ],
+          [
+            "AD20",
+            "IF(AC20=\"\",\"\",IFERROR(VLOOKUP('TERM 1 PE'!AC20,HELPER!F:H,2,FALSE),\"\"))"
+          ]
+        ]
+      },
+      "FINAL GRADES": {
+        "formula_count": 1211,
+        "sample": []
+      }
+    },
+    "checks": []
+  }
+]
