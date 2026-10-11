@@ -5,4 +5,37 @@ function quote(x){return UPS_EVIDENCE_SAFETY.safeCSVCell(x)}function download(te
 $('csvfile').addEventListener('change',async()=>{findings.length=0;$('rows').innerHTML='';$('counts').innerHTML='';$('coverage').innerHTML='';$('download').disabled=true;try{const file=$('csvfile').files[0];if(!file)return;if(file.size>3000000)throw Error('CSV exceeds 3 MB.');const rows=UPS_REPLAY_INPUT.parseCSV(await file.text());if(rows.length<2)throw Error('CSV contains no evidence rows');const headers=rows[0];if(new Set(headers).size!==headers.length)throw Error('Duplicate CSV columns');for(const k of required)if(!headers.includes(k))throw Error('Missing column: '+k);if(rows.length>2001)throw Error('Limit is 2,000 fictional cases');const ids=new Set();for(let i=1;i<rows.length;i++){if(rows[i].length!==headers.length){findings.push({id:'Line '+(i+1),status:'INVALID',error:'Incorrect column count'});continue}const obj=Object.fromEntries(headers.map((k,j)=>[k,rows[i][j]]));try{const result=replay(obj);if(ids.has(result.id))throw Error('Duplicate case identifier');ids.add(result.id);findings.push(result)}catch(e){findings.push({id:obj.case_id||'Line '+(i+1),template:obj.template||'',status:'INVALID',error:e.message})}}
 findings.forEach(f=>{if(!f.priority)f.priority=f.status==='INVALID'?'CRITICAL':'NONE'});const rank={CRITICAL:0,HIGH:1,MEDIUM:2,NONE:3};findings.sort((a,b)=>(rank[a.priority]??4)-(rank[b.priority]??4));const totals={};for(const x of findings){totals[x.status]=(totals[x.status]||0)+1; if(x.engineStatus==='CHANGED')totals['REQUIRES_REVIEW']=(totals['REQUIRES_REVIEW']||0)+1;}$('status').textContent=`${findings.length} cases examined. Engine stability and Excel agreement are independently computed and both exported; a changed engine requires a new review even if its numbers match Excel.`;$('counts').innerHTML=Object.entries(totals).map(([k,v])=>`<div><strong>${v}</strong><p>${escapeHTML(k)}</p></div>`).join('');const schemes=Object.keys(GRADE_SCHEMES);$('coverage').innerHTML=schemes.map(k=>{const subset=findings.filter(f=>f.template===k);const exact=subset.filter(f=>f.status==='EXACT_PARITY').length,display=subset.filter(f=>f.status==='DISPLAY_ONLY').length,invalid=subset.filter(f=>f.status==='INVALID').length,review=subset.length-exact-display-invalid;return `<tr><td>${escapeHTML(k)}</td><td>${subset.length}</td><td>${exact}</td><td>${display}</td><td>${review}</td><td>${invalid}</td></tr>`}).join('');
 $('rows').innerHTML=findings.map(f=>`<tr><td>${escapeHTML(f.id)}</td><td>${escapeHTML(f.priority||'NONE')}</td><td>${escapeHTML(f.template||'—')}</td><td>${f.savedInitial===undefined?'—':f.savedInitial.toFixed(5)+'% / '+f.savedTerm}</td><td>${f.currentInitial===undefined?'—':f.currentInitial.toFixed(5)+'% / '+f.currentTerm}</td><td>${f.excelInitial===undefined?'—':f.excelInitial+'% / '+f.excelTerm}</td><td>${f.initialDifference===undefined?'—':f.initialDifference.toFixed(6)+' / '+f.termDifference}</td><td>${escapeHTML(f.action||'Review invalid input')}</td><td class="${f.status==='EXACT_PARITY'?'ok':f.status==='INVALID'||f.status==='ENGINE_CHANGED'||f.status==='SAVED_PAIR_INCONSISTENT'?'bad':'warn'}">${escapeHTML(f.status)}${f.excelPair==='LOOKUP_DIFFERENCE'?' · Excel lookup differs': ''}${f.error?' — '+escapeHTML(f.error):''}</td><td><select data-review-id="${escapeHTML(f.id)}" aria-label="Review status for ${escapeHTML(f.id)}"><option value="UNREVIEWED">Unreviewed</option><option value="INVESTIGATING">Investigating</option><option value="NEEDS_WORKBOOK">Needs Excel evidence</option><option value="RESOLVED_EXTERNALLY">Resolved externally*</option></select></td><td><input class="review-note" data-note-id="${escapeHTML(f.id)}" aria-label="Note for ${escapeHTML(f.id)}" maxlength="300" placeholder="Review note"></td></tr>`).join('');$('rows').querySelectorAll('select[data-review-id]').forEach((el,index)=>{el.addEventListener('change',()=>{findings[index].reviewStatus=el.value})});$('rows').querySelectorAll('input[data-note-id]').forEach((el,index)=>{el.addEventListener('input',()=>{findings[index].reviewNote=el.value})});$('download').disabled=false}catch(e){$('status').textContent='Could not process file: '+e.message}});
-$('download').addEventListener('click',()=>{const fields=['id','priority','template','savedInitial','savedTerm','currentInitial','currentTerm','excelInitial','excelTerm','engineStatus','excelStatus','savedPair','excelPair','excelExpectedTerm','initialDifference','termDifference','action','status','error','reviewStatus','reviewNote'];download([fields.join(','),...findings.map(r=>fields.map(k=>quote(r[k])).join(','))].join('\r\n'),'UPS_Phase3_45_Review_Log.csv')});})();
+
+$('reviewfile').addEventListener('change',async()=>{
+  const indicator=$('review-status');
+  try{
+    if(!findings.length)throw Error('Load the original evidence CSV before importing review notes.');
+    const file=$('reviewfile').files[0];if(!file)return;
+    if(file.size>3000000)throw Error('Review log exceeds 3 MB.');
+    const records=UPS_REPLAY_INPUT.parseCSV(await file.text());
+    if(records.length<2)throw Error('No review entries found.');
+    const headers=records[0],needed=['id','template','reviewStatus','reviewNote'];
+    if(new Set(headers).size!==headers.length||needed.some(k=>!headers.includes(k)))throw Error('Review log must contain unique id, template, reviewStatus and reviewNote columns.');
+    const approved=new Set(['UNREVIEWED','INVESTIGATING','NEEDS_WORKBOOK','RESOLVED_EXTERNALLY']);
+    const byId=new Map(findings.map(f=>[f.id,f]));
+    const updates=[],seen=new Set();
+    for(let i=1;i<records.length;i++){
+      const line=records[i];if(line.length!==headers.length)throw Error('Incorrect column count at line '+(i+1));
+      const obj=Object.fromEntries(headers.map((k,j)=>[k,line[j]]));
+      const id=obj.id.trim();
+      if(!UPS_EVIDENCE_SAFETY.validCaseId(id)||seen.has(id))throw Error('Invalid or repeated case ID at line '+(i+1));seen.add(id);
+      const f=byId.get(id);
+      if(!f||f.template!==obj.template)throw Error('Review case not found in loaded evidence: '+id);
+      const reviewStatus=obj.reviewStatus.trim()||'UNREVIEWED';
+      if(!approved.has(reviewStatus))throw Error('Unknown review status for '+id);
+      if(obj.reviewNote.length>300)throw Error('Note exceeds 300 characters for '+id);
+      updates.push({id,reviewStatus,reviewNote:obj.reviewNote});
+    }
+    for(const u of updates){const f=byId.get(u.id);f.reviewStatus=u.reviewStatus;f.reviewNote=u.reviewNote;}
+    const rows=$('rows').querySelectorAll('tr');
+    rows.forEach((tr,index)=>{const f=findings[index];const select=tr.querySelector('select[data-review-id]'),note=tr.querySelector('input[data-note-id]');if(select)select.value=f.reviewStatus||'UNREVIEWED';if(note)note.value=f.reviewNote||'';});
+    indicator.textContent=updates.length+' review entries restored. The grading results were not changed.';
+  }catch(e){indicator.textContent='Review log not imported: '+e.message;}
+});
+
+$('download').addEventListener('click',()=>{const fields=['id','priority','template','savedInitial','savedTerm','currentInitial','currentTerm','excelInitial','excelTerm','engineStatus','excelStatus','savedPair','excelPair','excelExpectedTerm','initialDifference','termDifference','action','status','error','reviewStatus','reviewNote'];download([fields.join(','),...findings.map(r=>fields.map(k=>quote(r[k])).join(','))].join('\r\n'),'UPS_Phase3_46_Review_Log.csv')});})();
