@@ -1,16 +1,14 @@
-# UPS Marks System — Phase 3.27: Parity Precision
+# Phase 3.28 — Source Assessment Slot Alignment
 
-This build inherits the complete Phase 3.26 fictional-data website and adds a distinction between **exact Initial Grade parity** and a match caused merely by rounding the displayed Excel grade to two decimals.
+Actual source workbook formulas have been inspected (XML extraction, no workbook modification). This package corrects a confirmed discrepancy in activity-slot configuration:
 
-## Changes
-- `raw_score_parity_lab.js` classifies results as `MATCH` (strict Initial Grade tolerance < 0.000001 plus identical Term Grade), `DISPLAY_ROUNDING_MATCH` (matches only after the website Initial Grade is rounded to 2 decimal places, with identical Term Grade), or `DIFFERENCE`.
-- `DISPLAY_ROUNDING_MATCH` is **not** certification, and is shown as pending.
-- New `parity_precision_tests.html` tests actual grading functions with fictional cases and precision boundaries.
-- Fixed a real stale dependency: `test_engine.js`, used in the raw-score parity lab, previously modeled one Islamic WQA item while the production `grading.js` modeled three. The parity tool now models all three.
-- All grades remain provisional; no original Excel workbooks or Supabase databases have been modified.
+- Arabic Listening/Speaking, Writing, Reading: 5 activity cells **each** (`F:J`, `M:Q`, `T:X`). Previously 1.
+- Islamic Recitation, Memorization and Values: 2 activity cells **each** (`F:G`, `K:L`, `P:Q`). Previously 1.
+- Islamic Worksheets/Quizzes/Activities: 3 activity cells (`U:W`), already supported.
+- The three required examinations and subject weights remain unchanged.
 
-## Required remaining work
-Obtain independently calculated matching outputs from corrected original workbooks at full stored precision; verify Arabic and Islamic intermediate rounding, all assessment aggregation, HELPER interval boundaries and proposed nine-component MAPE whole-number rounding; obtain formal approval before any official report-card use.
+Updated production `grading.js` and supporting test engines to the matching slot counts. Added `source_category_slots.csv` containing exact source cells and extracted formula text, and `source_slot_parity_tests.html` with deterministic fictional tests.
 
-## GitHub Pages
-Extract and upload all files in a single commit into the folder containing `index.html`.
+Caveat: Source Excel formula `IF(SUM(...)=0,"",...)` treats all-zero activity groups as blank; this differs from current prototype zero-score behavior. The user-approved zero-after-submission workflow remains provisional until reconciled with the intended official rule. Intermediate Arabic/Islamic rounding, HELPER, category-specific gaps and MAPE annual rounding are **not certified**. Never process real student data using email-only access.
+
+Upload all extracted files into the GitHub Pages folder in one commit.
