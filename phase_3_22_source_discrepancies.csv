@@ -1,0 +1,13 @@
+Sheet,Cell,Formula excerpt,Finding,Action
+Islamic TERM 1,M19,SUM(K19:L19),Separate category earned-score aggregate,Need to verify intended category correspondence and maxima
+Islamic TERM 1,R19,SUM(P19:Q19),Separate category earned-score aggregate,Review source Islamic categories and weights
+Islamic TERM 1,X19,SUM(U19:W19),Worksheet / quiz / activity raw aggregation,Three source inputs are summed; web demo currently has one WQA slot
+Islamic TERM 1,N19,"ROUND(M19/$N$15*100,0)",Intermediate whole-number rounding,Source Excel rounding is explicit
+Islamic TERM 1,S19,"ROUND(R19/$S$15*100,0)",Intermediate whole-number rounding,Source Excel rounding is explicit
+Islamic TERM 1,Y19,"ROUND(X19/$Y$15*100,0)",Intermediate whole-number rounding,Source Excel rounding is explicit
+Islamic TERM 1,AG19,SUM(AD19:AF19),Three examination weighted components,Confirm ST1/ST2/End-of-Term denominators before parity
+Islamic TERM 1,AJ19,"SUM(M19,Z19,AH19)",Initial-grade combination to examine,May omit some expected categories; compare to school-approved weights
+Islamic TERM 1,AK19,"INDEX(HELPER!$D$8:$D$48,...)",Transmuted term-grade lookup,Reference points to current term AJ19
+MAPE FINAL GRADES,F15:N15,Nine component-term values from respective sheets,Approved nine-part aggregate inputs,Each component-term grade independently transmuted
+MAPE FINAL GRADES,O15,"ROUND(AVERAGE(H15,K15,N15),0)",Only three Term 3 cells,Conflicts with approved arithmetic average of all nine component-term grades
+MAPE FINAL GRADES,P15,"INDEX(HELPER!$G$8:$G$48, MATCH(O15,...))",Further lookup after O15,"Confirm whether final should be retransmuted, policy says average nine transmuted grades"

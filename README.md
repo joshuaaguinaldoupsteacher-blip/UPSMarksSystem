@@ -1,15 +1,5 @@
-# UPS Marks System — Phase 3.21
+# UPS Marks System — Phase 3.22
 
-This package extends Phase 3.20 and retains the professional purple demo.
+New: `source_aggregation_audit.html` and `phase_3_22_source_discrepancies.csv`. Source formula inspection confirmed Islamic raw worksheet aggregation of multiple WQA inputs, and a discrepancy in MAPE final grade source O15 (three Term 3 components, not nine). The approved policy remains the average of all nine transmuted MAPE component-term grades. Original Excel files unchanged. No official grade certification.
 
-## New
-- `term_isolation_tests.html`: tests the **actual `calculate()` grading function** using independent fictional term records and a nine-component MAPE aggregation example. The source of this page's calculation functions is `test_engine.js`, copied directly from `grading.js` for independent execution without the main dashboard.
-- Term 2 and Term 3 must use their own scores, never Term 1 records.
-- The MAPE nine-part average is **provisional**; final whole-number rounding remains unverified against the original Excel output.
-- The `TERM GRADE` presentation stays provisional and is not certified for official reports.
-
-## Important
-This is a local prototype, not connected to Supabase. The suite checks internal consistency, not exact Excel formula parity. Actual workbook-to-JavaScript matching remains required, particularly Islamic aggregation, Arabic/Islamic intermediate rounding and MAPE final rounding.
-
-## GitHub
-Upload all extracted files in one commit to your existing Pages site.
+The website remains fictional-data only. The current Islamic demo has one WQA slot and cannot yet be treated as equivalent to its source workbook. Do not use provisional report-card marks. All extracted files can be uploaded in a single GitHub commit.
