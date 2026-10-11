@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>UPS · Phase 3.12 Grading Boundary Tests</title><link rel="stylesheet" href="style.css"><style>main{max-width:1080px;margin:25px auto;padding:15px}.pass{color:#146a47;font-weight:700}.fail{color:#ad2845;font-weight:700}.callout{background:#fff4dd;padding:14px;border-left:4px solid #be861d;border-radius:10px}code{white-space:nowrap}</style></head><body><main><div class="panel"><div class="eyebrow">PHASE 3.12 · FORMULA PARITY SAFEGUARDS</div><h1>Transmutation Boundary Regression Tests</h1><p>Tests the two-decimal HELPER lookup, including Initial Grades with more than two decimal places. Does not write to Supabase.</p><p class="callout"><strong>Validation only:</strong> The two-decimal lookup convention is a candidate, not yet certified as the original Excel rounding rule. Full category formula parity and MAPE final rounding are still pending.</p><a href="index.html">Return to gradebook</a> · <a href="grade_integrity_tests.html">Calculation tests</a></div><div class="panel"><h2 id="summary">Checking…</h2><div class="tablewrap"><table><thead><tr><th>Test</th><th>Expected</th><th>Actual</th><th>Result</th></tr></thead><tbody id="results"></tbody></table></div></div><div class="panel"><h2>Workbook certification checklist</h2><ol><li>Confirm initial-grade precision and rounding against original Excel cells.</li><li>Compare complete raw-score → category percentage → weighted grade → transmuted Term Grade for General, Arabic, Islamic, and MAPE.</li><li>Verify Arabic and Islamic Term 1–3 AK-based formulas, including intermediate rounding.</li><li>Confirm Islamic worksheets aggregation and MAPE nine-transmuted-grade final rounding.</li><li>Retest all 41 HELPER interval boundaries after formula rules are approved.</li></ol></div></main><script src="transmutation.js"></script><script>
+const tests=[];
+const test=(name,expected,actual)=>tests.push({name,expected,actual,ok:expected===actual});
+for(const scheme of ['general','arabic','islamic','mape']){
+ const f=v=>UPS_REFERENCE_GRADE(scheme,v);
+ test(scheme+' · min 0',60,f(0));test(scheme+' · max 100',100,f(100));
+ test(scheme+' · 88.875 -> 88.88',91,f(88.875));
+ test(scheme+' · 88.874 -> 88.87',90,f(88.874));
+ test(scheme+' · 99.495 -> 99.50',100,f(99.495));
+ test(scheme+' · blank invalid',null,f(NaN));
+ test(scheme+' · negative invalid',null,f(-1));
+ test(scheme+' · >100 invalid',null,f(101));
+ const intervals=UPS_HELPER_TABLES[scheme];
+ for(const interval of intervals){test(scheme+' · min '+interval.min,interval.grade,f(interval.min));test(scheme+' · max '+interval.max,interval.grade,f(interval.max));}
+ for(let i=0;i<=10000;i++){const v=i/100;if(f(v)===null){test(scheme+' · uncovered '+v,'matched',null);break;}}
+}
+const body=document.getElementById('results');body.textContent='';
+for(const t of tests){const tr=document.createElement('tr');for(const val of [t.name,String(t.expected),String(t.actual),t.ok?'PASS':'FAIL']){const td=document.createElement('td');td.textContent=val;if(val==='PASS'||val==='FAIL')td.className=t.ok?'pass':'fail';tr.append(td)}body.append(tr)}
+const passed=tests.filter(t=>t.ok).length;document.getElementById('summary').textContent=passed+' / '+tests.length+' boundary tests passed';
+</script></body></html>
