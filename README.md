@@ -1,15 +1,9 @@
-# UPS Marks System — Phase 3.25: Certification Gate
+# UPS Marks System — Phase 3.26: Raw-Score Parity Lab
 
-## Changes
-- New `grade_certification_gate.html` and `CERTIFICATION_CHECKLIST.csv`. The page lists explicit formula approval requirements and can export a handoff CSV, but it **does not** claim grading certification.
-- A navigation link to the certification gate has been added to the purple dashboard.
-- Existing fictional demonstration, Islamic triple activities, MAPE nine-part calculation and regression pages are preserved.
+New `raw_score_parity_lab.html` permits input of fictional raw scores and corresponding perfect scores per assessment, including optional slots. It uses a direct extracted copy of the same `calculate()` routine as the production demonstration (`test_engine.js`, derived from `grading.js`).
 
-## Required before live use
-1. Compare multiple identical fictional score cases from corrected Excel workbooks to the website for General, HELE/TLE, Arabic, Islamic and MAPE. Resolve mismatches.
-2. Approve Arabic/Islamic intermediate rounding, WQA aggregation, and MAPE final whole-number rounding.
-3. Obtain school sign-off and verify authorized identities with proper authentication and Supabase RLS. An email typed into a field is **not** authentication.
+Enter **independently calculated original Excel Initial and Term Grades** to check exact parity; mismatch details are shown. Save/export fictional cases as CSV with complete score/denominator evidence. No claim of formula certification and no automatic import of original Excel results. Never use actual student data in this testing tool.
 
-Term Grades and MAPE Finals remain provisional and must not be used for student report cards. Source Excel files are unchanged. No live database integration.
+Limitations: independent workbook evaluation has not been performed, so full parity is still pending. Arabic/Islamic intermediate rounding, official MAPE final rounding, security authentication and Supabase connectivity remain unapproved. All official outputs provisional.
 
-Upload all extracted site files to GitHub Pages in one commit.
+Upload the extracted files together to the GitHub Pages site in one commit.
