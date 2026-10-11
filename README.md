@@ -1,18 +1,15 @@
-# UPS Marks Phase 3.12 — Grading Boundary Validation
+# UPS Marks — Phase 3.13 Formula Reconciliation
 
-# UPS Marks Phase 3.11 — Calculation Integrity Testing
+This is a **fictional-data frontend** built on Phase 3.12.
 
-- Extract all files into the same folder and upload them together in **one GitHub commit**.
-- Gradebook uses complete active assessments only; invalid scores, missing enabled scores, and invalid perfect scores never produce a provisional Term Grade.
-- Open `grade_integrity_tests.html` for 12 automated demo-only calculation and completeness checks.
-- Original Phase 3.10 diagnostics are retained.
-- Purple TERM GRADE / REPORT CARD highlighting is unchanged and remains starred **provisional**.
-- This is not certified Excel formula parity. Original workbook formula checks, corrected Arabic/Islamic AK references and MAPE annual rounding still need independent confirmation.
-- Fictional data only, no Supabase connection; do not use as a production grading system.
+## New
+- `reconciliation_tests.html` invokes the same `calculate()` method used in the gradebook to run independent raw-score scenarios, including invalid input, multiple activities, and Arabic/Islamic whole-percent rounding.
+- The prominent **Term Grade — Report Card** label stays in the UI. Its `*` marker remains because exact workbook parity has **not** been certified.
+- No connection to Supabase, no live identity validation or production-grade editing.
 
+## Still required
+- Verify original Excel workbook recalculation (including Arabic/Islamic column AK references) with identical fictional inputs.
+- Resolve the Islamic Activities multi-item configuration and exact rounding policy.
+- Confirm MAPE final whole-number rounding from nine transmuted component Term Grades.
 
-Phase 3.12 additions:
-- `transmutation.js` normalizes initial percentages to 2 decimals before interval lookup, addressing gaps for fractional cent values. This rule is **provisional** until Excel workbook parity is verified.
-- `boundary_tests.html` runs dynamic regression checks across all four HELPER tables, including each interval endpoint and raw initial grades with >2 decimal places.
-- The TERM GRADE output remains provisional (asterisk) and must not be posted as official report-card data.
-- No Supabase integration or real identity verification.
+To update GitHub Pages, extract the ZIP and upload the files together in one commit at the same directory level as `index.html`.

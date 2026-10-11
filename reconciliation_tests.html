@@ -1,0 +1,43 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>UPS Phase 3.13 — Formula Reconciliation</title><link rel="stylesheet" href="style.css"><style>main{max-width:1100px;margin:28px auto;padding:0 16px}.warn{background:#fff4de;border-left:4px solid #b77b14;padding:14px;border-radius:9px}.pass{color:#137146;font-weight:700}.fail{color:#b11c43;font-weight:700}td{word-break:break-word}th:nth-child(1){width:42%}</style></head><body><main><section class="panel"><div class="eyebrow">PHASE 3.13 · FORMULA RECONCILIATION</div><h1>Grade Engine Regression Tests</h1><p>These tests invoke the exact <code>calculate()</code> function used by the fictional gradebook. They test raw-score computations, missing values, rounding and examination distribution.</p><div class="warn"><strong>Not yet Excel-certified.</strong> Passing tests means the programmed rules behave consistently, not that every workbook formula matches. No school records are modified.</div><p><a href="index.html">Return to gradebook</a> · <a href="boundary_tests.html">HELPER boundary tests</a></p></section><section class="panel"><h2>Live test results</h2><p id="summary">Running tests…</p><div class="tablewrap"><table><thead><tr><th>Scenario</th><th>Expected</th><th>Actual</th><th>Status</th></tr></thead><tbody id="results"></tbody></table></div></section><section class="panel"><h2>Required before certification</h2><ol><li>Compare entire score-to-Term-Grade chain against source Excel templates with fictional scores.</li><li>Confirm whether the Islamic Activities category should aggregate multiple raw items, then implement its approved item limits.</li><li>Confirm Arabic/Islamic term source is column AK for all three terms, including corrected workbook references.</li><li>Validate the treatment of missing/unadministered examinations and Excel's intermediate rounding behavior.</li><li>Confirm the final whole-number rounding of nine transmuted MAPE component-term marks.</li></ol><p><strong>Current report-card field:</strong> Term Grade (highlighted, provisional *).</p></section></main>
+<script>const chosen=['CLS-009','MATH'];const roster=[['F-1','Fictional Student']];const GRADES_PLACEHOLDER=true;</script>
+<script src="grading.js"></script>
+<script>
+(function(){
+const tests=[];
+function record(scheme,marks,active=['WW1','PT1','ST1','ST2','TERM'],perfect={}){
+ const rec={assessments:{},values:{}};
+ for(const sp of specsFor(scheme)){
+  rec.assessments[sp.key]={enabled:active.includes(sp.key),max:perfect[sp.key]??(sp.category==='EX'?40:20)};
+  if(Object.hasOwn(marks,sp.key))rec.values['F-1|'+sp.key]=marks[sp.key];
+ }
+ return rec;
+}
+function run(name,scheme,marks,expected,active,perfect){
+ let output;
+ try{const r=record(GRADE_SCHEMES[scheme],marks,active,perfect);output=calculate(r,GRADE_SCHEMES[scheme],'F-1').value}
+ catch(e){output='ERROR: '+e.message}
+ const ok=expected===null?output===null:typeof output==='number'&&Math.abs(output-expected)<1e-9;
+ tests.push([name,expected===null?'incomplete':expected,output===null?'incomplete':output,ok]);
+}
+const full={WW1:18,PT1:18,ST1:30,ST2:30,TERM:30},a=['WW1','PT1','ST1','ST2','TERM'];
+run('General WW/PT 90%, each exam 75%', 'general',full,87,a, {WW1:20,PT1:20,ST1:40,ST2:40,TERM:40});
+run('HELE WW/PT 90%, each exam 75%','hele',full,87,a,{WW1:20,PT1:20,ST1:40,ST2:40,TERM:40});
+run('General missing score remains incomplete','general',{...full,PT1:''},null,a);
+run('General explicit zero is a score','general',{...full,PT1:0},33,a,{WW1:20,PT1:20,ST1:40,ST2:40,TERM:40});
+run('General reject score above maximum','general',{...full,WW1:21},null,a);
+run('General reject negative score','general',{...full,WW1:-1},null,a);
+run('General reject zero perfect score','general',full,null,a,{WW1:0});
+run('General reject nonnumeric score','general',{...full,WW1:'abc'},null,a);
+run('General aggregate unequal WW maxima','general',{WW1:10,WW2:30,PT1:20,ST1:40,ST2:40,TERM:40},96,['WW1','WW2','PT1','ST1','ST2','TERM'],{WW1:20,WW2:30,PT1:20,ST1:40,ST2:40,TERM:40});
+run('EX: 50%, 75%, 100% => 77.5%','general',{WW1:20,PT1:20,ST1:20,ST2:30,TERM:40},95.5,a,{WW1:20,PT1:20,ST1:40,ST2:40,TERM:40});
+const aa=['LS1','WR1','RD1','ST1','ST2','TERM'];
+run('Arabic category whole-percent rounding','arabic',{LS1:2,WR1:1,RD1:2,ST1:3,ST2:3,TERM:3},10*.67+40*.33+10*.67+40*.75,aa,{LS1:3,WR1:3,RD1:3,ST1:4,ST2:4,TERM:4});
+const ia=['QR1','MEM1','VAL1','WQA1','ST1','ST2','TERM'];
+run('Islamic intermediate category rounding','islamic',{QR1:2,MEM1:1,VAL1:2,WQA1:1,ST1:3,ST2:3,TERM:3},10*.67+15*.33+5*.67+30*.33+40*.75,ia,{QR1:3,MEM1:3,VAL1:3,WQA1:3,ST1:4,ST2:4,TERM:4});
+run('Arabic missing examination incomplete','arabic',{LS1:2,WR1:1,RD1:2,ST1:3,ST2:3},null,aa,{LS1:3,WR1:3,RD1:3,ST1:4,ST2:4,TERM:4});
+run('MAPE component general-category pattern','mape',full,87,a,{WW1:20,PT1:20,ST1:40,ST2:40,TERM:40});
+const tbody=document.getElementById('results');let pass=0;
+for(const [label,expect,got,ok] of tests){if(ok)pass++;const tr=document.createElement('tr');for(const v of [label,String(expect),String(got),ok?'PASS':'FAIL']){const cell=document.createElement('td');cell.textContent=v;if(v==='PASS'||v==='FAIL')cell.className=ok?'pass':'fail';tr.appendChild(cell)}tbody.appendChild(tr)}
+document.getElementById('summary').textContent=`${pass} of ${tests.length} grade-engine checks passed. This does not certify workbook parity.`;
+})();
+</script></body></html>
