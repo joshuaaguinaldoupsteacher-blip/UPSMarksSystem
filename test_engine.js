@@ -26,7 +26,7 @@ function calculate(rec,scheme,id,values=rec.values,definitions=rec.assessments){
    for(const spec of specs){
     const max=Number((definitions[spec.key]||assessment(rec,spec)).max),raw=values[id+'|'+spec.key];
     const mark=Number(raw);
-    if(!Number.isFinite(max)||max<=0||raw===undefined||raw===''||!Number.isFinite(mark)||mark<0||mark>max){complete=false;valid=false;break}
+    if(!Number.isFinite(max)||max<=0||raw===undefined||raw===null||(typeof raw==='string'&&raw.trim()==='')||!Number.isFinite(mark)||mark<0||mark>max){complete=false;valid=false;break}
     value+=mark/max*100*[.3,.3,.4][spec.slot];
    }
    if(valid)percent=value;
@@ -35,7 +35,7 @@ function calculate(rec,scheme,id,values=rec.values,definitions=rec.assessments){
    for(const spec of specs){
     const max=Number((definitions[spec.key]||assessment(rec,spec)).max),raw=values[id+'|'+spec.key];
     const mark=Number(raw);
-    if(!Number.isFinite(max)||max<=0||raw===undefined||raw===''||!Number.isFinite(mark)||mark<0||mark>max){complete=false;valid=false;break}
+    if(!Number.isFinite(max)||max<=0||raw===undefined||raw===null||(typeof raw==='string'&&raw.trim()==='')||!Number.isFinite(mark)||mark<0||mark>max){complete=false;valid=false;break}
     earned+=mark;possible+=max;
    }
    if(valid&&possible>0){
