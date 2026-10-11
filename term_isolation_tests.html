@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UPS Term Isolation Tests</title><link rel="stylesheet" href="style.css"><style>main{max-width:1000px;margin:35px auto;padding:0 18px}.pass{color:#116b43}.fail{color:#aa344a}code{font-size:12px}</style></head><body><main><section class="panel"><div class="eyebrow">PHASE 3.21 · FICTIONAL TEST DATA</div><h1>Independent Term & MAPE Validation</h1><p>Checks the actual gradebook's handling of separate term and component records, using fictional marks.</p><p class="notice"><strong>Not Excel formula certification.</strong> All grades remain provisional until cross-checked against corrected workbook outputs.</p><a href="index.html">Return to UPS Marks System</a></section><section class="panel"><h2>Automated results</h2><div id="results">Running…</div></section></main><script src="transmutation.js"></script><script src="test_engine.js"></script><script>
+// After grading.js executes, construct separate fictional record objects and
+// check the production calculate() function without changing student records.
+(function(){
+ const results=[], test=(name,fn)=>{try{const ok=!!fn();results.push([name,ok,ok?'Passed':'Check failed'])}catch(e){results.push([name,false,e.message])}};
+ function make(raw){const rec={status:'draft',values:{},assessments:{}};for(const spec of specsFor(GRADE_SCHEMES.general)){rec.assessments[spec.key]={enabled:spec.required||spec.slot===0,max:20};if(rec.assessments[spec.key].enabled)rec.values['TEST|'+spec.key]=String(raw)}return rec}
+ const base=make(10),later=make(18),modified=make(5);
+ test('Term 1 score calculation is independent of Term 2',()=>calculate(base,GRADE_SCHEMES.general,'TEST').value===50&&calculate(later,GRADE_SCHEMES.general,'TEST').value===90);
+ test('Term 3 uses its own assessment values',()=>calculate(modified,GRADE_SCHEMES.general,'TEST').value===25);
+ test('Changing Term 2 does not mutate the Term 1 record',()=>{later.values['TEST|WW1']='20';return calculate(base,GRADE_SCHEMES.general,'TEST').value===50&&calculate(later,GRADE_SCHEMES.general,'TEST').value===92});
+ test('Term 1 and Term 2 produce different transmuted grades',()=>window.UPS_REFERENCE_GRADE('general',50)!==window.UPS_REFERENCE_GRADE('general',90));
+ test('Nine transmuted MAPE grades average independently',()=>{const arr=[88,90,91,89,90,92,91,93,94];return Math.abs(arr.reduce((a,b)=>a+b,0)/9-90.88888888888889)<1e-9});
+ test('MAPE includes all nine component-term positions',()=>{const arr=[];for(let term=1;term<=3;term++)for(const comp of ['Music','Arts','PE'])arr.push(term+'-'+comp);return arr.length===9&&new Set(arr).size===9});
+ test('Missing assessment values do not create a final grade',()=>{const rec=make(15);delete rec.values['TEST|ST1'];return calculate(rec,GRADE_SCHEMES.general,'TEST').value===null});
+ test('Zero is distinct from missing',()=>calculate(make(0),GRADE_SCHEMES.general,'TEST').value===0);
+ const passed=results.filter(x=>x[1]).length;
+ document.getElementById('results').innerHTML=`<p><strong>${passed} / ${results.length} regression checks passed</strong></p><table><tr><th>Test</th><th>Status</th></tr>${results.map(r=>`<tr><td>${r[0]}</td><td class="${r[1]?'pass':'fail'}">${r[1]?'PASS':'FAIL'} · ${r[2]}</td></tr>`).join('')}</table>`;
+})();
+</script></body></html>

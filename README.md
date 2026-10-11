@@ -1,21 +1,15 @@
-# UPS Marks System — Phase 3.20
+# UPS Marks System — Phase 3.21
 
-**Confirmed policy:** Each term and MAPE component must use its own Initial Grade for transmutation, never another term.
+This package extends Phase 3.20 and retains the professional purple demo.
 
-- `term_reference_corrections.html` contains the 18-row reference review and 8 corrected row-18 formulas.
-- `term_lookup_correction_plan.csv` contains the original and corrected reference for each representative term.
-- Source workbooks are **not** edited. The correction list is an approved reference policy, not full workbook-to-system parity certification.
-- Existing purple demo and its controls are retained; Term Grades are provisional.
+## New
+- `term_isolation_tests.html`: tests the **actual `calculate()` grading function** using independent fictional term records and a nine-component MAPE aggregation example. The source of this page's calculation functions is `test_engine.js`, copied directly from `grading.js` for independent execution without the main dashboard.
+- Term 2 and Term 3 must use their own scores, never Term 1 records.
+- The MAPE nine-part average is **provisional**; final whole-number rounding remains unverified against the original Excel output.
+- The `TERM GRADE` presentation stays provisional and is not certified for official reports.
 
-# UPS Marks System — Phase 3.19 source formula parity audit
+## Important
+This is a local prototype, not connected to Supabase. The suite checks internal consistency, not exact Excel formula parity. Actual workbook-to-JavaScript matching remains required, particularly Islamic aggregation, Arabic/Islamic intermediate rounding and MAPE final rounding.
 
-Preserves the Phase 3.18 purple site and fictional gradebook. New files:
-
-- `source_lookup_audit.html`: audit of actual representative row-18 term transmutation formula references.
-- `source_lookup_reference_audit.csv`: 18 references checked; 8 flagged for review.
-
-**Source-reference findings**: General Terms 2 and 3 use TERM 1!AD18 in their example lookup formulas; six MAPE Term 2/3 component lookup formulas use their component's Term 1 sheet. Arabic and Islamic use their own term sheet AK18 as the lookup input, with output in AL18. These are observations from the original workbook formulas, not modifications or automatic corrections.
-
-**Not yet certified:** Complete formula parity, correct rounding, Islamic aggregation and MAPE final averaging/rounding remain pending. Term Grades continue to carry a provisional asterisk.
-
-The prototype uses fictional in-memory data only and is not connected to Supabase.
+## GitHub
+Upload all extracted files in one commit to your existing Pages site.
