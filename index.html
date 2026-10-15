@@ -434,6 +434,31 @@ function prepareServerRecord(){
  recordSnapshots[snapshotKey()]=snapshot;
  pendingScores[snapshotKey()]={};
 }
+function hydrateAllMapeComponents(){
+ const prefix=$('offering').value+'|'+$('term').value+'|';
+ for(const component of ['MUSIC','ARTS','PE']){
+  const key=prefix+component;
+  // Never overwrite unsaved draft work with a background refresh.
+  if(Object.keys(pendingScores[key]||{}).length)continue;
+  const rec=blankRecord(),byAssessment={},snapshot={};
+  for(const a of savedAssessments){
+   if(a.mape_component_code!==component||a.active===false||a.assessment_active===false)continue;
+   if(!slots.some(slot=>slot.code===a.assessment_code))continue;
+   rec.settings[a.assessment_code]={used:true,max:String(a.max_score)};
+   byAssessment[a.assessment_id]=a;
+  }
+  for(const score of savedScores){
+   const a=byAssessment[score.assessment_id];
+   if(!a)continue;
+   const id=score.student_subject_enrollment_id;
+   (rec.scores[id]||(rec.scores[id]={}))[a.assessment_code]=Number(score.score);
+   snapshot[id+'|'+a.assessment_code]={assessment_id:score.assessment_id,score:Number(score.score),updated_at:score.updated_at??null};
+  }
+  localRecords[key]=rec;
+  recordSnapshots[key]=snapshot;
+  pendingScores[key]={};
+ }
+}
 function buildSlots(){const payload={};for(const s of slots){const st=record().settings[s.code],active=s.fixed||!!st.used;payload[s.code]={active};if(active&&goodMax(st.max))payload[s.code].max_score=Number(st.max);}return payload;}
 async function saveMapeAssessmentSetup(){
  if(failedLoad||!client||!isMape())return;
@@ -572,7 +597,7 @@ async function loadClassRecord(){
   if(assessmentResult.status==='fulfilled'){
    const payload=assessmentResult.value;
    if(mape){
-    savedAssessments=Array.isArray(payload?.assessments)?payload.assessments.map(a=>({...a,assessment_active:a.active})):[];
+    savedAssessments=Array.isArray(payload?.assessments)?payload.assessments.map(a=>({...a,mape_component_code:a.mape_component_code||a.mape_component,component_code:a.component_code||a.component,assessment_active:a.active})):[];
     savedScores=Array.isArray(payload?.scores)?payload.scores:[];
    }else if(Array.isArray(payload))savedAssessments=payload;
    else problems.push('Assessments: unexpected response format');
@@ -584,7 +609,7 @@ async function loadClassRecord(){
    }else problems.push('Scores: '+scoreResult.reason?.message);
   }
   if(!problems.length){
-   prepareServerRecord();
+   if(mape)hydrateAllMapeComponents();else prepareServerRecord();
    failedLoad=false;
    $('serverState').textContent='Loaded';
    $('serverNotes').textContent='Loaded '+roster.length+' students, '+savedAssessments.length+' assessments and '+savedScores.length+' saved scores from Supabase.';
