@@ -444,37 +444,81 @@ async function createMapeAssessment(){
  if(error){message('status','MAPE assessment creation failed: '+error.message,true);return;}
  message('status','Created '+part()+' '+slot+'.');await loadClassRecord();
 }
-async function loadClassRecord(){resetValidationResult();
+// Timeout every server request; a stalled request must not freeze the class record.
+function boundedRequest(label, operation, ms=18000){
+ return Promise.race([
+  Promise.resolve().then(operation).then(response=>{
+   if(response?.error)throw Error(response.error.message);
+   return response?.data;
+  }),
+  new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' timed out after '+Math.round(ms/1000)+' seconds. Check network or Supabase connectivity.')),ms))
+ ]);
+}
+async function loadClassRecord(){
  if(!client||!$('offering').value)return;
- if(pendingCount()){message('status','Unsaved score edits exist. Save them or clear the draft before reloading this record.',true);return;}
+ if(pendingCount()){
+  message('status','Unsaved score edits exist. Save or discard these edits before reloading.',true);
+  return;
+ }
  const ticket=++loadVersion,offer=$('offering').value,term=$('term').value;
- setBusy(true);message('status','Loading authorized students, assessments and scores…');
- roster=[];savedAssessments=[];savedScores=[];$('serverState').textContent='Loading';
- render();renderServerSnapshot();
+ const mape=isMape();
+ setBusy(true);
+ message('status','Loading student roster…');
+ $('serverState').textContent='Loading';
  try{
-  await authorize();
-  const results=await Promise.all([
-   client.rpc('ups_my_class_record_roster_v1',{p_class_subject_id:offer}),
-   isMape()?client.rpc('ups_my_mape_record_v1',{p_class_subject_id:offer,p_grading_period_code:term}):client.rpc('ups_my_class_record_assessments_v1',{p_class_subject_id:offer,p_grading_period_code:term}),
-   isMape()?Promise.resolve({data:null,error:null}):client.rpc('ups_my_class_record_scores_v1',{p_class_subject_id:offer,p_grading_period_code:term})
-  ]);
-  if(ticket!==loadVersion||$('offering').value!==offer||$('term').value!==term)return;
-  const labels=['Student roster','Saved assessments','Saved scores'];
-  for(let i=0;i<results.length;i++)if(results[i].error)throw Error(labels[i]+': '+results[i].error.message);
-  roster=Array.isArray(results[0].data)?results[0].data:[];
-  savedAssessments=isMape()?(results[1].data?.assessments||[]):(Array.isArray(results[1].data)?results[1].data:[]);
-  savedScores=isMape()?(results[1].data?.scores||[]):(Array.isArray(results[2].data)?results[2].data:[]);
-  if(isMape())savedAssessments=savedAssessments.map(a=>({...a,assessment_active:a.active}));
-  prepareServerRecord();failedLoad=false;
-  $('serverState').textContent='Loaded';
-  $('serverNotes').textContent='Server snapshot: '+roster.length+' eligible students, '+savedAssessments.length+' saved assessments, '+savedScores.length+' recorded scores. Saved scores are loaded into the class-record grid; edits require explicit saving.';
+  resetValidationResult();
+  // Authorization problems must be visible as actual errors, not an empty roster.
+  await boundedRequest('Session verification',()=>client.auth.getSession().then(r=>{
+   if(r.error||!r.data?.session)throw Error(r.error?.message||'Session expired. Sign in again.');
+   return {data:r.data.session};
+  }));
+  const rosterResult=await boundedRequest('Student roster',()=>client.rpc('ups_my_class_record_roster_v1',{p_class_subject_id:offer}));
+  if(ticket!==loadVersion)return;
+  if(!Array.isArray(rosterResult))throw Error('Student roster returned an unexpected format.');
+  roster=rosterResult;
+  savedAssessments=[];savedScores=[];
+  failedLoad=true; // Don't allow writes until ALL server data is ready.
   render();renderServerSnapshot();
-  message('status',roster.length===0?'Roster is empty for this offering. Assessment setup can be tested, but student score entry requires eligible active student-subject enrollments.':'Loaded '+roster.length+' students · '+savedAssessments.length+' saved assessments · '+savedScores.length+' saved scores. Edit and click Save Pending Scores when ready.',roster.length===0);
+  message('status','Loaded '+roster.length+' student(s). Loading assessment and score records…');
+  const assessmentTask=boundedRequest('Assessments',()=>client.rpc(mape?'ups_my_mape_record_v1':'ups_my_class_record_assessments_v1',mape?{p_class_subject_id:offer,p_grading_period_code:term}:{p_class_subject_id:offer,p_grading_period_code:term}));
+  const scoreTask=mape?Promise.resolve(null):boundedRequest('Scores',()=>client.rpc('ups_my_class_record_scores_v1',{p_class_subject_id:offer,p_grading_period_code:term}));
+  const [assessmentResult,scoreResult]=await Promise.allSettled([assessmentTask,scoreTask]);
+  if(ticket!==loadVersion)return;
+  const problems=[];
+  if(assessmentResult.status==='fulfilled'){
+   const payload=assessmentResult.value;
+   if(mape){
+    savedAssessments=Array.isArray(payload?.assessments)?payload.assessments.map(a=>({...a,assessment_active:a.active})):[];
+    savedScores=Array.isArray(payload?.scores)?payload.scores:[];
+   }else if(Array.isArray(payload))savedAssessments=payload;
+   else problems.push('Assessments: unexpected response format');
+  }else problems.push('Assessments: '+assessmentResult.reason?.message);
+  if(!mape){
+   if(scoreResult.status==='fulfilled'){
+    if(Array.isArray(scoreResult.value))savedScores=scoreResult.value;
+    else problems.push('Scores: unexpected response format');
+   }else problems.push('Scores: '+scoreResult.reason?.message);
+  }
+  if(!problems.length){
+   prepareServerRecord();
+   failedLoad=false;
+   $('serverState').textContent='Loaded';
+   $('serverNotes').textContent='Loaded '+roster.length+' students, '+savedAssessments.length+' assessments and '+savedScores.length+' saved scores from Supabase.';
+   message('status','Loaded '+roster.length+' student(s) · '+savedAssessments.length+' assessment(s) · '+savedScores.length+' score(s).',roster.length===0);
+  }else{
+   failedLoad=true;
+   $('serverState').textContent='Partial';
+   $('serverNotes').textContent='Student names loaded; score editing is disabled until these requests succeed: '+problems.join(' | ');
+   message('status',problems.join(' | '),true);
+  }
+  render();renderServerSnapshot();
  }catch(e){
   if(ticket!==loadVersion)return;
-  roster=[];savedAssessments=[];savedScores=[];
-  failedLoad=true;$('serverState').textContent='Error';$('serverNotes').textContent='Server snapshot not available. No academic records were changed.';
-  render();renderServerSnapshot();message('status',e.message,true);
+  failedLoad=true;
+  $('serverState').textContent='Error';
+  $('serverNotes').textContent='Could not complete roster loading. No academic records were changed.';
+  message('status','Loading failed: '+(e?.message||String(e)),true);
+  try{render();renderServerSnapshot();}catch(renderError){message('status','Display error: '+renderError.message,true);}
  }finally{if(ticket===loadVersion)setBusy(false);}
 }
 $('signin').addEventListener('click',async()=>{setBusy(true);message('loginStatus','Signing in…');try{const cfg={url:PROJECT_URL,key:PUBLISHABLE_KEY};
