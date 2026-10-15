@@ -1,16 +1,366 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UPS Marks System | Academic Management</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="app"></div>
-  <script src="app.js" defer></script>
-  <script src="transmutation.js" defer></script>
-  <script src="mape_final.js" defer></script>
-  <script src="grading.js" defer></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UPS Class Record — Teacher Workspace</title><style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#30263c;background:#f5f2fa}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1360px;margin:22px auto;padding:0 18px}header,.panel{background:#fff;border:1px solid #e3d8ed;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 5px 18px #3e165409}header{display:flex;align-items:center;justify-content:space-between;gap:16px}h1{margin:0;font-size:23px;color:#55277d}h2{margin:0 0 12px;color:#53257a;font-size:18px}p{margin:6px 0}.sub,.hint{color:#766b80;font-size:13px}.warning{background:#fff7e9;border:1px solid #e9c58e;border-radius:10px;padding:12px 14px;margin-bottom:16px}.pill{background:#f0e8f7;border-radius:100px;padding:6px 11px;color:#623187;font-size:12px;font-weight:700}.layout{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.field{min-width:0}label{display:block;font-weight:650;font-size:12px;margin-bottom:6px}select,input{width:100%;padding:10px 11px;border:1px solid #d5c5e2;border-radius:9px;background:white;color:#35243f;font:inherit}input:focus,select:focus{outline:2px solid #9a73ba;outline-offset:1px}button{border:0;padding:10px 14px;border-radius:9px;background:#653394;color:white;font-weight:650;cursor:pointer}button.secondary{background:#eee6f5;color:#572c7a}button.danger{background:#f9e9ed;color:#a32645}button:disabled{opacity:.5;cursor:not-allowed}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{border:1px solid #e7dbf0;border-radius:12px;padding:13px;background:#fff}.stat strong{display:block;color:#63348d;font-size:25px;margin-top:4px}.stat small{color:#756b80}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.gridform{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;align-items:end;gap:10px}.tablewrap{overflow:auto;border:1px solid #e4d7ed;border-radius:11px}table{border-collapse:collapse;min-width:950px;width:100%;font-size:13px}thead th{position:sticky;top:0;background:#f1eaf7;text-align:center;color:#4f2776;z-index:1}th,td{border-right:1px solid #eee5f3;border-bottom:1px solid #eee5f3;padding:10px 8px}tbody tr:last-child td{border-bottom:0}td:first-child,th:first-child{text-align:left;min-width:175px;position:sticky;left:0;background:#fff;z-index:1}thead th:first-child{background:#f1eaf7;z-index:2}td input{min-width:76px;width:76px;text-align:center;padding:7px 5px;font-size:13px}.result{text-align:center;white-space:nowrap;font-weight:700}.muted{color:#8d8494}.good{color:#21794c}.incomplete{color:#9b6d16}.error{color:#b12845}.foot{padding:14px 2px;font-size:12px;color:#796e83}.mini{font-size:11px;color:#74617f;font-weight:400}.tag{display:inline-block;border-radius:6px;padding:3px 6px;background:#f5eff9;font-size:11px;margin:2px}.empty{padding:20px;color:#766d7a}.line{height:1px;background:#eee6f3;margin:16px 0}@media(max-width:850px){.layout{grid-template-columns:repeat(2,1fr)}.gridform{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){header{align-items:flex-start;flex-direction:column}.layout,.gridform,.stats{grid-template-columns:1fr}}
+
+.assessment-row{display:grid;grid-template-columns:115px 145px 1fr;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid #ece4f2}.assessment-row:last-child{border:0}.assessment-row.off{background:#f2f1f3;color:#908a96}.assessment-row input[type=number]{max-width:160px}.assessment-row input:disabled{background:#e8e7ea;color:#aaa;border-color:#e2dfe4}.assessment-row input[type=checkbox]{width:17px;height:17px;accent-color:#663493}.assessment-group{border:1px solid #e4d7ed;border-radius:10px;overflow:hidden;margin-bottom:13px}.grouphead{background:#eee6f5;color:#56277d;font-weight:700;padding:10px 12px}.activator{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}.off-col{background:#f2f1f3!important;color:#aaa!important}.off-cell{background:#f5f4f6}.off-cell input{background:#edebef!important;color:#aaa!important}.max-editor{display:flex;align-items:center;gap:8px}.max-editor span{font-size:12px;color:#796b85}.mini-label{font-size:12px;color:#766b80;margin-top:2px}.rowtools{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.inline-hint{margin-top:8px;color:#74647e;font-size:12px}.good-message{color:#21794c}.examtag{display:inline-block;padding:5px 8px;border-radius:8px;background:#efe7f6;color:#582a83;font-weight:650}.assessment-row:not(.off) .slotname{font-weight:700}.head-controls{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:92px;padding:3px 0}.head-controls label{display:flex;align-items:center;justify-content:center;gap:5px;margin:0;font-size:11px;font-weight:600;cursor:pointer}.head-controls input[type=checkbox]{width:15px;height:15px;accent-color:#663493;margin:0}.head-controls input[type=number]{width:78px;min-width:0;padding:5px 4px;font-size:12px;text-align:center;border-radius:6px}.head-controls input[type=number]:disabled{background:#e5e2e7;color:#aaa}.head-fixed{font-size:10px;color:#756783}.head-maxlabel{font-size:10px;font-weight:600;color:inherit}.head-controls .slot-title{font-weight:750;font-size:12px;white-space:nowrap}.off-col .head-fixed,.off-col .head-maxlabel{color:#aaa}@media(max-width:600px){.assessment-row{grid-template-columns:1fr 1fr}.assessment-row .max-editor{grid-column:1/-1}}
+
+
+.auth-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.auth-grid .wide{grid-column:1/-1}.hidden{display:none!important}
+.head-controls{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:76px}
+.head-controls input[type=checkbox]{width:auto}.head-controls input[type=number]{width:68px;text-align:center;padding:5px}
+.off-col{background:#e6e5e9!important;color:#9a98a1!important}.off-cell{background:#efedf0!important}
+input:disabled{background:#eeeaf1;color:#9d93a3;cursor:not-allowed}
+.slot-title{font-weight:750}.mini{font-size:11px;color:#6c5c7c}
+@media(max-width:650px){.auth-grid{grid-template-columns:1fr}}
+
+/* Compact professional teacher sign-in */
+body.login-mode{min-height:100vh;background:radial-gradient(ellipse 65% 48% at 14% 8%,#e6d9f2 0%,transparent 100%),linear-gradient(150deg,#f7f4fb 0%,#efe9f6 95%)}
+body.login-mode .wrap{max-width:1360px;min-height:100vh;display:flex;align-items:center;justify-content:center;margin:0 auto;padding:28px 18px}
+body.login-mode header,body.login-mode>.wrap>.warning,body.login-mode .foot{display:none}
+.login-card{width:100%;max-width:430px;padding:0!important;overflow:hidden;margin:0!important;border-radius:20px!important;box-shadow:0 22px 60px #37214824,0 5px 15px #37214810!important;border:1px solid #ded0ed!important}
+.login-top{background:linear-gradient(115deg,#40205f,#693795 72%,#8252a7);color:#fff;display:flex;align-items:center;gap:15px;padding:24px 28px}
+.brand-monogram{width:51px;height:51px;display:grid;place-items:center;border-radius:13px;background:#ffffff21;border:1px solid #ffffff4d;font-weight:850;letter-spacing:-1px;font-size:19px;flex-shrink:0}
+.brand-type{display:flex;flex-direction:column;gap:2px}.brand-eyebrow{font-size:9px;letter-spacing:1.5px;color:#e8dbf5;font-weight:750}.brand-type strong{font-size:20px;letter-spacing:-.5px}.brand-type>span:last-child{font-size:11px;color:#e9ddf2}
+.login-content{padding:27px 30px 22px}.login-kicker{font-size:10px;letter-spacing:1.9px;color:#79569a;font-weight:850}
+.login-card h2{margin:9px 0 7px;font-size:25px;color:#352046;letter-spacing:-.6px}.login-description{color:#756b7d;font-size:13px;line-height:1.5;margin:0 0 22px}
+.login-fields{display:grid;gap:16px}.login-fields label{font-size:12px;color:#4c375b;margin-bottom:7px}.login-fields input{height:45px;border-color:#dcd0e7;border-radius:10px;background:#fcfafe;padding:0 13px;font-size:14px}
+.login-fields input:focus{outline:2px solid #a585c5;outline-offset:1px;border-color:#9665bb}.login-submit{margin-top:21px;width:100%;height:46px;background:linear-gradient(95deg,#55267b,#75419f);font-size:14px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 5px 11px #60348622}
+.login-submit:not(:disabled):hover{filter:brightness(1.08)}.login-response{margin:12px 0 0;min-height:18px;text-align:center;font-size:12px}.login-divider{height:1px;background:#eee7f3;margin:14px 0}.login-security{font-size:11px;line-height:1.55;text-align:center;color:#83778a;margin:0}
+.login-bottom{padding:12px 25px;background:#faf8fc;border-top:1px solid #eee8f4;display:flex;justify-content:space-between;gap:8px;color:#80718e;font-size:10px}
+@media(max-width:480px){.login-content{padding:24px 22px 18px}.login-top{padding:20px 22px}.login-bottom{flex-direction:column;text-align:center;gap:3px}}
+
+/* Phase 4.43AI: rich purple Class Record Setup section */
+#dashboard{
+  background:linear-gradient(125deg,#401b65 0%,#5d2a8c 55%,#713ca2 100%);
+  border-color:#532680;
+  box-shadow:0 14px 34px rgba(66,25,104,.19);
+  color:#fff;
+}
+#dashboard .toolbar{margin-bottom:15px}
+#dashboard h2{color:#fff;letter-spacing:.15px;font-size:20px;margin:0}
+#dashboard label{color:#f2e9fc;font-weight:700}
+#dashboard .hint{color:#e9dbf5}
+#dashboard select,#dashboard input{
+  background:#fff;color:#33223e;border:1px solid #e7d5f4;
+  box-shadow:0 1px 3px rgba(16,0,30,.11);
+}
+#dashboard select:focus,#dashboard input:focus{outline:3px solid #c69fe8;outline-offset:1px}
+#dashboard input:disabled{background:#e8dff0;color:#6a5b75;border-color:#d4c4df;opacity:1}
+#dashboard input::placeholder{color:#887e91}
+#dashboard button.secondary{background:#fff;color:#4d2278;border:1px solid #e7d7f5;font-weight:750}
+#dashboard button.secondary:hover:not(:disabled){background:#f5eafd}
+#dashboard .buttons{align-items:center;margin-top:16px}
+#dashboard #status{line-height:1.5;font-size:12px}
+#dashboard .field{min-width:0}
+#dashboard .toolbar #logout{background:#f0e4fa}
+#dashboard .field select,#dashboard .field input{min-height:45px}
+@media(max-width:850px){#dashboard{padding:18px}}
+
+.validation-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:15px;padding-top:14px;border-top:1px solid #eadff1}
+.validate-btn{background:#6a3696;color:#fff;border:1px solid #6a3696;border-radius:9px;padding:11px 17px;font-weight:750;cursor:pointer}
+.validate-btn:hover:not(:disabled){background:#522577}.validate-btn:disabled{opacity:.6;cursor:not-allowed}
+.validation-result{flex:1;min-width:230px;padding:11px 13px;background:#f6f0fc;border:1px solid #ddcbef;border-radius:9px;color:#553075;font-size:13px;line-height:1.5}
+.validation-result.ok{background:#eff8f1;border-color:#b7ddc0;color:#23663a}
+.validation-result.bad{background:#fff1f2;border-color:#f0bdc4;color:#97293c}
+
+.secondary-preview{background:#ede2f6!important;color:#582a7b!important;border:1px solid #d9c5e8!important}
+.secondary-preview:hover{background:#e3d3f1!important}
+.preview-summary{margin-top:12px}
+.preview-actions{margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;width:100%}
+.preview-action{border:1px solid #e2d7ed;border-radius:9px;padding:10px 11px;background:#faf7fd;font-size:13px}
+.preview-action strong{display:block;color:#52277d;font-size:13px;margin-bottom:3px}
+.preview-action span{color:#6f6178}
+.preview-action.change{background:#f6effc;border-color:#cfb5e5}
+.preview-action.warn{background:#fff1ef;border-color:#efc3bc}
+@media(max-width:650px){.validation-row{align-items:stretch}.validation-row button{width:100%}}
+
+/* UPS full-width split-screen sign-in — visual refresh only; existing Auth handlers retained */
+body.login-mode{background:#faf8fd}
+body.login-mode .wrap{max-width:none;min-height:100vh;width:100%;padding:0;margin:0;display:block}
+body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-height:100vh;border:0!important;border-radius:0!important;box-shadow:none!important;display:grid;grid-template-columns:49% 51%;overflow:hidden}
+.login-brand-side{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:52px clamp(30px,5vw,76px);color:#fff;background:linear-gradient(140deg,#29183f,#3a2364 56%,#4e2a7c)}
+.login-brand-side:before,.login-brand-side:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.075);width:840px;height:840px;border-radius:50%;left:42%;bottom:-650px;pointer-events:none;box-shadow:0 0 0 104px rgba(189,142,247,.035),0 0 0 210px rgba(189,142,247,.026)}
+.login-brand-side:after{width:600px;height:600px;left:57%;bottom:-480px;box-shadow:none}
+.login-brand-logo,.login-brand-main,.brand-footer{position:relative;z-index:1}
+.login-brand-logo{display:flex;align-items:center;gap:15px}
+.login-logo-symbol{display:grid;place-items:center;width:53px;height:53px;border-radius:17px;background:#ffffff20;border:1px solid #ffffff30;font-size:23px;font-weight:850;color:#fff}
+.login-brand-logo>div{display:flex;flex-direction:column;gap:4px}.login-brand-logo strong{font-size:25px;letter-spacing:.5px}.login-brand-logo div span{font-size:10px;letter-spacing:2.6px;color:#eee2f9}
+.login-brand-main{max-width:570px}.login-brand-main .brand-eyebrow{font-size:12px;letter-spacing:2.5px;color:#d6c3e8;font-weight:800}
+.login-brand-main h2{color:#fff;font-size:clamp(42px,4.5vw,73px);letter-spacing:-2.2px;line-height:1.12;margin:30px 0;font-weight:850}
+.login-brand-main h2 em{font-style:normal;color:#d7b5ff}.login-brand-main p{font-size:17px;line-height:1.85;color:#e1d5ec;max-width:490px}
+.brand-rule{height:1px;width:75%;background:#ffffff30;margin:40px 0 27px}.academic-year{display:flex;align-items:center;gap:16px}.academic-year strong{font-size:26px;letter-spacing:-.5px}.academic-year span{font-size:12px;color:#e5d8f2}
+.brand-footer{font-size:11px;color:#d5c5e6}
+.login-form-side{background:#fbf9fe;display:flex;align-items:center;justify-content:center;padding:60px clamp(28px,6vw,100px)}
+.login-form-wrap{width:100%;max-width:535px}.login-form-side .login-kicker{font-size:12px;font-weight:850;letter-spacing:2px;color:#5f2bb0}
+.login-form-side h2{font-size:clamp(31px,3vw,43px);font-weight:850;letter-spacing:-1.5px;margin:23px 0 14px;color:#211832;line-height:1.2}
+.login-form-side .login-description{font-size:16px;line-height:1.75;color:#736680;margin:0 0 28px}
+.login-info{display:flex;flex-direction:column;gap:7px;padding:19px 20px;background:#f1eafd;border:1px solid #decaff;border-radius:14px;color:#4c287a;line-height:1.6;margin:0 0 35px;font-size:13px}
+.login-info strong{font-size:13px}.login-fields{display:grid;gap:20px}.login-fields label{font-size:13px;color:#51425c;font-weight:750;margin-bottom:9px}
+.login-fields input{height:53px;font-size:15px;background:#fff;border:1px solid #d6c2ed;border-radius:11px;padding:0 15px}
+.login-form-side .login-submit{height:56px;margin-top:26px;background:linear-gradient(110deg,#6632b1,#4c2290);box-shadow:0 10px 19px #5328991b;justify-content:space-between;padding:0 19px;font-size:15px}
+.login-form-side .login-security{margin-top:22px;text-align:left;font-size:12px;color:#82758d;line-height:1.7}
+.login-form-side .login-response{text-align:left}
+@media(max-width:880px){body.login-mode .login-card{grid-template-columns:1fr;min-height:100vh}.login-brand-side{min-height:305px;padding:25px 30px}.login-brand-main{margin-top:40px}.login-brand-main h2{font-size:37px;margin:12px 0}.login-brand-main p{font-size:13px;line-height:1.5}.brand-rule,.academic-year,.brand-footer{display:none}.login-form-side{padding:45px 25px}.login-form-wrap{max-width:535px}}
+@media(max-width:440px){.login-brand-side{min-height:270px}.login-brand-main h2{font-size:31px}.login-form-side h2{font-size:29px}}
+</style></head><body class="login-mode"><div class="wrap">
+<header><div><h1>UPS Marks System</h1><p class="sub">Phase 4.43AI · Class Record · Secure Email/Password Login</p></div><span class="pill">LOCAL SCORE PREVIEW · NO SUPABASE WRITES</span></header>
+<div class="warning"><strong>Protected student information.</strong> Sign in using a school-authorized test account. This prototype reads rosters, existing assessment metadata, and recorded scores through protected Supabase endpoints. Checkboxes, perfect scores, and student scores work locally in this browser tab only; nothing is written to Supabase. Do not share screenshots containing actual student names.</div>
+<section class="panel login-card" id="loginPanel" aria-label="Teacher and administrator sign in">
+  <div class="login-brand-side">
+    <div class="login-brand-logo"><span class="login-logo-symbol" aria-hidden="true">U</span><div><strong>UPS</strong><span>ACADEMIC SYSTEMS</span></div></div>
+    <div class="login-brand-main"><div class="brand-eyebrow">ACADEMIC MANAGEMENT PLATFORM</div><h2>Clarity for every<br><em>class record.</em></h2><p>A focused workspace for teaching loads, assessment records, and academic monitoring.</p><div class="brand-rule"></div><div class="academic-year"><strong>2026–2027</strong><span>Academic Year</span></div></div>
+    <div class="brand-footer">Universal Philippine School · Al Ain</div>
+  </div>
+  <div class="login-form-side">
+    <div class="login-form-wrap">
+      <div class="login-kicker">SECURE STAFF ACCESS</div>
+      <h2>Welcome to UPS Marks</h2>
+      <p class="login-description">Sign in using your authorized school account to access your class records and academic workspace.</p>
+      <div class="login-info"><strong>Verified school access</strong><span>Your account and permissions are verified through Supabase authentication. Only assigned classes and authorized records are accessible.</span></div>
+      <div class="login-fields"><div class="field"><label for="email">Registered school email</label><input id="email" type="email" placeholder="Enter your registered email" autocomplete="username" inputmode="email" required></div><div class="field"><label for="password">Password</label><input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" required></div></div>
+      <button id="signin" class="login-submit" type="button">Sign in to workspace <span aria-hidden="true">→</span></button>
+      <p class="login-response hint" id="loginStatus" role="status" aria-live="polite"></p>
+      <p class="login-security">Your access is restricted by your approved school role. Score editing in this preview remains browser-only until saving is activated.</p>
+    </div>
+  </div>
+</section>
+<section class="panel hidden" id="dashboard"><div class="toolbar"><h2>Class Record Setup</h2><button class="secondary" id="logout">Sign out</button></div><div class="layout"><div class="field"><label for="offering">Authorized class / subject</label><select id="offering"></select></div><div class="field"><label for="term">Grading period</label><select id="term"></select></div><div class="field"><label for="scheme">Assessment weights</label><input id="scheme" disabled></div><div class="field"><label for="search">Find student</label><input id="search" placeholder="Search roster by name or student ID"></div></div><div class="buttons"><button id="refresh" class="secondary">Reload Class Record snapshot</button><span id="status" class="hint" role="status"></span></div></section>
+<section class="panel hidden" id="overview"><h2>Record Overview</h2><div class="stats"><div class="stat"><small>Eligible students</small><strong id="nStudents">0</strong></div><div class="stat"><small>Assessment slots</small><strong>11</strong></div><div class="stat"><small>Supabase score writes</small><strong>OFF</strong></div><div class="stat"><small>Grading weights</small><strong id="weight" style="font-size:19px">—</strong></div></div></section>
+<section class="panel hidden" id="serverPanel"><div class="toolbar"><div><h2>Saved Class Record Snapshot</h2><p class="hint">Read-only data from Supabase for the selected subject and term. Your editable draft below is separate and is <strong>not saved</strong>.</p></div><span class="pill">SERVER READ ONLY</span></div><div class="stats"><div class="stat"><small>Saved assessments</small><strong id="serverAssessments">0</strong></div><div class="stat"><small>Saved score entries</small><strong id="serverScores">0</strong></div><div class="stat"><small>Saved score slots</small><strong id="serverSlots">0 / 11</strong></div><div class="stat"><small>Data status</small><strong id="serverState" style="font-size:16px">Not loaded</strong></div></div><p class="hint" id="serverNotes" style="margin-top:12px" role="status">Sign in to load the server snapshot.</p><details id="serverDetails"><summary style="color:#56277d;font-weight:650;cursor:pointer">Show saved assessment details</summary><div id="serverList" class="tablewrap" style="margin-top:9px"></div></details></section>
+<section class="panel hidden" id="draftPanel"><div class="toolbar"><div><h2>Draft Completion Monitor</h2><p class="hint">Calculated from local entries for the currently selected class and term. An unused WW/PT slot is excluded; all three examinations remain required.</p></div><button id="resetDraft" class="danger" type="button">Clear selected term draft</button></div><div class="stats"><div class="stat"><small>Active WW slots</small><strong id="activeWW">0 / 5</strong></div><div class="stat"><small>Active PT slots</small><strong id="activePT">0 / 3</strong></div><div class="stat"><small>Students with complete scores</small><strong id="completeStudents">0 / 0</strong></div><div class="stat"><small>Students incomplete</small><strong id="incompleteStudents">0</strong></div></div><p id="draftWarning" class="hint" role="status" style="margin-top:11px"></p>
+<div class="validation-row"><button type="button" id="validateConfig" class="validate-btn">Validate Assessment Configuration</button><button type="button" id="previewSave" class="validate-btn secondary-preview">Preview Save Changes</button><div id="validationResult" class="validation-result" role="status" aria-live="polite">Checks your current 11 assessment headers against Supabase. Validation only — nothing will be saved.</div><div id="savePreviewResult" class="validation-result preview-summary" role="status" aria-live="polite">Preview what would change in Supabase. No assessments or scores will be saved.</div></div><div id="savePreviewActions" class="preview-actions"></div></section>
+<section class="panel hidden" id="recordPanel"><div class="toolbar"><div><h2>Student Score Entry</h2><p class="hint">Five WW columns, three PT columns, and fixed ST1, ST2, Term Exam. The <strong>Used</strong> checkbox and <strong>Perfect Score</strong> fields sit inside each column header. Changes are local only; use the scores to preview calculations. Refreshing clears local entries.</p></div><span class="pill">Browser-only edits</span></div><div class="tablewrap" id="table"></div><p class="hint" style="margin-top:12px">Grades are computed locally for preview and are not stored in Supabase. The official Grade 1–10 General weights are 20/50/30; HELE/TLE and MAPE are 20/60/20. Arabic, Islamic, and detailed MAPE assessment workflows are not yet included.</p></section>
+<div class="foot">Universal Philippine School, Al Ain · Authenticated roster and saved-record read access + browser-only scoring prototype · School use only</div></div>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+// To eliminate initial setup entirely, paste the public Supabase values here.
+// NEVER embed service_role or a password in client-side HTML.
+const PROJECT_URL = 'https://gbrxtfrpthcgbfluriod.supabase.co';
+const PUBLISHABLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdicnh0ZnJwdGhjZ2JmbHVyaW9kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE1NjEwNjksImV4cCI6MjEwNzEzNzA2OX0.8wVAGDD4s0iLuB7nfKMXIZxIfPbOkFUdx_jthqApRyg';
+const $=id=>document.getElementById(id);
+const slots=[...Array.from({length:5},(_,i)=>({code:'WW'+(i+1),group:'WW',fixed:false})),...Array.from({length:3},(_,i)=>({code:'PT'+(i+1),group:'PT',fixed:false})),{code:'ST1',group:'EX',fixed:true},{code:'ST2',group:'EX',fixed:true},{code:'TERM_EXAM',group:'EX',fixed:true}];
+const examWeights={ST1:.30,ST2:.30,TERM_EXAM:.40};
+const intervals=[
+[0,4.67,60],[4.68,9.34,61],[9.35,14,62],[14.01,18.67,63],[18.68,23.34,64],
+[23.35,28,65],[28.01,32.67,66],[32.68,37.33,67],[37.34,42,68],[42.01,46.66,69],
+[46.67,51.33,70],[51.34,56,71],[56.01,60.66,72],[60.67,65.33,73],[65.34,69.99,74],
+[70,71.17,75],[71.18,72.35,76],[72.36,73.53,77],[73.54,74.71,78],[74.72,75.89,79],
+[75.9,77.07,80],[77.08,78.25,81],[78.26,79.43,82],[79.44,80.61,83],[80.62,81.79,84],
+[81.8,82.97,85],[82.98,84.15,86],[84.16,85.33,87],[85.34,86.51,88],[86.52,87.69,89],
+[87.7,88.87,90],[88.88,90.05,91],[90.06,91.23,92],[91.24,92.41,93],[92.42,93.59,94],
+[93.6,94.77,95],[94.78,95.95,96],[95.96,97.13,97],[97.14,98.31,98],[98.32,99.49,99],
+[99.5,100,100]
+];
+let client=null,catalog=[],roster=[],busy=false,localRecords={},savedAssessments=[],savedScores=[],loadVersion=0;
+const node=(tag,txt,cls)=>{const el=document.createElement(tag);if(txt!==undefined)el.textContent=txt;if(cls)el.className=cls;return el;};
+const message=(id,s,bad=false)=>{$(id).textContent=s;$(id).className=bad?'error':'hint';};
+const selectedOffering=()=>catalog.find(x=>x.class_subject_id===$('offering').value);
+function setBusy(v){busy=v;$('signin').disabled=v;$('refresh').disabled=v;}
+function weightsFor(code){return code==='UPS_HELE_TLE'||code==='UPS_MAPE'?[20,60,20]:[20,50,30];}
+function recordKey(){return $('offering').value+'|'+$('term').value;}
+function blankRecord(){return {settings:Object.fromEntries(slots.map(s=>[s.code,{used:s.fixed,max:''}])),scores:{}};}
+function record(){const k=recordKey();return localRecords[k]||(localRecords[k]=blankRecord());}
+const goodMax=x=>x!==''&&x!==null&&Number.isFinite(Number(x))&&Number(x)>0&&Number(x)<=10000;
+let configValidationCounter=0;
+function resetValidationResult(){
+ configValidationCounter++;
+ const el=$('validationResult');
+ const preview=$('savePreviewResult');
+ const actions=$('savePreviewActions');
+ if(preview){preview.className='validation-result preview-summary';preview.textContent='Draft changed. Click Preview Save Changes to review a fresh comparison. Nothing has been saved.';}
+ if(actions)actions.replaceChildren();
+ if(!el)return;
+ el.className='validation-result';
+ el.textContent='Not validated. Review the Used checkboxes and perfect scores, then click Validate Assessment Configuration.';
+}
+async function validateAssessmentConfig(){
+ const offer=$('offering').value,term=$('term').value;
+ if(!client||!offer||!term)return;
+ const settings=record().settings;
+ const payload={};
+ for(const s of slots){
+  const st=settings[s.code];
+  const active=s.fixed||!!st.used;
+  payload[s.code]={active};
+  if(active && st.max!=='' && st.max!==null){
+   const max=Number(st.max);
+   if(!Number.isFinite(max)){
+    $('validationResult').className='validation-result bad';
+    $('validationResult').textContent=s.code+': invalid perfect score.';
+    return;
+   }
+   payload[s.code].max_score=max;
+  }
+ }
+ const ticket=++configValidationCounter;
+ const result=$('validationResult');
+ const button=$('validateConfig');
+ button.disabled=true;
+ result.className='validation-result';
+ result.textContent='Checking the 11-slot configuration securely…';
+ try{
+  const {data,error}=await client.rpc('ups_preview_assessment_config_v1',{
+   p_class_subject_id:offer,
+   p_grading_period_code:term,
+   p_slots:payload
+  });
+  if(ticket!==configValidationCounter||offer!==$('offering').value||term!==$('term').value)return;
+  if(error)throw Error(error.message);
+  if(!data||data.valid!==true||data.saved!==false)throw Error('Unexpected validator response; no saving attempted.');
+  result.className='validation-result ok';
+  result.textContent='VALIDATED · WW: '+data.active_written_works+'/5 · PT: '+data.active_performance_tasks+'/3 · Fixed exams: '+data.fixed_examinations+' · Total active: '+data.total_active_assessments+'. Nothing saved to Supabase.';
+ }catch(e){
+  if(ticket!==configValidationCounter)return;
+  result.className='validation-result bad';
+  result.textContent='Validation not passed: '+(e?.message||'Unknown error')+'. No academic records were saved.';
+ }finally{button.disabled=false;}
+}
+
+function compute(rec,student){const scores=rec.scores[student.student_subject_enrollment_id]||{};
+const ww=slots.filter(s=>s.group==='WW'&&rec.settings[s.code].used);const pt=slots.filter(s=>s.group==='PT'&&rec.settings[s.code].used);
+if(!ww.length||!pt.length)return null;
+for(const s of [...ww,...pt,...slots.filter(s=>s.fixed)]){let max=rec.settings[s.code].max,v=scores[s.code];if(!goodMax(max)||v===undefined||!Number.isFinite(v)||v<0||v>Number(max))return null;}
+const percent=arr=>100*arr.reduce((n,s)=>n+scores[s.code],0)/arr.reduce((n,s)=>n+Number(rec.settings[s.code].max),0);
+const e=slots.filter(s=>s.fixed).reduce((n,s)=>n+100*scores[s.code]/Number(rec.settings[s.code].max)*examWeights[s.code],0);
+const a=percent(ww),b=percent(pt),w=weightsFor(selectedOffering()?.scheme_code);
+const initial=(a*w[0]+b*w[1]+e*w[2])/100;
+const lookup=Math.round((initial+Number.EPSILON)*100)/100;
+const matches=intervals.filter(([lo,hi])=>lookup>=lo&&lookup<=hi);
+return {ww:a,pt:b,ex:e,initial,final:matches.length===1?matches[0][2]:null};}
+let previewRequestId=0;
+async function previewAssessmentSave(){
+ const offer=$('offering').value,term=$('term').value;
+ if(!client||!offer||!term)return;
+ const payload={};
+ for(const s of slots){
+  const st=record().settings[s.code],active=s.fixed||!!st.used;
+  payload[s.code]={active};
+  if(active && st.max!=='' && st.max!==null){
+   const value=Number(st.max);
+   if(!Number.isFinite(value)){
+    $('savePreviewResult').className='validation-result bad preview-summary';
+    $('savePreviewResult').textContent=s.code+': invalid perfect score. Nothing saved.';
+    return;
+   }
+   payload[s.code].max_score=value;
+  }
+ }
+ const id=++previewRequestId,button=$('previewSave'),target=$('savePreviewResult'),items=$('savePreviewActions');
+ button.disabled=true;items.replaceChildren();target.className='validation-result preview-summary';
+ target.textContent='Reviewing the draft against saved assessments…';
+ try{
+  const {data,error}=await client.rpc('ups_preview_assessment_save_v1',{
+   p_class_subject_id:offer,p_grading_period_code:term,p_slots:payload
+  });
+  if(id!==previewRequestId||offer!==$('offering').value||term!==$('term').value)return;
+  if(error)throw Error(error.message);
+  if(!data||data.valid!==true||data.saved!==false||!Array.isArray(data.actions)||data.actions.length!==11)throw Error('Unexpected save-preview response.');
+  const locked=data.grading_period_locked===true;
+  target.className='validation-result preview-summary '+(locked?'bad':'ok');
+  const counts=[['Create',data.creation_count],['Update maximum',data.update_count],['Reactivate',data.activation_count],['Deactivate',data.deactivation_count],['Unchanged',data.unchanged_count]];
+  target.textContent=(locked?'LOCKED — Cannot save. ':'PREVIEW READY — ')+counts.map(([label,count])=>label+': '+count).join(' · ')+'. Nothing saved to Supabase.';
+  for(const action of data.actions){
+   const tile=node('div',undefined,'preview-action '+(locked?'warn':action.action==='UNCHANGED'?'':'change'));
+   tile.append(node('strong',action.slot));
+   const max=action.proposed_max_score;
+   tile.append(node('span',String(action.action).replaceAll('_',' ')+(max===null?'':' · Perfect score '+max)));
+   items.append(tile);
+  }
+ }catch(e){
+  if(id!==previewRequestId)return;
+  target.className='validation-result bad preview-summary';
+  target.textContent='Preview could not be completed: '+(e?.message||'Unknown error')+'. Nothing saved to Supabase.';
+ }finally{button.disabled=false;}
+}
+
+
+function updateDraftSummary(){
+ const el=$('draftPanel');if(el.classList.contains('hidden'))return;
+ const rec=record();
+
+ const ww=slots.filter(s=>s.group==='WW'&&rec.settings[s.code].used);
+ const pt=slots.filter(s=>s.group==='PT'&&rec.settings[s.code].used);
+ const complete=roster.reduce((n,st)=>n+(compute(rec,st)!==null?1:0),0);
+ $('activeWW').textContent=ww.length+' / 5';$('activePT').textContent=pt.length+' / 3';
+ $('completeStudents').textContent=complete+' / '+roster.length;
+ $('incompleteStudents').textContent=String(roster.length-complete);
+ const required=[...ww,...pt,...slots.filter(s=>s.fixed)];
+ const missingMax=required.filter(s=>!goodMax(rec.settings[s.code].max)).map(s=>s.code);
+ const issues=[];
+ if(!ww.length)issues.push('Activate at least one Written Work slot');
+ if(!pt.length)issues.push('Activate at least one Performance Task slot');
+ if(missingMax.length)issues.push('Set valid perfect scores for '+missingMax.join(', '));
+ if(!issues.length&&complete===roster.length&&roster.length)issues.push('Local score entries are complete for this term. No scores have been saved to Supabase.');
+ $('draftWarning').textContent=issues.join(' · ')||'Enter student scores to complete the local draft.';
+}
+function showControls(){const r=selectedOffering(),terms=catalog.filter(x=>x.class_subject_id===$('offering').value);const prev=$('term').value;$('term').replaceChildren();for(const x of terms){const op=node('option',x.grading_period_code.replace('_',' '));op.value=x.grading_period_code;$('term').append(op);}if(terms.some(x=>x.grading_period_code===prev))$('term').value=prev;$('scheme').value=(r?.scheme_code||'')+' · '+(r?.scheme_approved?'Approved':'Not approved');$('weight').textContent=weightsFor(r?.scheme_code).join(' / ');}
+function render(){const host=$('table');host.replaceChildren();const rec=record(),table=node('table');table.style.minWidth='1910px';const head=node('thead'),tr=node('tr');tr.append(node('th','Student / School ID'));
+for(const s of slots){const st=rec.settings[s.code],on=s.fixed||st.used,th=node('th',undefined,on?'':'off-col'),box=node('div',undefined,'head-controls');box.append(node('span',s.code==='TERM_EXAM'?'Term Exam':s.code,'slot-title'));
+if(!s.fixed){const label=node('label',undefined,'mini'),ck=node('input');ck.type='checkbox';ck.checked=st.used;ck.setAttribute('aria-label',s.code+' used');ck.addEventListener('change',()=>{st.used=ck.checked;resetValidationResult();render();});label.append(ck,document.createTextNode(' Used'));box.append(label);}else box.append(node('span','Always used','mini'));
+box.append(node('span','Perfect Score','mini'));const max=node('input');max.type='number';max.min='0.01';max.step='any';max.placeholder='—';max.disabled=!on;max.value=st.max;max.setAttribute('aria-label',s.code+' perfect score');max.addEventListener('change',()=>{if(max.value&&!goodMax(max.value)){alert('Perfect score must be greater than zero and at most 10,000.');max.value=st.max;return;}st.max=max.value;resetValidationResult();render();});box.append(max);th.append(box);tr.append(th);}
+for(const title of ['WW %','PT %','Exam %','Initial Grade','Transmuted Grade'])tr.append(node('th',title));head.append(tr);table.append(head);
+const body=node('tbody'),q=$('search').value.trim().toLowerCase();let n=0;
+for(const student of roster){if(q&&!((student.student_name||'').toLowerCase().includes(q)||(student.school_student_id||'').toLowerCase().includes(q)))continue;n++;const row=node('tr'),who=node('td');who.append(node('strong',student.student_name||'(Unnamed)'),node('div',student.school_student_id||'No school ID','mini'));row.append(who);const scores=rec.scores[student.student_subject_enrollment_id]||(rec.scores[student.student_subject_enrollment_id]={});
+for(const s of slots){const setting=rec.settings[s.code],on=s.fixed||setting.used,td=node('td',undefined,on?'':'off-cell');const inp=node('input');inp.type='number';inp.min='0';inp.step='any';inp.placeholder=on?'—':'Unused';inp.disabled=!on||!goodMax(setting.max);inp.value=scores[s.code]===undefined?'':scores[s.code];inp.setAttribute('aria-label',student.student_name+' '+s.code+' score');inp.addEventListener('change',()=>{const raw=inp.value;if(raw===''){delete scores[s.code];render();return;}const num=Number(raw);if(!Number.isFinite(num)||num<0||num>Number(setting.max)){alert('Score must be between 0 and '+setting.max+'.');inp.value=scores[s.code]??'';return;}scores[s.code]=num;render();});td.append(inp);row.append(td);}
+const g=compute(rec,student);for(const val of g?[g.ww.toFixed(2)+'%',g.pt.toFixed(2)+'%',g.ex.toFixed(2)+'%',g.initial.toFixed(2),g.final===null?'—':String(g.final)]:['—','—','—','—','—'])row.append(node('td',val,'result '+(g?'good':'incomplete')));body.append(row);}
+if(!n){const row=node('tr'),td=node('td',roster.length?'No students match search.':'No eligible students returned.','empty');td.colSpan=17;row.append(td);body.append(row);}table.append(body);host.append(table);$('nStudents').textContent=roster.length;updateDraftSummary();}
+async function authorize(){const ses=await client.auth.getSession();if(ses.error||!ses.data.session)throw Error('Session expired. Sign in again.');const status=await client.rpc('ups_my_password_status_v1');if(status.error||status.data?.[0]?.grading_access_allowed!==true)throw Error('Grading access not enabled for this account.');}
+function renderServerSnapshot(){
+ $('serverAssessments').textContent=String(savedAssessments.length);
+ $('serverScores').textContent=String(savedScores.length);
+ const known=new Set(slots.map(x=>x.code));
+ const matched=savedAssessments.filter(a=>known.has(a.assessment_code));
+ $('serverSlots').textContent=new Set(matched.map(a=>a.assessment_code)).size+' / 11';
+ const host=$('serverList');host.replaceChildren();
+ if(!savedAssessments.length){host.append(node('div','No saved assessments were found for this subject and term.','empty'));return;}
+ const table=node('table');table.style.minWidth='550px';const th=node('tr');
+ for(const name of ['Assessment','Component','Perfect score','Active','Recorded scores'])th.append(node('th',name));
+ const head=node('thead');head.append(th);table.append(head);const body=node('tbody');
+ for(const a of savedAssessments){const tr=node('tr');const num=savedScores.filter(x=>x.assessment_id===a.assessment_id).length;
+ for(const value of [a.assessment_code,a.component_code,String(a.max_score),a.assessment_active?'Yes':'No',String(num)])tr.append(node('td',value));body.append(tr);}
+ table.append(body);host.append(table);
+}
+async function loadClassRecord(){resetValidationResult();
+ if(!client||!$('offering').value)return;
+ const ticket=++loadVersion,offer=$('offering').value,term=$('term').value;
+ setBusy(true);message('status','Loading authorized students, assessments and scores…');
+ roster=[];savedAssessments=[];savedScores=[];$('serverState').textContent='Loading';
+ render();renderServerSnapshot();
+ try{
+  await authorize();
+  const results=await Promise.all([
+   client.rpc('ups_my_class_record_roster_v1',{p_class_subject_id:offer}),
+   client.rpc('ups_my_class_record_assessments_v1',{p_class_subject_id:offer,p_grading_period_code:term}),
+   client.rpc('ups_my_class_record_scores_v1',{p_class_subject_id:offer,p_grading_period_code:term})
+  ]);
+  if(ticket!==loadVersion||$('offering').value!==offer||$('term').value!==term)return;
+  const labels=['Student roster','Saved assessments','Saved scores'];
+  for(let i=0;i<results.length;i++)if(results[i].error)throw Error(labels[i]+': '+results[i].error.message);
+  roster=Array.isArray(results[0].data)?results[0].data:[];
+  savedAssessments=Array.isArray(results[1].data)?results[1].data:[];
+  savedScores=Array.isArray(results[2].data)?results[2].data:[];
+  $('serverState').textContent='Loaded';
+  $('serverNotes').textContent='Server snapshot: '+roster.length+' eligible students, '+savedAssessments.length+' saved assessments, '+savedScores.length+' recorded scores. Saved entries are NOT copied into the editable local draft.';
+  render();renderServerSnapshot();
+  message('status','Loaded '+roster.length+' students · '+savedAssessments.length+' saved assessments · '+savedScores.length+' saved scores. Local editing does not write to Supabase.');
+ }catch(e){
+  if(ticket!==loadVersion)return;
+  roster=[];savedAssessments=[];savedScores=[];
+  $('serverState').textContent='Error';$('serverNotes').textContent='Server snapshot not available. No academic records were changed.';
+  render();renderServerSnapshot();message('status',e.message,true);
+ }finally{if(ticket===loadVersion)setBusy(false);}
+}
+$('signin').addEventListener('click',async()=>{setBusy(true);message('loginStatus','Signing in…');try{const cfg={url:PROJECT_URL,key:PUBLISHABLE_KEY};
+if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Invalid embedded Supabase Project URL.');if(!cfg?.key)throw Error('Missing embedded publishable/anon key.');const email=$('email').value.trim(),pwd=$('password').value;if(!email||!pwd)throw Error('Enter email and password.');client=createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const auth=await client.auth.signInWithPassword({email,password:pwd});if(auth.error||!auth.data?.session)throw Error(auth.error?.message||'Sign-in failed');$('password').value='';await authorize();const cat=await client.rpc('ups_my_assessment_setup_v1');if(cat.error)throw Error(cat.error.message);catalog=Array.isArray(cat.data)?cat.data:[];const offerings=new Map();for(const r of catalog)if(!offerings.has(r.class_subject_id))offerings.set(r.class_subject_id,r);$('offering').replaceChildren();for(const [id,r] of offerings){const op=node('option',`Grade ${r.grade_level} · ${r.class_code} · ${r.subject_name}`);op.value=id;$('offering').append(op);}$('loginPanel').classList.add('hidden');document.body.classList.remove('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel'])$(id).classList.remove('hidden');showControls();if(catalog.length)await loadClassRecord();else message('status','No authorized offerings for this account.');}catch(e){message('loginStatus',e.message,true);if(client){try{await client.auth.signOut();}catch{}}client=null;}finally{setBusy(false);}});
+for(const id of ['email','password'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){$('signin').click();}});
+$('offering').addEventListener('change',()=>{resetValidationResult();showControls();loadClassRecord();});$('term').addEventListener('change',()=>{resetValidationResult();loadClassRecord();});$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadClassRecord);
+$('validateConfig').addEventListener('click',validateAssessmentConfig);
+$('previewSave').addEventListener('click',previewAssessmentSave);
+$('resetDraft').addEventListener('click',()=>{
+ if(!catalog.length||!$('offering').value)return;
+ const selection=selectedOffering();const label=(selection?.subject_name||'subject')+' / '+$('term').value;
+ if(!confirm('Clear all local checkboxes, perfect scores and student scores for '+label+'? This cannot be undone. No Supabase data is involved.'))return;
+ localRecords[recordKey()]=blankRecord();resetValidationResult();render();message('status','Local draft cleared for '+label+'. No Supabase records changed.');
+});
+$('logout').addEventListener('click',async()=>{if(client)await client.auth.signOut();client=null;catalog=[];roster=[];savedAssessments=[];savedScores=[];loadVersion++;localRecords={};resetValidationResult();$('password').value='';$('loginPanel').classList.remove('hidden');document.body.classList.add('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel'])$(id).classList.add('hidden');message('loginStatus','Signed out. Local draft scores cleared.');});
+</script></body></html>
