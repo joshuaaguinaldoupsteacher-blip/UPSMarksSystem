@@ -120,6 +120,18 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
       <div class="login-fields"><div class="field"><label for="email">Registered school email</label><input id="email" type="email" placeholder="Enter your registered email" autocomplete="username" inputmode="email" required></div><div class="field"><label for="password">Password</label><input id="password" type="password" placeholder="Enter your password" autocomplete="current-password" required></div></div>
       <button id="signin" class="login-submit" type="button">Sign in to workspace <span aria-hidden="true">→</span></button>
       <p class="login-response hint" id="loginStatus" role="status" aria-live="polite"></p>
+      <div id="firstPasswordPanel" class="hidden" style="margin-top:18px;padding:18px;border:1px solid #d9c7e7;border-radius:12px;background:#faf7fe">
+        <h3 style="margin:0 0 7px;color:#4d2572">First-time password setup</h3>
+        <p class="login-description">Your account is verified, but grading access requires a password change. Enter your current temporary password and choose a new one.</p>
+        <div class="login-fields">
+          <div class="field"><label for="currentPassword">Current password</label><input id="currentPassword" type="password" autocomplete="current-password"></div>
+          <div class="field"><label for="newPassword">New password (8–128 characters)</label><input id="newPassword" type="password" autocomplete="new-password"></div>
+          <div class="field"><label for="confirmPassword">Confirm new password</label><input id="confirmPassword" type="password" autocomplete="new-password"></div>
+        </div>
+        <button type="button" id="changePassword" class="login-submit">Change password securely</button>
+        <button type="button" class="secondary" id="cancelPasswordChange" style="width:100%;margin-top:9px">Cancel and sign out</button>
+        <p class="login-response hint" id="passwordChangeStatus" role="status" aria-live="polite"></p>
+      </div>
       <p class="login-security">Your access is restricted by your approved school role. Score changes require explicit saving and are subject to school access controls.</p>
     </div>
   </div>
@@ -315,7 +327,56 @@ for(const student of roster){if(q&&!((student.student_name||'').toLowerCase().in
 for(const s of slots){const setting=rec.settings[s.code],on=s.fixed||setting.used,td=node('td',undefined,on?'':'off-cell');const inp=node('input');inp.type='number';inp.min='0';inp.step='any';inp.placeholder=on?'—':'Unused';inp.disabled=!on||!goodMax(setting.max);inp.value=scores[s.code]===undefined?'':scores[s.code];inp.setAttribute('aria-label',student.student_name+' '+s.code+' score');inp.addEventListener('change',()=>{const raw=inp.value;if(raw===''){if(scores[s.code]!==undefined){alert('Clearing a saved score is not supported yet. Leave existing scores unchanged.');inp.value=scores[s.code];}return;}const num=Number(raw);if(!Number.isFinite(num)||num<0||num>Number(setting.max)){alert('Score must be between 0 and '+setting.max+'.');inp.value=scores[s.code]??'';return;}scores[s.code]=num;const key=student.student_subject_enrollment_id+'|'+s.code;const old=currentSnapshot()[key];if(old&&Number(old.score)===num){delete currentPending()[key];}else{currentPending()[key]={student_id:student.student_subject_enrollment_id,slot:s.code,score:num};}render();});td.append(inp);row.append(td);}
 const g=compute(rec,student);for(const val of g?[g.ww.toFixed(2)+'%',g.pt.toFixed(2)+'%',g.ex.toFixed(2)+'%',g.initial.toFixed(2),g.final===null?'—':String(g.final)]:['—','—','—','—','—'])row.append(node('td',val,'result '+(g?'good':'incomplete')));body.append(row);}
 if(!n){const row=node('tr'),td=node('td',roster.length?'No students match search.':'No enrolled students returned for this offering. Check student-subject enrollments and roster eligibility in Supabase.','empty');td.colSpan=17;row.append(td);body.append(row);}table.append(body);host.append(table);$('nStudents').textContent=roster.length;updateDraftSummary();setWriteState();}
-async function authorize(){const ses=await client.auth.getSession();if(ses.error||!ses.data.session)throw Error('Session expired. Sign in again.');const status=await client.rpc('ups_my_password_status_v1');if(status.error||status.data?.[0]?.grading_access_allowed!==true)throw Error('Grading access not enabled for this account.');}
+async function passwordStatus(){
+ const result=await client.rpc('ups_my_password_status_v1');
+ if(result.error)throw Error('Password status: '+result.error.message);
+ const state=Array.isArray(result.data)?result.data[0]:null;
+ if(!state)throw Error('No verified staff password status was returned. Contact your administrator.');
+ return state;
+}
+async function authorize(){
+ const ses=await client.auth.getSession();
+ if(ses.error||!ses.data.session)throw Error('Session expired. Sign in again.');
+ const state=await passwordStatus();
+ if(state.grading_access_allowed!==true)throw Error('Grading access not enabled for this account.');
+}
+function showPasswordSetup(){
+ $('firstPasswordPanel').classList.remove('hidden');
+ $('signin').disabled=true;
+ for(const id of ['email','password'])$(id).disabled=true;
+ message('loginStatus','Password change required before class record access.');
+}
+async function exitPasswordSetup(note='Signed out.'){
+ if(client){try{await client.auth.signOut();}catch{}}
+ client=null;
+ $('firstPasswordPanel').classList.add('hidden');
+ for(const id of ['email','password'])$(id).disabled=false;
+ for(const id of ['currentPassword','newPassword','confirmPassword','password'])$(id).value='';
+ $('signin').disabled=false;
+ message('loginStatus',note);
+}
+$('changePassword').addEventListener('click',async()=>{
+ const current=$('currentPassword').value,newPwd=$('newPassword').value,confirmPwd=$('confirmPassword').value;
+ if(!current||newPwd.length<8||newPwd.length>128||current===newPwd||newPwd!==confirmPwd){
+  message('passwordChangeStatus','Enter your current password and matching new password (8–128 characters, different from current).',true);return;
+ }
+ $('changePassword').disabled=true;
+ message('passwordChangeStatus','Verifying and changing your password…');
+ try{
+  const session=await client.auth.getSession();
+  if(session.error||!session.data.session?.access_token)throw Error('Session expired. Sign in again.');
+  const response=await fetch(PROJECT_URL+'/functions/v1/ups-password-manager',{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+session.data.session.access_token,'apikey':PUBLISHABLE_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({action:'change_password',current_password:current,new_password:newPwd})
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok||data.success!==true)throw Error(data.error||'Password change failed.');
+  await exitPasswordSetup('Password changed successfully. Sign in again with your new password.');
+ }catch(error){message('passwordChangeStatus',error.message||String(error),true);}
+ finally{$('changePassword').disabled=false;}
+});
+$('cancelPasswordChange').addEventListener('click',()=>exitPasswordSetup());
 function renderServerSnapshot(){
  $('serverAssessments').textContent=String(savedAssessments.filter(a=>!isMape()||a.mape_component_code===part()).length);
  $('serverScores').textContent=String(savedScores.filter(x=>!isMape()||savedAssessments.some(a=>a.assessment_id===x.assessment_id&&a.mape_component_code===part())).length);
@@ -526,7 +587,7 @@ async function loadClassRecord(){
  }finally{if(ticket===loadVersion)setBusy(false);}
 }
 $('signin').addEventListener('click',async()=>{setBusy(true);message('loginStatus','Signing in…');try{const cfg={url:PROJECT_URL,key:PUBLISHABLE_KEY};
-if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Invalid embedded Supabase Project URL.');if(!cfg?.key)throw Error('Missing embedded publishable/anon key.');const email=$('email').value.trim(),pwd=$('password').value;if(!email||!pwd)throw Error('Enter email and password.');client=createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const auth=await client.auth.signInWithPassword({email,password:pwd});if(auth.error||!auth.data?.session)throw Error(auth.error?.message||'Sign-in failed');$('password').value='';await authorize();const cat=await client.rpc('ups_my_assessment_setup_v1');if(cat.error)throw Error(cat.error.message);catalog=Array.isArray(cat.data)?cat.data:[];const offerings=new Map();for(const r of catalog)if(!offerings.has(r.class_subject_id))offerings.set(r.class_subject_id,r);$('offering').replaceChildren();for(const [id,r] of offerings){const op=node('option',`Grade ${r.grade_level} · ${r.class_code} · ${r.subject_name}`);op.value=id;$('offering').append(op);}$('loginPanel').classList.add('hidden');document.body.classList.remove('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel'])$(id).classList.remove('hidden');showControls();$('mapeCreatePanel').classList.add('hidden');if(catalog.length)await loadClassRecord();else message('status','No authorized offerings for this account.');}catch(e){message('loginStatus',e.message,true);if(client){try{await client.auth.signOut();}catch{}}client=null;}finally{setBusy(false);}});
+if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Invalid embedded Supabase Project URL.');if(!cfg?.key)throw Error('Missing embedded publishable/anon key.');const email=$('email').value.trim(),pwd=$('password').value;if(!email||!pwd)throw Error('Enter email and password.');client=createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const auth=await client.auth.signInWithPassword({email,password:pwd});if(auth.error||!auth.data?.session)throw Error(auth.error?.message||'Sign-in failed');$('password').value='';const firstStatus=await passwordStatus();if(firstStatus.password_change_required===true){showPasswordSetup();return;}await authorize();const cat=await client.rpc('ups_my_assessment_setup_v1');if(cat.error)throw Error(cat.error.message);catalog=Array.isArray(cat.data)?cat.data:[];const offerings=new Map();for(const r of catalog)if(!offerings.has(r.class_subject_id))offerings.set(r.class_subject_id,r);$('offering').replaceChildren();for(const [id,r] of offerings){const op=node('option',`Grade ${r.grade_level} · ${r.class_code} · ${r.subject_name}`);op.value=id;$('offering').append(op);}$('loginPanel').classList.add('hidden');document.body.classList.remove('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel'])$(id).classList.remove('hidden');showControls();$('mapeCreatePanel').classList.add('hidden');if(catalog.length)await loadClassRecord();else message('status','No authorized offerings for this account.');}catch(e){message('loginStatus',e.message,true);if(client){try{await client.auth.signOut();}catch{}}client=null;}finally{setBusy(false);}});
 for(const id of ['email','password'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){$('signin').click();}});
 $('offering').addEventListener('change',()=>{resetValidationResult();showControls();loadClassRecord();});$('term').addEventListener('change',()=>{resetValidationResult();loadClassRecord();});$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadClassRecord);
 $('validateConfig').addEventListener('click',validateAssessmentConfig);
