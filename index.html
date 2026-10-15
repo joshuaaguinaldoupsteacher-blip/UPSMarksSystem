@@ -130,7 +130,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 <section class="panel hidden" id="mapeCreatePanel"><h2>MAPE Assessment Creation</h2><p class="hint">Choose Music, Arts, or PE above. Create an assessment for that component. Mark Used and set Perfect Score in the grid headers, then click Save Assessment Setup. Existing assessment editing is not yet available.</p><div class="gridform"><div class="field"><label for="mapeSlot">Assessment</label><select id="mapeSlot"><option>WW1</option><option>WW2</option><option>WW3</option><option>WW4</option><option>WW5</option><option>PT1</option><option>PT2</option><option>PT3</option><option>ST1</option><option>ST2</option><option>TERM_EXAM</option></select></div><div class="field"><label for="mapeMax">Perfect score</label><input id="mapeMax" type="number" min="0.01" step="any" placeholder="e.g. 20"></div><button type="button" id="createMape">Create MAPE assessment</button></div></section><section class="panel hidden" id="draftPanel"><div class="toolbar"><div><h2>Draft Completion Monitor</h2><p class="hint">Calculated from the loaded record and unsaved edits for the currently selected class and term. An unused WW/PT slot is excluded; all three examinations remain required.</p></div><button id="resetDraft" class="danger" type="button">Clear selected term draft</button></div><div class="stats"><div class="stat"><small>Active WW slots</small><strong id="activeWW">0 / 5</strong></div><div class="stat"><small>Active PT slots</small><strong id="activePT">0 / 3</strong></div><div class="stat"><small>Students with complete scores</small><strong id="completeStudents">0 / 0</strong></div><div class="stat"><small>Students incomplete</small><strong id="incompleteStudents">0</strong></div></div><p id="draftWarning" class="hint" role="status" style="margin-top:11px"></p>
 <div class="buttons" id="recordSaveActions" style="margin:15px 0;align-items:center"><button type="button" id="saveConfig">Save Assessment Setup</button><button type="button" id="saveScores">Save Pending Scores</button><span class="hint">Changes are saved only when you click a save button.</span></div>
 <div class="validation-row"><button type="button" id="validateConfig" class="validate-btn">Validate Assessment Configuration</button><button type="button" id="previewSave" class="validate-btn secondary-preview">Preview Save Changes</button><div id="validationResult" class="validation-result" role="status" aria-live="polite">Checks your current 11 assessment headers against Supabase. Validation only — nothing will be saved.</div><div id="savePreviewResult" class="validation-result preview-summary" role="status" aria-live="polite">Preview what would change in Supabase. No assessments or scores will be saved.</div></div><div id="savePreviewActions" class="preview-actions"></div></section>
-<section class="panel hidden" id="recordPanel"><div class="toolbar"><div><h2>Student Score Entry</h2><p class="hint">For each subject (and each separate Music, Arts, or PE component), five WW columns, three PT columns, and fixed ST1, ST2, Term Exam. The <strong>Used</strong> checkbox and <strong>Perfect Score</strong> fields sit inside each column header. Existing scores load from Supabase. Changes are drafts until Save Pending Scores is clicked. Blank scores are never automatically converted to zero.</p></div><span class="pill" id="editBadge">Unsaved edits stay local</span></div><div class="tablewrap" id="table"></div><p class="hint" style="margin-top:12px">Displayed grades are local previews; score values are saved only through the authorized Supabase RPC. The official Grade 1–10 General weights are 20/50/30; HELE/TLE and MAPE are 20/60/20. Music, Arts, and PE each use the same 11 assessment slots. Final MAPE aggregation is a separate grading calculation.</p></section>
+<section class="panel hidden" id="recordPanel"><div class="toolbar"><div><h2>Student Score Entry</h2><p class="hint">For each subject (and each separate Music, Arts, or PE component), five WW columns, three PT columns, and fixed ST1, ST2, Term Exam. The <strong>Used</strong> checkbox and <strong>Perfect Score</strong> fields sit inside each column header. Existing scores load from Supabase. Changes are drafts until Save Pending Scores is clicked. Blank scores are never automatically converted to zero.</p></div><span class="pill" id="editBadge">Unsaved edits stay in this browser tab</span></div><div class="tablewrap" id="table"></div><p class="hint" style="margin-top:12px">Displayed grades are local previews; score values are saved only through the authorized Supabase RPC. The official Grade 1–10 General weights are 20/50/30; HELE/TLE and MAPE are 20/60/20. Music, Arts, and PE each use the same 11 assessment slots. Final MAPE aggregation is a separate grading calculation.</p></section>
 <div class="foot">Universal Philippine School, Al Ain · Authenticated roster and protected assessment and score-saving workflows · School use only</div></div>
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -332,6 +332,9 @@ function renderServerSnapshot(){
  table.append(body);host.append(table);
 }
 function prepareServerRecord(){
+ // Preserve the current component's unsaved work when switching tabs.
+ // Only initialize a fresh local draft from Supabase once per component.
+ if(localRecords[snapshotKey()])return;
  localRecords[snapshotKey()]=blankRecord();
  const rec=record();
  const lookup={};
@@ -457,8 +460,8 @@ function boundedRequest(label, operation, ms=18000){
 }
 async function loadClassRecord(){
  if(!client||!$('offering').value)return;
- if(pendingCount()){
-  message('status','Unsaved score edits exist. Save or discard these edits before reloading.',true);
+ if(Object.keys(pendingScores).some(k=>k.startsWith($('offering').value+'|'+$('term').value+'|') && Object.keys(pendingScores[k]||{}).length)){
+  message('status','Unsaved score edits exist for this class/term (possibly another MAPE component). Save or discard them before reloading.',true);
   return;
  }
  const ticket=++loadVersion,offer=$('offering').value,term=$('term').value;
@@ -529,7 +532,15 @@ $('offering').addEventListener('change',()=>{resetValidationResult();showControl
 $('validateConfig').addEventListener('click',validateAssessmentConfig);
 $('saveConfig').addEventListener('click',saveAssessmentSetup);
 $('saveScores').addEventListener('click',savePendingScores);
-$('mapePart').addEventListener('change',()=>{loadClassRecord();});
+$('mapePart').addEventListener('change',()=>{
+ // Every MAPE component has a separate local record key. Switching tabs
+ // must not reload the entire class or discard any unsaved scores/headers.
+ if(busy){message('status','Please wait for the current class record to finish loading before switching MAPE components.',true);return;}
+ resetValidationResult();
+ if(!failedLoad){prepareServerRecord();}
+ render();renderServerSnapshot();
+ message('status','Showing '+part()+' · Draft entries in Music, Arts and PE are retained in this browser tab until saved or discarded.');
+});
 $('createMape').addEventListener('click',createMapeAssessment);
 $('previewSave').addEventListener('click',previewAssessmentSave);
 $('resetDraft').addEventListener('click',()=>{
