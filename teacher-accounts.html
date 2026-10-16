@@ -11,7 +11,7 @@
 <div id="resultPanel" class="panel hidden"><h2>New temporary password</h2><p id="issuedFor"></p><div class="pass" id="temporaryPassword"></div><div class="row" style="margin-top:12px"><button id="copyPassword">Copy password</button><button class="secondary" id="hidePassword">Hide password</button></div><p class="muted">This password is displayed only in this result. It is not stored by this page. Share it through a private, secure channel.</p></div>
 <p class="muted"><a href="index.html">Return to UPS class records</a></p>
 </section></main>
-<script type="module">
+<dialog id="accountConfirm" style="border:1px solid #dfcfe9;border-radius:17px;padding:24px;width:min(460px,92vw);box-shadow:0 24px 70px #24113455;color:#39264a"><h2 style="color:#5b2a83;margin-top:0">Confirm account action</h2><p id="accountConfirmMessage" style="white-space:pre-wrap;line-height:1.6"></p><div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px"><button type="button" id="accountCancel" class="secondary">Cancel</button><button type="button" id="accountProceed">Continue</button></div></dialog><script type="module">
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 const PROJECT_URL='https://gbrxtfrpthcgbfluriod.supabase.co';
 const PUBLISHABLE_KEY='sb_publishable_vI2aQgqrBcWqwGcpkATnlA_fUZT4GaK';
@@ -38,9 +38,10 @@ try{
  tell('status',`${(data||[]).length} teacher accounts loaded.`);
 }catch(e){tell('status',e.message||String(e),true)}
 }
+function askAccountAction(message){return new Promise(resolve=>{const d=document.getElementById('accountConfirm');document.getElementById('accountConfirmMessage').textContent=message;const done=value=>{d.close();resolve(value);};document.getElementById('accountCancel').onclick=()=>done(false);document.getElementById('accountProceed').onclick=()=>done(true);d.oncancel=e=>{e.preventDefault();done(false)};d.showModal();});}
 async function resetTeacher(teacher,button){
 hideResult();
-if(!confirm(`Issue a NEW temporary password for ${teacher.display_name||teacher.school_email} (${teacher.school_email})? The previous password will stop working immediately.`))return;
+if(!await askAccountAction(`Issue a NEW temporary password for ${teacher.display_name||teacher.school_email} (${teacher.school_email})? The previous password will stop working immediately.`))return;
 button.disabled=true;tell('status','Requesting secure password reset…');
 try{
  const session=await currentSession();
