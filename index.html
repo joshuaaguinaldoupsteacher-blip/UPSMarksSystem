@@ -695,6 +695,12 @@ async function loadClassRecord(){
   if(ticket!==loadVersion)return;
   if(!Array.isArray(rosterResult))throw Error('Student roster returned an unexpected format.');
   roster=rosterResult;
+  // Gender order is server-scoped to the same authorized class offering.
+  const genderResult=await boundedRequest('Roster gender',()=>client.rpc('ups_my_class_roster_gender_v1',{p_class_subject_id:offer}));
+  if(ticket!==loadVersion)return;
+  const genderRank=value=>{const v=String(value||'').toUpperCase();return v==='MALE'||v==='BOY'?0:v==='FEMALE'||v==='GIRL'?1:2;};
+  roster.sort((a,b)=>genderRank(genderResult?.[a.student_id])-genderRank(genderResult?.[b.student_id])
+     ||String(a.student_name||'').localeCompare(String(b.student_name||''),undefined,{sensitivity:'base'}));
   savedAssessments=[];savedScores=[];
   failedLoad=true; // Don't allow writes until ALL server data is ready.
   render();renderServerSnapshot();
