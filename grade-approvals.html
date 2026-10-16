@@ -16,8 +16,8 @@ async function load(){
    for(const value of values){const td=document.createElement('td');td.textContent=value;tr.append(td)}
    const td=document.createElement('td'),actions=document.createElement('div');actions.className='actions';
    addAction(actions,'Check Marks',()=>checkMarks(item),true);
-   if(item.submission_status==='submitted')addAction(actions,'Approve',()=>transition(item,'approve'));
    if(['submitted','approved'].includes(item.submission_status))addAction(actions,'Reopen',()=>transition(item,'reopen'),true);
+   if(item.submission_status==='submitted')addAction(actions,'Approve',()=>transition(item,'approve'));
    td.append(actions);tr.append(td);$('rows').append(tr);
   }
   msg((data||[]).length+' submission records found.');
