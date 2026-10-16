@@ -1278,18 +1278,32 @@ async function clearGeneralSaved(code,studentId){
  if(Object.keys(currentPending()).length||Object.keys(behaviourPending()).length){alert('Save or reload unsaved score changes before clearing.');return;}
  await clearSavedScoreBatch(generalSavedRows(code,studentId),(isMape()?part()+' / ':'')+code,loadClassRecord,clearMessage);
 }
+async function clearAssessmentAndMarkUnused(assessment,label,refresh,status){
+ if(classRecordLocked){alert('This grading period is submitted or approved. Ask Superadmin to reopen it first.');return;}
+ if(!assessment?.assessment_id){alert('Please choose a saved assessment column.');return;}
+ if(!confirm('Clear ALL saved scores in '+label+' and uncheck its Used header? Every student box will become Unused. This action is audited.'))return;
+ const {data,error}=await client.rpc('ups_clear_assessment_column_v1',{p_assessment_id:assessment.assessment_id});
+ if(error){status('Clear Column failed: '+error.message);return;}
+ status('Cleared '+data.cleared_scores+' saved scores. '+label+' is now Unused.');
+ await refresh();
+}
 async function clearGeneralColumn(){
  const code=$('generalClearColumn').value;if(!code)return;
- await clearGeneralSaved(code,null);
+ const component=isMape()?part():null;
+ const assessment=savedAssessments.find(a=>a.assessment_code===code&&(!isMape()||a.mape_component_code===component)&&a.active!==false&&a.assessment_active!==false);
+ if(!assessment){alert('Assessment is not active. Reload the record.');return;}
+ if(isMape()&&sharedMapeExamCodes.has(code)){alert('MAPE shared examinations are required and cannot be marked Unused. You may clear individual student scores instead.');return;}
+ const prefix=$('offering').value+'|'+$('term').value+'|';
+ if(Object.keys(behaviourPending()).length||Object.keys(pendingScores).some(k=>k.startsWith(prefix)&&Object.keys(pendingScores[k]||{}).length)){alert('Save or reload unsaved edits before clearing a column.');return;}
+ await clearAssessmentAndMarkUnused(assessment,(component?component+' / ':'')+code,loadClassRecord,clearMessage);
 }
 async function clearSpecialColumn(){
  if(!specialCache)return;const code=$('specialClearColumn').value;
  if(!code)return;
- const a=specialCache.setup.get(code);if(!a){alert('That assessment is Unused.');return;}
- const inputs=[...$('specialTable').querySelectorAll('input[data-score-slot]')];
- if(inputs.some(x=>x.value!==String(x.dataset.original??''))){alert('Save or reload unsaved score edits before clearing a column.');return;}
- const rows=inputs.filter(x=>x.dataset.scoreSlot===code&&x.dataset.original!=='').map(x=>({studentId:x.dataset.enrollment,assessmentId:a.assessment_id,timestamp:x.dataset.timestamp}));
- await clearSavedScoreBatch(rows,code,loadSpecialRecord,msg=>$('specialStatus').textContent=msg);
+ const a=specialCache.setup.get(code);if(!a){alert('That assessment is already Unused.');return;}
+ const controls=[...$('specialTable').querySelectorAll('input[data-setup],input[data-perfect],input[data-score-slot],input[data-behaviour]')];
+ if(controls.some(x=>x.hasAttribute('data-setup')?x.checked!==!!specialCache.setup.get(x.dataset.setup):x.hasAttribute('data-perfect')?x.value!==String(specialCache.setup.get(x.dataset.perfect)?.max_score??''):x.value!==String(x.dataset.original??''))){alert('Save or reload unsaved edits before clearing a column.');return;}
+ await clearAssessmentAndMarkUnused(a,code,loadSpecialRecord,msg=>$('specialStatus').textContent=msg);
 }
 $('generalClearColumnButton').addEventListener('click',clearGeneralColumn);
 $('specialClearColumnButton').addEventListener('click',clearSpecialColumn);
