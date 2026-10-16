@@ -509,38 +509,59 @@ function hydrateAllMapeComponents(){
 function buildSlots(){const payload={};for(const s of slots){const st=record().settings[s.code],active=s.fixed||!!st.used;payload[s.code]={active};if(active&&goodMax(st.max))payload[s.code].max_score=Number(st.max);}return payload;}
 async function saveMapeAssessmentSetup(){
  if(failedLoad||!client||!isMape())return;
- if(pendingCount()){message('status','Save pending scores first, before changing assessment headers.',true);return;}
+ const prefix=$('offering').value+'|'+$('term').value+'|';
+ if(Object.keys(pendingScores).some(k=>k.startsWith(prefix)&&Object.keys(pendingScores[k]||{}).length)){
+  message('status','Save or discard all pending Music, Arts and PE score edits before changing assessment settings.',true);return;
+ }
  const desired=record().settings;
  const existing=new Map(savedAssessments.filter(a=>a.mape_component_code===part()).map(a=>[a.assessment_code,a]));
- const toCreate=[];
- for(const sl of slots){
-  const st=desired[sl.code],used=sl.fixed||!!st.used,old=existing.get(sl.code);
+ const changes=[],creations=[];
+ for(const slot of slots){
+  const st=desired[slot.code],active=slot.fixed||!!st.used,old=existing.get(slot.code);
   if(old){
-   if(!used||Number(st.max)!==Number(old.max_score)){
-    message('status',sl.code+' is already saved. Changing its Used checkbox or Perfect Score requires the protected MAPE assessment editing workflow, which is not enabled yet.',true);return;
+   if(old.active!==active||Number(st.max)!==Number(old.max_score)){
+    if(!goodMax(st.max)){message('status','Enter a valid Perfect Score for '+slot.code+'.',true);return;}
+    if(savedScores.some(row=>row.assessment_id===old.assessment_id)){
+     message('status',slot.code+' has saved scores. Its settings cannot be changed to protect grading accuracy.',true);return;
+    }
+    changes.push({slot:slot.code,assessment_id:old.assessment_id,old_max:Number(old.max_score),old_active:old.active!==false,new_max:Number(st.max),new_active:active});
    }
-  }else if(used){
-   if(!goodMax(st.max)){message('status','Enter a valid Perfect Score for '+sl.code+'.',true);return;}
-   toCreate.push({slot:sl.code,max:Number(st.max),group:sl.group});
+  }else if(active){
+   if(!goodMax(st.max)){message('status','Enter a valid Perfect Score for '+slot.code+'.',true);return;}
+   creations.push({slot:slot.code,max:Number(st.max),group:slot.group});
   }
  }
- if(!toCreate.length){message('status','No new assessments to create for '+part()+'.');return;}
- if(!confirm('Create '+toCreate.length+' assessment(s) in '+part()+'? This saves real Supabase records.'))return;
+ if(!changes.length&&!creations.length){message('status','No assessment changes to save for '+part()+'.');return;}
+ if(!confirm('Save '+changes.length+' protected assessment edit(s) and create '+creations.length+' assessment(s) for '+part()+'? These are real database changes.'))return;
  $('saveConfig').disabled=true;
- let completed=0;
+ let completed=0,issue=null;
  try{
-  for(const sl of toCreate){
-   const {error}=await client.rpc('ups_create_mape_assessment_v1',{
-    p_class_subject_id:$('offering').value,p_grading_period_code:$('term').value,
-    p_mape_component_code:part(),p_component_code:sl.group,p_assessment_code:sl.slot,
-    p_max_score:sl.max,p_assessment_date:null
+  for(const c of changes){
+   const {data,error}=await client.rpc('ups_edit_mape_assessment_v1',{
+    p_assessment_id:c.assessment_id,p_expected_max_score:c.old_max,
+    p_expected_active:c.old_active,p_new_max_score:c.new_max,p_new_active:c.new_active
    });
-   if(error)throw Error(sl.slot+': '+error.message);
+   if(error||data?.saved!==true)throw Error(c.slot+': '+(error?.message||'Edit failed'));
    completed++;
   }
-  message('status','Created '+completed+' '+part()+' assessments.');
- }catch(e){message('status','Created '+completed+' assessment(s). Remaining items were not saved: '+e.message,true);}
- finally{await loadClassRecord();setWriteState();}
+  for(const c of creations){
+   const {error}=await client.rpc('ups_create_mape_assessment_v1',{
+    p_class_subject_id:$('offering').value,p_grading_period_code:$('term').value,
+    p_mape_component_code:part(),p_component_code:c.group,p_assessment_code:c.slot,
+    p_max_score:c.max,p_assessment_date:null
+   });
+   if(error)throw Error(c.slot+': '+error.message);
+   completed++;
+  }
+ }catch(e){issue=e.message||String(e);}
+ finally{
+  // Remove cached MAPE component records so the fresh server settings take effect.
+  if(!Object.keys(pendingScores).some(k=>k.startsWith(prefix)&&Object.keys(pendingScores[k]||{}).length)){
+   for(const component of ['MUSIC','ARTS','PE']){delete localRecords[prefix+component];delete recordSnapshots[prefix+component];}
+  }
+  await loadClassRecord();setWriteState();
+  message('status',issue?'Saved '+completed+' item(s); remaining changes were not saved: '+issue:'Saved '+completed+' MAPE assessment change(s).',!!issue);
+ }
 }
 async function saveAssessmentSetup(){
  if(isMape()){await saveMapeAssessmentSetup();return;}
