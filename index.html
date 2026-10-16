@@ -613,6 +613,13 @@ function render(){
   const rec=record(),assessmentById=new Map();
   for(const a of savedAssessments){
    if(isMape()&&a.mape_component_code!==part())continue;
+   if(a.active!==false&&a.assessment_active!==false)continue;
+   if(!rec.settings[a.assessment_code])continue;
+   const key=roster.some(st=>currentPending()[st.student_subject_enrollment_id+'|'+a.assessment_code]);
+   if(!key){rec.settings[a.assessment_code].used=false;rec.settings[a.assessment_code].max='';for(const id of Object.keys(rec.scores)){delete rec.scores[id]?.[a.assessment_code];}}
+  }
+  for(const a of savedAssessments){
+   if(isMape()&&a.mape_component_code!==part())continue;
    if(a.assessment_active===false||a.active===false)continue;
    if(!rec.settings[a.assessment_code])continue;
    assessmentById.set(a.assessment_id,a);
@@ -748,6 +755,7 @@ function prepareServerRecord(){
  const rec=record();
  const lookup={};
  for(const a of savedAssessments){if(isMape()&&a.mape_component_code!==part())continue;
+  if(a.active===false||a.assessment_active===false)continue;
   if(!slots.some(s=>s.code===a.assessment_code))continue;
   lookup[a.assessment_id]=a;
   const setting=rec.settings[a.assessment_code];
