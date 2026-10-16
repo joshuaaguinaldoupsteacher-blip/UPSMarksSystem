@@ -376,6 +376,27 @@ async function submitSpecialGroupForReview(){
  $('submissionNotice').textContent='Teaching group submitted and locked for administrator review.';
 }
 function updateSpecialPendingBadge(){const controls=[...$('specialTable').querySelectorAll('input[data-setup],input[data-perfect],input[data-score-slot],input[data-behaviour]')];let count=0;for(const el of controls){if(el.hasAttribute('data-setup')){const saved=specialCache?.setup.get(el.dataset.setup);if(el.checked!==!!saved)count++;}else if(el.hasAttribute('data-perfect')){const saved=specialCache?.setup.get(el.dataset.perfect);if(el.value!==String(saved?.max_score??'')&&el.value.trim()!=='')count++;}else if(el.value!==String(el.dataset.original??''))count++;}$('specialEditBadge').textContent=count+' unsaved edit(s)';}
+function renderSpecialExamAttainment(students,setup){
+ if(!isSpecial())return;
+ const host=$('attainmentTable');host.replaceChildren();
+ const exams=['ST1','ST2','TERM_EXAM'],table=node('table'),thead=node('thead'),tr=node('tr');
+ for(const title of ['Exam','With scores','Below 65%','65% to below 75%','75% or above','At least 65%','ADEK group target'])tr.append(node('th',title));
+ thead.append(tr);table.append(thead);
+ const body=node('tbody'),total=students.size;
+ for(const code of exams){
+  const assessment=setup.get(code);let recorded=0,below=0,meets=0,above=0;
+  if(assessment&&Number(assessment.max_score)>0)for(const st of students.values()){
+   const entry=st.scores.get(assessment.assessment_id);if(!entry||entry.score===null||entry.score===undefined)continue;
+   const pct=100*Number(entry.score)/Number(assessment.max_score);if(!Number.isFinite(pct))continue;recorded++;
+   if(pct<65)below++;else if(pct<75)meets++;else above++;
+  }
+  const numerator=meets+above,ratio=total?100*numerator/total:0,row=node('tr');
+  const values=[code==='TERM_EXAM'?'Term Exam':code,recorded+' / '+total,String(below),String(meets),String(above),total?ratio.toFixed(1)+'%':'—',!assessment?'Not yet active':recorded<total?'Incomplete':ratio>=75?'Target met':'Below target'];
+  for(let i=0;i<values.length;i++)row.append(node('td',values[i],i>0?'result':undefined));body.append(row);
+ }
+ table.append(body);host.append(table);
+ $('attainmentNotice').textContent='ADEK attainment bands: below 65%, 65% to below 75%, and 75% or above. Group target: at least 75% of all enrolled students score 65% or higher. Missing scores are excluded from achievement bands but included in the group denominator. Draft report only; not a final grade or inspection result.';
+}
 async function loadSpecialRecord(){
  if(!isSpecial()||!client)return;
  const groupId=$('offering').value.slice(8),period=$('term').value,g=specialGroups.find(x=>x.group_id===groupId);
@@ -386,7 +407,7 @@ async function loadSpecialRecord(){
   if(!isSpecial()||$('offering').value.slice(8)!==groupId||$('term').value!==period)return;
   const [config,grid,behaviour,grades]=calls,setup=new Map(config.filter(x=>x.assessment_code).map(x=>[x.assessment_code,x]));
   const students=new Map();for(const row of grid){if(!students.has(row.student_subject_enrollment_id))students.set(row.student_subject_enrollment_id,{id:row.student_subject_enrollment_id,name:row.student_name,gender:row.gender,scores:new Map()});if(row.assessment_id)students.get(row.student_subject_enrollment_id).scores.set(row.assessment_id,row);}
-  const bv=new Map(behaviour.map(x=>[x.student_subject_enrollment_id,x]));const gradeMap=new Map(grades.map(x=>[x.student_subject_enrollment_id,x]));const complete=[...gradeMap.values()].filter(x=>x.term_grade!==null&&x.term_grade!==undefined).length;$('gradeCompletionOverview').replaceChildren();const box=node('div',undefined,'stat');box.append(node('small','Completed Term Grades'),node('strong',complete+' / '+students.size));$('gradeCompletionOverview').append(box);
+  renderSpecialExamAttainment(students,setup);const bv=new Map(behaviour.map(x=>[x.student_subject_enrollment_id,x]));const gradeMap=new Map(grades.map(x=>[x.student_subject_enrollment_id,x]));const complete=[...gradeMap.values()].filter(x=>x.term_grade!==null&&x.term_grade!==undefined).length;$('gradeCompletionOverview').replaceChildren();const box=node('div',undefined,'stat');box.append(node('small','Completed Term Grades'),node('strong',complete+' / '+students.size));$('gradeCompletionOverview').append(box);
   specialCache={groupId,period,g,setup,students,bv};
   const table=$('specialTable');table.replaceChildren();table.style.minWidth='1850px';const head=node('thead'),header=node('tr');header.append(node('th','Student / School ID'));
   const slots=specLayouts[g.subject_code]||[];
