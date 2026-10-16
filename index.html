@@ -249,6 +249,7 @@ async function validateAssessmentConfig(){
 
 function compute(rec,student){const scores=rec.scores[student.student_subject_enrollment_id]||{};
 const ww=slots.filter(s=>s.group==='WW'&&rec.settings[s.code].used);const pt=slots.filter(s=>s.group==='PT'&&rec.settings[s.code].used);
+// Drafts may omit components; compute a final grade only after all required categories are ready.
 if(!ww.length||!pt.length)return null;
 for(const s of [...ww,...pt,...slots.filter(s=>s.group==='EX')]){let max=rec.settings[s.code].max,v=scores[s.code];if(!goodMax(max)||v===undefined||!Number.isFinite(v)||v<0||v>Number(max))return null;}
 const percent=arr=>100*arr.reduce((n,s)=>n+scores[s.code],0)/arr.reduce((n,s)=>n+Number(rec.settings[s.code].max),0);
@@ -614,7 +615,7 @@ async function savePendingScores(){
  }
  for(const [id,score] of bEntries){try{const previous=generalBehaviourRows.get(id);const result=await client.rpc('ups_save_general_behaviour_v1',{p_class_subject_id:$('offering').value,p_period_code:$('term').value,p_enrollment_id:id,p_score:score,p_expected_updated_at:previous?.updated_at??null});if(result.error)throw Error(result.error.message);delete bPending[id];saved++;}catch(e){failures.push('Behaviour / '+id+': '+e.message);}}
  if(failures.length){message('status','Saved '+saved+'. '+failures.length+' failed: '+failures.slice(0,2).join(' | ')+'. Refresh after reviewing unsaved changes.',true);}
- else{message('status','Saved '+saved+' scores successfully. Audit triggers remain active.');await loadClassRecord();}
+ else{message('status','Saved '+saved+' score entries. Incomplete students remain editable next time.');delete localRecords[recordKey()];delete recordSnapshots[recordKey()];await loadClassRecord();}
  setWriteState();
 }
 async function createMapeAssessment(){
