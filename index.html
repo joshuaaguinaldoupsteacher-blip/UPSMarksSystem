@@ -145,6 +145,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 <section class="panel hidden" id="mapeTermPanel"><div class="toolbar"><div><h2>MAPE Term Grade Preview</h2><p class="hint">Music, Arts and PE are graded separately. The MAPE term grade is the rounded average of their three transmuted component grades, shown only when all three are complete. Draft preview only; this does not submit or store final grades.</p></div><span class="pill">3 components required</span></div><div class="stats"><div class="stat"><small>Music</small><strong id="mapeMusicGrade">—</strong></div><div class="stat"><small>Arts</small><strong id="mapeArtsGrade">—</strong></div><div class="stat"><small>Physical Education</small><strong id="mapePeGrade">—</strong></div><div class="stat"><small>Students complete (all 3)</small><strong id="mapeTermComplete">0 / 0</strong></div></div><p class="hint" style="margin-top:10px">The overview above shows completion for the currently displayed class. Individual student results are in the table below.</p></section>
 <section class="panel hidden" id="mapeAnnualPanel"><div class="toolbar"><div><h2>MAPE Annual Grade Preview</h2><p class="hint">Read-only calculation using saved Music, Arts and PE assessments across Terms 1–3. Annual result = rounded average of all nine transmuted component-term grades. Incomplete records remain blank.</p></div><button type="button" id="loadMapeAnnual" class="secondary">Load saved annual grades</button></div><p class="hint" id="mapeAnnualStatus" role="status">Select a MAPE class and click Load saved annual grades. Unsaved draft edits are excluded.</p><div class="tablewrap" id="mapeAnnualTable"></div></section>
 <section class="panel hidden" id="submissionPanel"><div class="toolbar"><div><h2>Grade Submission Status</h2><p class="hint">Authorized, read-only status of this class and grading period. Submission and approval controls will be enabled only after complete validation and locking tests.</p></div><div class="buttons"><button type="button" id="refreshSubmissionStatus" class="secondary">Refresh status</button><button type="button" id="submitGrades" disabled>Submit Grades for Review</button></div></div><div class="stats"><div class="stat"><small>Current status</small><strong id="submissionState">Not loaded</strong></div><div class="stat"><small>Students</small><strong id="submissionStudents">—</strong></div><div class="stat"><small>Saved assessments</small><strong id="submissionAssessments">—</strong></div><div class="stat"><small>Saved scores</small><strong id="submissionScores">—</strong></div></div><p class="hint" id="submissionNotice" role="status">Select a class and term to inspect its submission state.</p></section>
+<section class="panel hidden" id="attainmentPanel"><div class="toolbar"><div><h2>ST1, ST2 and Term Exam Attainment Report</h2><p class="hint">Available to authorized teachers and administrators after submission. Individual attainment: below 65%, 65–&lt;75%, 75% or above. Group target: 75% or more of students meeting the 65% minimum.</p></div><button type="button" class="secondary" id="refreshAttainment">Refresh report</button></div><p id="attainmentNotice" class="hint" role="status">Submit grades to unlock reporting.</p><div class="tablewrap" id="attainmentTable"></div></section>
 <section class="panel hidden" id="recordPanel"><div class="toolbar"><div><h2>Student Score Entry</h2><p class="hint">For each subject (and each separate Music, Arts, or PE component), five WW columns, three PT columns, and fixed ST1, ST2, Term Exam. The <strong>Used</strong> checkbox and <strong>Perfect Score</strong> fields sit inside each column header. Existing scores load from Supabase. Changes are drafts until Save Pending Scores is clicked. Blank scores are never automatically converted to zero.</p></div><span class="pill" id="editBadge">Unsaved edits stay in this browser tab</span></div><div class="tablewrap" id="table"></div><p class="hint" style="margin-top:12px">Displayed grades are local previews; score values are saved only through the authorized Supabase RPC. The official Grade 1–10 General weights are 20/50/30; HELE/TLE and MAPE are 20/60/20. Music, Arts, and PE each use the same 11 assessment slots. Final MAPE aggregation is a separate grading calculation.</p></section>
 <div class="foot">Universal Philippine School, Al Ain · Authenticated roster and protected assessment and score-saving workflows · School use only</div></div>
 <script type="module">
@@ -632,6 +633,32 @@ function boundedRequest(label, operation, ms=18000){
   new Promise((_,reject)=>setTimeout(()=>reject(Error(label+' timed out after '+Math.round(ms/1000)+' seconds. Check network or Supabase connectivity.')),ms))
  ]);
 }
+async function loadAttainmentReport(){
+ if(!client||!$('offering').value)return;
+ $('attainmentTable').replaceChildren();$('attainmentNotice').textContent='Loading assessment report…';
+ const selected=$('offering').value,period=$('term').value;
+ try{
+  const {data,error}=await client.rpc('ups_assessment_attainment_report_v1',{p_class_subject_id:selected,p_grading_period_code:period});
+  if(selected!==$('offering').value||period!==$('term').value)return;
+  if(error)throw Error(error.message);
+  if(!data?.available){$('attainmentNotice').textContent=data?.reason||'Report not available.';return;}
+  const report=data.assessments||[];
+  $('attainmentNotice').textContent='Group attainment target: at least 75% of enrolled students scoring 65% or higher in each assessment. This is assessment attainment, not the final subject grade.';
+  const table=node('table'),head=node('thead'),tr=node('tr');
+  for(const label of ['Component','Assessment','Completed','Below 65%','65%–<75%','75%+','Group attainment','Target'])tr.append(node('th',label));
+  head.append(tr);table.append(head);
+  const body=node('tbody');
+  for(const a of report){
+   const tr=node('tr'),rate=Number(a.group_attainment_pct);
+   const vals=[a.mape_component,a.assessment_code==='TERM_EXAM'?'Term Exam':a.assessment_code,
+    a.scored_students+' / '+a.total_students,a.below_minimum,a.meeting_minimum,a.above_minimum,
+    Number.isFinite(rate)?rate.toFixed(2)+'%':'—',Number.isFinite(rate)&&(a.scored_students===a.total_students)?(rate>=75?'Met':'Below target'):'Incomplete'];
+   for(const v of vals)tr.append(node('td',String(v??'—')));body.append(tr);
+  }
+  table.append(body);$('attainmentTable').append(table);
+  if(!report.length)$('attainmentNotice').textContent='No ST1, ST2 or Term Exam assessments found.';
+ }catch(e){$('attainmentNotice').textContent='Report unavailable: '+(e.message||String(e));}
+}
 let submissionStatusRequest=0;
 async function submitGradesForReview(){
  if(!client||!$('offering').value||failedLoad)return;
@@ -738,6 +765,7 @@ async function loadClassRecord(){
   }
   render();renderServerSnapshot();
   await refreshSubmissionStatus();
+  await loadAttainmentReport();
  }catch(e){
   if(ticket!==loadVersion)return;
   failedLoad=true;
@@ -748,7 +776,7 @@ async function loadClassRecord(){
  }finally{if(ticket===loadVersion)setBusy(false);}
 }
 $('signin').addEventListener('click',async()=>{setBusy(true);message('loginStatus','Signing in…');try{const cfg={url:PROJECT_URL,key:PUBLISHABLE_KEY};
-if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Invalid embedded Supabase Project URL.');if(!cfg?.key)throw Error('Missing embedded publishable/anon key.');const email=$('email').value.trim(),pwd=$('password').value;if(!email||!pwd)throw Error('Enter email and password.');client=createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const auth=await client.auth.signInWithPassword({email,password:pwd});if(auth.error||!auth.data?.session)throw Error(auth.error?.message||'Sign-in failed');$('password').value='';const firstStatus=await passwordStatus();if(firstStatus.password_change_required===true){showPasswordSetup();return;}await authorize();const cat=await client.rpc('ups_my_assessment_setup_v1');if(cat.error)throw Error(cat.error.message);catalog=Array.isArray(cat.data)?cat.data:[];const offerings=new Map();for(const r of catalog)if(!offerings.has(r.class_subject_id))offerings.set(r.class_subject_id,r);$('offering').replaceChildren();for(const [id,r] of offerings){const op=node('option',`Grade ${r.grade_level} · ${r.class_code} · ${r.subject_name}`);op.value=id;$('offering').append(op);}$('loginPanel').classList.add('hidden');document.body.classList.remove('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel','submissionPanel'])$(id).classList.remove('hidden');showControls();$('mapeCreatePanel').classList.add('hidden');if(catalog.length)await loadClassRecord();else message('status','No authorized offerings for this account.');}catch(e){message('loginStatus',e.message,true);if(client){try{await client.auth.signOut();}catch{}}client=null;}finally{setBusy(false);}});
+if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Invalid embedded Supabase Project URL.');if(!cfg?.key)throw Error('Missing embedded publishable/anon key.');const email=$('email').value.trim(),pwd=$('password').value;if(!email||!pwd)throw Error('Enter email and password.');client=createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const auth=await client.auth.signInWithPassword({email,password:pwd});if(auth.error||!auth.data?.session)throw Error(auth.error?.message||'Sign-in failed');$('password').value='';const firstStatus=await passwordStatus();if(firstStatus.password_change_required===true){showPasswordSetup();return;}await authorize();const cat=await client.rpc('ups_my_assessment_setup_v1');if(cat.error)throw Error(cat.error.message);catalog=Array.isArray(cat.data)?cat.data:[];const offerings=new Map();for(const r of catalog)if(!offerings.has(r.class_subject_id))offerings.set(r.class_subject_id,r);$('offering').replaceChildren();for(const [id,r] of offerings){const op=node('option',`Grade ${r.grade_level} · ${r.class_code} · ${r.subject_name}`);op.value=id;$('offering').append(op);}$('loginPanel').classList.add('hidden');document.body.classList.remove('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel','submissionPanel','attainmentPanel'])$(id).classList.remove('hidden');showControls();$('mapeCreatePanel').classList.add('hidden');if(catalog.length)await loadClassRecord();else message('status','No authorized offerings for this account.');}catch(e){message('loginStatus',e.message,true);if(client){try{await client.auth.signOut();}catch{}}client=null;}finally{setBusy(false);}});
 for(const id of ['email','password'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){$('signin').click();}});
 $('offering').addEventListener('change',()=>{resetValidationResult();showControls();loadClassRecord();});$('term').addEventListener('change',()=>{resetValidationResult();loadClassRecord();});$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadClassRecord);
 $('validateConfig').addEventListener('click',validateAssessmentConfig);
@@ -757,6 +785,7 @@ $('saveScores').addEventListener('click',savePendingScores);
 $('loadMapeAnnual').addEventListener('click',loadMapeAnnual);
 $('refreshSubmissionStatus').addEventListener('click',refreshSubmissionStatus);
 $('submitGrades').addEventListener('click',submitGradesForReview);
+$('refreshAttainment').addEventListener('click',loadAttainmentReport);
 $('mapePart').addEventListener('change',()=>{
  // Every MAPE component has a separate local record key. Switching tabs
  // must not reload the entire class or discard any unsaved scores/headers.
