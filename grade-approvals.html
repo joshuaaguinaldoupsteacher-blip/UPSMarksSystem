@@ -12,8 +12,8 @@ async function load(){
  try{
   const {data,error}=await db.rpc('ups_admin_submissions_v1');if(error)throw Error(error.message);
   for(const item of data||[]){
-   const tr=document.createElement('tr');const values=[`Grade ${item.grade_level} · ${item.class_name}`,item.subject_name,item.period_code,item.submission_status,item.submitted_at?new Date(item.submitted_at).toLocaleString():'—'];
-   for(const value of values){const td=document.createElement('td');td.textContent=value;tr.append(td)}
+   const tr=document.createElement('tr');const isSandbox=/\btest\b|sandbox|demo/i.test(item.class_name);const values=[(isSandbox?'[TEST CLASS] ':'')+`Grade ${item.grade_level} · ${item.class_name}`,item.subject_name,item.period_code,item.submission_status,item.submitted_at?new Date(item.submitted_at).toLocaleString():'—'];
+   for(const value of values){const td=document.createElement('td');td.textContent=value;if(isSandbox){td.style.background='#fff4dd';if(value===values[0])td.style.fontWeight='700';}tr.append(td)}
    const td=document.createElement('td'),actions=document.createElement('div');actions.className='actions';
    addAction(actions,'Check Marks',()=>checkMarks(item),true);
    if(['submitted','approved'].includes(item.submission_status))addAction(actions,'Reopen',()=>transition(item,'reopen'),true);
@@ -75,7 +75,7 @@ async function transition(item,action){
   reason=reason.trim();if(reason.length<10||reason.length>500){msg('Reopening reason must be 10–500 characters.',true);return}
  }
  const label=`Grade ${item.grade_level} ${item.class_name} · ${item.subject_name} · ${item.period_code}`;
- if(!confirm((action==='approve'?'Approve and lock ':'Reopen for editing ')+label+'?'))return;
+ if(!confirm((action==='approve'?'Approve and lock ':'Reopen for editing ')+label+( /\btest\b|sandbox|demo/i.test(item.class_name)?'\n\nTEST CLASS — This is a sandbox record.':'')+'?'))return;
  msg('Applying '+action+'…');
  const {data,error}=await db.rpc('ups_admin_grade_transition_v1',{p_submission_id:item.submission_id,p_action:action,p_reason:reason});
  if(error||data?.success!==true){msg(error?.message||'Transition failed.',true);return;}
