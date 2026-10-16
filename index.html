@@ -107,6 +107,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 <div style="padding:9px 14px;background:#faf5ff;border:1px solid #ddd0ea;border-radius:9px;margin:8px 0;font:14px system-ui"><a href="behaviour-completion.html" style="color:#5d2984;font-weight:700">Behaviour Grade Completion Report →</a> <span style="color:#65586e">(authorized school staff)</span></div>
 <div style="padding:9px 14px;background:#faf5ff;border:1px solid #ddd0ea;border-radius:9px;margin:8px 0;font:14px system-ui"><a href="consolidated-grades.html" style="color:#5d2984;font-weight:700">Consolidated Student Grades →</a> <span style="color:#65586e">(approved grades and Behaviour report)</span></div>
 <header><div><h1>UPS Marks System</h1><p class="sub">Class Records · Secure Login · Development Testing</p></div><span class="pill">DEVELOPMENT TESTING · SECURE SAVE FUNCTIONS AVAILABLE</span></header>
+<section id="specialRecords" class="card hidden" style="padding:20px;margin:12px 0"><h2 id="specialTitle">Arabic / Islamic Class Record</h2><p class="hint">Secure Arab and Non-Arab teaching-group records. Draft saves do not submit or lock grades.</p><button type="button" id="specialSave">Save Class Record</button><button type="button" id="specialReload">Reload Saved Record</button><span id="specialStatus" role="status" style="margin-left:12px"></span><div style="overflow:auto;margin-top:16px"><table id="specialTable" style="min-width:1450px"></table></div></section>
 <div class="warning"><strong>Protected student information.</strong> Sign in using a school-authorized test account. This development build reads school records through protected Supabase endpoints. Assessment and student-score edits remain local until you select the appropriate Save action; saving then writes to Supabase using protected functions. Behaviour edits use Save Pending Scores too. Submission and administrator approval are separate actions. The full grading workflow has not yet passed authenticated end-to-end testing. Do not share screenshots containing actual student names.</div>
 <section class="panel login-card" id="loginPanel" aria-label="Teacher and administrator sign in">
   <div class="login-brand-side">
@@ -171,6 +172,8 @@ const intervals=[
 [93.6,94.77,95],[94.78,95.95,96],[95.96,97.13,97],[97.14,98.31,98],[98.32,99.49,99],
 [99.5,100,100]
 ];
+let specialGroups=[],specialCache=null,specialBusy=false;
+const isSpecial=()=>String($('offering')?.value||'').startsWith('SPECIAL:');
 let client=null,catalog=[],roster=[],busy=false,localRecords={},savedAssessments=[],savedScores=[],loadVersion=0;
 let recordSnapshots={}, pendingScores={}, failedLoad=false;
 const isMape=()=>selectedOffering()?.scheme_code==='UPS_MAPE';
@@ -325,7 +328,83 @@ function updateDraftSummary(){
  $('draftWarning').textContent=issues.join(' · ');
 
 }
-function showControls(){$('mapeChooser').classList.toggle('hidden',!isMape());$('mapeCreatePanel').classList.add('hidden');const r=selectedOffering(),terms=catalog.filter(x=>x.class_subject_id===$('offering').value);const prev=$('term').value;$('term').replaceChildren();for(const x of terms){const op=node('option',x.grading_period_code.replace('_',' '));op.value=x.grading_period_code;$('term').append(op);}if(terms.some(x=>x.grading_period_code===prev))$('term').value=prev;$('scheme').value=(r?.scheme_code||'')+' · '+(r?.scheme_approved?'Approved':'Not approved');$('weight').textContent=weightsFor(r?.scheme_code).join(' / ');}
+const specLayouts={ARABIC:[['LISTEN_SPEAK',5],['WRITING',5],['READING',5],['EX',3]],ISLAMIC:[['RECITATION',2],['MEMORIZATION',2],['VALUES',2],['WQA',3],['EX',3]]};
+const specCode=(c,i)=>c==='EX'?['ST1','ST2','TERM_EXAM'][i]:c+'_'+(i+1);
+function showSpecialMode(){
+ for(const id of ['overview','serverPanel','draftPanel','recordPanel','submissionPanel','attainmentPanel'])$(id).classList.add('hidden');
+ $('specialRecords').classList.remove('hidden');$('mapeChooser').classList.add('hidden');$('mapeCreatePanel').classList.add('hidden');
+ const g=specialGroups.find(x=>'SPECIAL:'+x.group_id===$('offering').value);
+ $('specialTitle').textContent=g?`Grade ${g.grade_level} · ${g.section_name} · ${g.subject_code} · ${g.group_name}`:'Arabic / Islamic';
+ const old=$('term').value;$('term').replaceChildren();
+ for(const p of ['TERM_1','TERM_2','TERM_3']){const op=node('option',p.replace('_',' '));op.value=p;$('term').append(op);}
+ if(['TERM_1','TERM_2','TERM_3'].includes(old))$('term').value=old;
+}
+async function loadSpecialRecord(){
+ if(!isSpecial()||!client)return;
+ const groupId=$('offering').value.slice(8),period=$('term').value,g=specialGroups.find(x=>x.group_id===groupId);
+ if(!g)return;
+ $('specialStatus').textContent='Loading saved assessments and scores…';$('specialSave').disabled=true;
+ try{
+  const calls=await Promise.all([['setup','ups_my_specialized_assessment_setup_v1'],['grid','ups_my_specialized_score_grid_v1'],['behaviour','ups_my_specialized_behaviour_v1']].map(async ([name,fn])=>{const {data,error}=await client.rpc(fn,{p_group_id:groupId,p_period_code:period});if(error)throw Error(name+': '+error.message);return data;}));
+  if(!isSpecial()||$('offering').value.slice(8)!==groupId||$('term').value!==period)return;
+  const [config,grid,behaviour]=calls,setup=new Map(config.filter(x=>x.assessment_code).map(x=>[x.assessment_code,x]));
+  const students=new Map();for(const row of grid){if(!students.has(row.student_subject_enrollment_id))students.set(row.student_subject_enrollment_id,{id:row.student_subject_enrollment_id,name:row.student_name,gender:row.gender,scores:new Map()});if(row.assessment_id)students.get(row.student_subject_enrollment_id).scores.set(row.assessment_id,row);}
+  const bv=new Map(behaviour.map(x=>[x.student_subject_enrollment_id,x]));
+  specialCache={groupId,period,g,setup,students,bv};
+  const table=$('specialTable');table.replaceChildren();const head=node('thead'),header=node('tr');for(const label of ['Student','Gender'])header.append(node('th',label));
+  const slots=specLayouts[g.subject_code]||[];
+  for(const [category,num] of slots)for(let i=0;i<num;i++){
+   const code=specCode(category,i),old=setup.get(code),th=node('th'),wrap=node('div');wrap.style.minWidth='105px';
+   wrap.append(node('strong',code));const toggle=node('input');toggle.type='checkbox';toggle.dataset.setup=code;toggle.checked=!!old;toggle.style.width='auto';wrap.append(toggle);
+   const max=node('input');max.type='number';max.min='0.01';max.placeholder='Perfect';max.dataset.perfect=code;max.value=old?.max_score??'';max.style.width='78px';wrap.append(max);th.append(wrap);header.append(th);
+  }
+  header.append(node('th','Behaviour /100'));head.append(header);table.append(head);
+  const body=node('tbody');
+  for(const student of students.values()){
+   const tr=node('tr');tr.append(node('td',student.name),node('td',student.gender||'—'));
+   for(const [category,num] of slots)for(let i=0;i<num;i++){
+    const code=specCode(category,i),a=setup.get(code),row=a?student.scores.get(a.assessment_id):null,td=node('td');
+    const inp=node('input');inp.type='number';inp.step='any';inp.min='0';inp.placeholder='—';inp.style.width='72px';inp.dataset.scoreSlot=code;inp.dataset.enrollment=student.id;
+    inp.dataset.original=row?.score??'';inp.dataset.timestamp=row?.score_updated_at??'';inp.value=row?.score??'';td.append(inp);tr.append(td);
+   }
+   const td=node('td'),b=bv.get(student.id),inp=node('input');inp.type='number';inp.min='0';inp.max='100';inp.step='any';inp.style.width='72px';inp.dataset.behaviour=student.id;inp.dataset.original=b?.score??'';inp.dataset.timestamp=b?.updated_at??'';inp.value=b?.score??'';td.append(inp);tr.append(td);body.append(tr);
+  }
+  table.append(body);$('specialStatus').textContent=`${students.size} students · ${setup.size} saved assessments · ${grid.filter(r=>r.assessment_id&&r.score!==null).length} saved scores`;
+ }catch(e){$('specialStatus').textContent='Load failed: '+e.message;}
+ finally{$('specialSave').disabled=false;}
+}
+async function saveSpecialRecord(){
+ if(specialBusy||!specialCache)return;
+ const {groupId,period,g,setup}=specialCache;if($('offering').value!=='SPECIAL:'+groupId||$('term').value!==period)return;
+ const configs=[],scores=[],behaviours=[];
+ for(const x of $('specialTable').querySelectorAll('input[data-setup]')){
+  const code=x.dataset.setup,maxEl=$('specialTable').querySelector('input[data-perfect="'+code+'"]'),max=Number(maxEl.value),old=setup.get(code);
+  if(x.checked&&(!maxEl.value.trim()||!Number.isFinite(max)||max<=0)){$('specialStatus').textContent='Invalid perfect score: '+code;return;}
+  if(!!old!==x.checked||(x.checked&&Number(old.max_score)!==max))configs.push({code,enabled:x.checked,max:x.checked?max:null,component:['ST1','ST2','TERM_EXAM'].includes(code)?'EX':code.slice(0,code.lastIndexOf('_'))});
+ }
+ for(const x of $('specialTable').querySelectorAll('input[data-score-slot]'))if(x.value.trim()!==''&&(x.dataset.original===''||Number(x.value)!==Number(x.dataset.original))){const max=$('specialTable').querySelector('input[data-perfect="'+x.dataset.scoreSlot+'"]'),check=$('specialTable').querySelector('input[data-setup="'+x.dataset.scoreSlot+'"]');if(!check.checked||!Number.isFinite(Number(x.value))||Number(x.value)<0||Number(x.value)>Number(max.value)){$('specialStatus').textContent='Invalid score in '+x.dataset.scoreSlot;return;}scores.push(x);}
+ for(const x of $('specialTable').querySelectorAll('input[data-behaviour]'))if(x.value.trim()!==''&&(x.dataset.original===''||Number(x.value)!==Number(x.dataset.original))){if(!Number.isFinite(Number(x.value))||Number(x.value)<0||Number(x.value)>100){$('specialStatus').textContent='Invalid Behaviour score.';return;}behaviours.push(x);}
+ if(!configs.length&&!scores.length&&!behaviours.length){$('specialStatus').textContent='No unsaved changes.';return;}
+ if(!confirm(`Save ${configs.length} assessment settings, ${scores.length} academic scores, ${behaviours.length} Behaviour scores?`))return;
+ specialBusy=true;$('specialSave').disabled=true;let saved=0,errors=[];
+ try{
+  for(const c of configs){const r=await client.rpc('ups_save_specialized_slot_v1',{p_group_id:groupId,p_period_code:period,p_component_code:c.component,p_assessment_code:c.code,p_enabled:c.enabled,p_max_score:c.max});if(r.error){errors.push(c.code+': '+r.error.message);continue;}saved++;}
+  const refreshed=await client.rpc('ups_my_specialized_assessment_setup_v1',{p_group_id:groupId,p_period_code:period});if(refreshed.error)throw Error('Assessment reload: '+refreshed.error.message);
+  const active=new Map(refreshed.data.filter(x=>x.assessment_code).map(x=>[x.assessment_code,x]));
+  for(const x of scores){const a=active.get(x.dataset.scoreSlot);if(!a){errors.push(x.dataset.scoreSlot+': inactive');continue;}
+   const r=await client.rpc('ups_save_specialized_score_v1',{p_group_id:groupId,p_assessment_id:a.assessment_id,p_student_subject_enrollment_id:x.dataset.enrollment,p_score:Number(x.value),p_expected_updated_at:x.dataset.timestamp||null});
+   if(r.error){errors.push(x.dataset.scoreSlot+': '+r.error.message);continue;}saved++;x.dataset.original=x.value;
+  }
+  for(const x of behaviours){const r=await client.rpc('ups_save_specialized_behaviour_v1',{p_group_id:groupId,p_period_code:period,p_enrollment_id:x.dataset.behaviour,p_score:Number(x.value),p_expected_updated_at:x.dataset.timestamp||null});if(r.error){errors.push('Behaviour: '+r.error.message);continue;}saved++;x.dataset.original=x.value;}
+  if(errors.length){$('specialStatus').textContent=`Saved ${saved}; ${errors.length} failed: ${errors.slice(0,2).join(' | ')}. Keep page open.`;return;}
+  await loadSpecialRecord();$('specialStatus').textContent='Saved to Supabase. Reopen this group and term to continue.';
+ }catch(e){$('specialStatus').textContent='Save interrupted after '+saved+' writes: '+e.message;}
+ finally{specialBusy=false;$('specialSave').disabled=false;}
+}
+$('specialSave').addEventListener('click',saveSpecialRecord);
+$('specialReload').addEventListener('click',loadSpecialRecord);
+
+function showControls(){if(isSpecial()){showSpecialMode();return;}$('specialRecords').classList.add('hidden');for(const id of ['overview','serverPanel','draftPanel','recordPanel','submissionPanel','attainmentPanel'])$(id).classList.remove('hidden');$('mapeChooser').classList.toggle('hidden',!isMape());$('mapeCreatePanel').classList.add('hidden');const r=selectedOffering(),terms=catalog.filter(x=>x.class_subject_id===$('offering').value);const prev=$('term').value;$('term').replaceChildren();for(const x of terms){const op=node('option',x.grading_period_code.replace('_',' '));op.value=x.grading_period_code;$('term').append(op);}if(terms.some(x=>x.grading_period_code===prev))$('term').value=prev;$('scheme').value=(r?.scheme_code||'')+' · '+(r?.scheme_approved?'Approved':'Not approved');$('weight').textContent=weightsFor(r?.scheme_code).join(' / ');}
 let annualRequestId=0;
 function buildSavedMapeRecord(payload,component){
  const rec=blankRecord(), assessments=new Map();
@@ -949,9 +1028,9 @@ async function loadClassRecord(){
  }finally{if(ticket===loadVersion){setBusy(false);setWriteState();}}
 }
 $('signin').addEventListener('click',async()=>{setBusy(true);message('loginStatus','Signing in…');try{const cfg={url:PROJECT_URL,key:PUBLISHABLE_KEY};
-if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Invalid embedded Supabase Project URL.');if(!cfg?.key)throw Error('Missing embedded publishable/anon key.');const email=$('email').value.trim(),pwd=$('password').value;if(!email||!pwd)throw Error('Enter email and password.');client=createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const auth=await client.auth.signInWithPassword({email,password:pwd});if(auth.error||!auth.data?.session)throw Error(auth.error?.message||'Sign-in failed');$('password').value='';const firstStatus=await passwordStatus();if(firstStatus.password_change_required===true){showPasswordSetup();return;}await authorize();const cat=await client.rpc('ups_my_assessment_setup_v1');if(cat.error)throw Error(cat.error.message);catalog=Array.isArray(cat.data)?cat.data:[];const offerings=new Map();for(const r of catalog)if(!offerings.has(r.class_subject_id))offerings.set(r.class_subject_id,r);$('offering').replaceChildren();for(const [id,r] of offerings){const op=node('option',`Grade ${r.grade_level} · ${r.class_code} · ${r.subject_name}`);op.value=id;$('offering').append(op);}$('loginPanel').classList.add('hidden');document.body.classList.remove('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel','submissionPanel','attainmentPanel'])$(id).classList.remove('hidden');showControls();$('mapeCreatePanel').classList.add('hidden');if(catalog.length)await loadClassRecord();else message('status','No authorized offerings for this account.');}catch(e){message('loginStatus',e.message,true);if(client){try{await client.auth.signOut();}catch{}}client=null;}finally{setBusy(false);}});
+if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Invalid embedded Supabase Project URL.');if(!cfg?.key)throw Error('Missing embedded publishable/anon key.');const email=$('email').value.trim(),pwd=$('password').value;if(!email||!pwd)throw Error('Enter email and password.');client=createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});const auth=await client.auth.signInWithPassword({email,password:pwd});if(auth.error||!auth.data?.session)throw Error(auth.error?.message||'Sign-in failed');$('password').value='';const firstStatus=await passwordStatus();if(firstStatus.password_change_required===true){showPasswordSetup();return;}await authorize();const cat=await client.rpc('ups_my_assessment_setup_v1');if(cat.error)throw Error(cat.error.message);catalog=Array.isArray(cat.data)?cat.data:[];const sg=await client.rpc('ups_my_specialized_groups_v1');if(sg.error)throw Error('Specialized teaching groups: '+sg.error.message);specialGroups=Array.isArray(sg.data)?sg.data:[];const offerings=new Map();for(const r of catalog)if(!offerings.has(r.class_subject_id))offerings.set(r.class_subject_id,r);$('offering').replaceChildren();for(const [id,r] of offerings){const op=node('option',`Grade ${r.grade_level} · ${r.class_code} · ${r.subject_name}`);op.value=id;$('offering').append(op);}for(const g of specialGroups){const op=node('option',`Grade ${g.grade_level} · ${g.section_name} · ${g.subject_code} · ${g.group_name}`);op.value='SPECIAL:'+g.group_id;$('offering').append(op);}$('loginPanel').classList.add('hidden');document.body.classList.remove('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel','submissionPanel','attainmentPanel'])$(id).classList.remove('hidden');showControls();$('mapeCreatePanel').classList.add('hidden');if(catalog.length||specialGroups.length){if(isSpecial())await loadSpecialRecord();else await loadClassRecord();}else message('status','No authorized offerings for this account.');}catch(e){message('loginStatus',e.message,true);if(client){try{await client.auth.signOut();}catch{}}client=null;}finally{setBusy(false);}});
 for(const id of ['email','password'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){$('signin').click();}});
-$('offering').addEventListener('change',()=>{resetValidationResult();showControls();loadClassRecord();});$('term').addEventListener('change',()=>{resetValidationResult();loadClassRecord();});$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadClassRecord);
+$('offering').addEventListener('change',()=>{resetValidationResult();showControls();if(isSpecial())loadSpecialRecord();else loadClassRecord();});$('term').addEventListener('change',()=>{resetValidationResult();if(isSpecial())loadSpecialRecord();else loadClassRecord();});$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadClassRecord);
 $('validateConfig').addEventListener('click',validateAssessmentConfig);
 $('saveAllRecord').addEventListener('click',saveEntireClassRecord);
 $('saveConfig').addEventListener('click',()=>{message('status','Save Assessment Setup clicked — checking class record and Supabase…');try{Promise.resolve(saveAssessmentSetup()).catch(e=>message('status','Assessment save error: '+e.message,true));}catch(e){message('status','Assessment handler error: '+e.message,true);}});
