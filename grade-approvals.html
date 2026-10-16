@@ -60,7 +60,7 @@ async function checkMarks(item){
   head.append(hr);tbl.append(head);const body=document.createElement('tbody');
   for(const student of students){const tr=document.createElement('tr'),name=document.createElement('td');name.textContent=student.name+' · '+(student.school_id||'—');tr.append(name);
    for(const column of columns){const td=document.createElement('td'),a=column.assessment,value=a?student.scores?.[a.id]:null;td.textContent=value===null||value===undefined?'—':String(value);tr.append(td);}
-   const grade=document.createElement('td'),result=gradeForReview(student,assessments,scheme,intervals);grade.textContent=result===null?'—':String(result);grade.style.fontWeight='700';tr.append(grade);body.append(tr);}
+   const grade=document.createElement('td'),result=(scheme==='UPS_ARABIC'||scheme==='UPS_ISLAMIC')?(student.term_grade===null||student.term_grade===undefined?null:Number(student.term_grade)):gradeForReview(student,assessments,scheme,intervals);grade.textContent=result===null?'—':String(result);grade.style.fontWeight='700';tr.append(grade);body.append(tr);}
   tbl.append(body);$('marksGrid').append(tbl);$('marksStatus').textContent=students.length+' students · ST1, ST2, TE and calculated Term Grade. A dash means incomplete or unavailable. MAPE shows separate exam marks for Music, Arts and PE.';
  }catch(e){$('marksStatus').textContent='Unable to load marks: '+(e.message||String(e));}
  $('marksPanel').scrollIntoView({behavior:'smooth',block:'start'});
