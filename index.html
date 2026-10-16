@@ -468,8 +468,12 @@ function renderServerSnapshot(){
 function prepareServerRecord(){
  // Preserve the current component's unsaved work when switching tabs.
  // Only initialize a fresh local draft from Supabase once per component.
- if(localRecords[snapshotKey()])return;
- localRecords[snapshotKey()]=blankRecord();
+ // Only preserve a draft when it contains actual unsaved edits.
+ // Initial rendering creates an empty local record before Supabase responds.
+ // That empty placeholder must NEVER block hydration of saved scores.
+ const k=snapshotKey();
+ if(Object.keys(pendingScores[k]||{}).length>0)return;
+ localRecords[k]=blankRecord();
  const rec=record();
  const lookup={};
  for(const a of savedAssessments){if(isMape()&&a.mape_component_code!==part())continue;
