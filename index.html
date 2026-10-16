@@ -678,7 +678,7 @@ function openManagementPage(filename){
  $('embeddedManagement').classList.remove('hidden');
  $('showClassRecords').style.display='';
  for(const b of document.querySelectorAll('[data-manage]'))b.setAttribute('aria-pressed',String(b.dataset.manage===filename));
- const managementUrl=filename+'?ups_ui=20261017b';
+ const managementUrl=filename+'?ups_ui=20261017c';
  if($('managementFrame').getAttribute('src')!==managementUrl)$('managementFrame').setAttribute('src',managementUrl);
  $('embeddedManagement').scrollIntoView({block:'start'});
 }
