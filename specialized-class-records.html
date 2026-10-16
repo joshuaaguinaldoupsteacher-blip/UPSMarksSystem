@@ -48,7 +48,7 @@ async function saveSpecializedClassRecord(){
   const max=Number(maxInput?.value),old=savedSetup.get(code);
   const newOn=check.checked;
   if(newOn&&(!maxInput.value.trim()||!Number.isFinite(max)||max<=0)){ $('saveStatus').textContent='Enter a positive perfect score for '+code+'.';return;}
-  if((!!old)!==newOn||(newOn&&Number(old.max_score)!==max))configs.push({code,component:code.replace(/_(?:\\d+)$/,'').replace(/^(?:ST1|ST2|TERM_EXAM)$/,'EX'),enabled:newOn,max:newOn?max:null});
+  if((!!old)!==newOn||(newOn&&Number(old.max_score)!==max))configs.push({code,component:['ST1','ST2','TERM_EXAM'].includes(code)?'EX':code.slice(0,code.lastIndexOf('_')),enabled:newOn,max:newOn?max:null});
  }
  const academic=[...document.querySelectorAll('#students input[data-score-slot]')].filter(x=>x.value.trim()!==''&&String(Number(x.value))!==String(Number(x.dataset.original||'')) || x.value.trim()!==''&&x.dataset.original==='');
  const behaviour=[...document.querySelectorAll('#students input[data-behaviour-enrollment]')].filter(x=>x.value.trim()!==''&&(x.dataset.original===''||Number(x.value)!==Number(x.dataset.original)));
