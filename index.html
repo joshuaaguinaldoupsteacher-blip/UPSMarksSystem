@@ -447,6 +447,7 @@ async function loadSpecialRecord(){
   if(!isSpecial()||$('offering').value.slice(8)!==groupId||$('term').value!==period)return;
   $('printSpecialContext').textContent=['Grade '+g.grade_level,g.section_name,g.subject_code,g.group_name,period].join(' · ');
   const [config,grid,behaviour,grades]=calls,setup=new Map(config.filter(x=>x.assessment_code).map(x=>[x.assessment_code,x]));
+  const clearSelect=$('specialClearColumn');clearSelect.replaceChildren();const emptyOption=node('option','Select column');emptyOption.value='';clearSelect.append(emptyOption);for(const item of setup.values()){const opt=node('option',item.assessment_code);opt.value=item.assessment_code;clearSelect.append(opt);}
   const students=new Map();for(const row of grid){if(!students.has(row.student_subject_enrollment_id))students.set(row.student_subject_enrollment_id,{id:row.student_subject_enrollment_id,name:row.student_name,gender:row.gender,scores:new Map()});if(row.assessment_id)students.get(row.student_subject_enrollment_id).scores.set(row.assessment_id,row);}
   renderSpecialExamAttainment(students,setup);const bv=new Map(behaviour.map(x=>[x.student_subject_enrollment_id,x]));const gradeMap=new Map(grades.map(x=>[x.student_subject_enrollment_id,x]));const complete=[...gradeMap.values()].filter(x=>x.term_grade!==null&&x.term_grade!==undefined).length;$('gradeCompletionOverview').replaceChildren();const box=node('div',undefined,'stat');box.append(node('small','Completed Term Grades'),node('strong',complete+' / '+students.size));$('gradeCompletionOverview').append(box);
   specialCache={groupId,period,g,setup,students,bv};
@@ -1198,6 +1199,7 @@ async function loadClassRecord(){
    }else problems.push('Scores: '+scoreResult.reason?.message);
   }
   if(!problems.length){
+   updateGeneralClearColumns();
    if(mape)hydrateAllMapeComponents();else prepareServerRecord();
    failedLoad=false;
    $('serverState').textContent='Loaded';
