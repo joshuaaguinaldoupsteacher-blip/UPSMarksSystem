@@ -611,20 +611,14 @@ function render(){
  // Never overwrite a cell the teacher has edited but not yet saved.
  if(!failedLoad&&savedAssessments.length){
   const rec=record(),assessmentById=new Map();
-  for(const a of savedAssessments){
-   if(isMape()&&a.mape_component_code!==part())continue;
-   if(a.active!==false&&a.assessment_active!==false)continue;
-   if(!rec.settings[a.assessment_code])continue;
-   const key=roster.some(st=>currentPending()[st.student_subject_enrollment_id+'|'+a.assessment_code]);
-   if(!key){rec.settings[a.assessment_code].used=false;rec.settings[a.assessment_code].max='';for(const id of Object.keys(rec.scores)){delete rec.scores[id]?.[a.assessment_code];}}
-  }
+  // Header checkbox and Perfect Score are driven by the editable draft.
+  // Reload/hydration establishes saved state; rendering must not override
+  // a teacher's decision to reactivate a previously cleared assessment.
   for(const a of savedAssessments){
    if(isMape()&&a.mape_component_code!==part())continue;
    if(a.assessment_active===false||a.active===false)continue;
    if(!rec.settings[a.assessment_code])continue;
    assessmentById.set(a.assessment_id,a);
-   rec.settings[a.assessment_code].used=true;
-   if(!goodMax(rec.settings[a.assessment_code].max))rec.settings[a.assessment_code].max=String(a.max_score);
   }
   const pending=currentPending();
   for(const saved of savedScores){
