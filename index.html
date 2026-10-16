@@ -107,7 +107,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 <div style="padding:9px 14px;background:#faf5ff;border:1px solid #ddd0ea;border-radius:9px;margin:8px 0;font:14px system-ui"><a href="behaviour-completion.html" style="color:#5d2984;font-weight:700">Behaviour Grade Completion Report →</a> <span style="color:#65586e">(authorized school staff)</span></div>
 <div style="padding:9px 14px;background:#faf5ff;border:1px solid #ddd0ea;border-radius:9px;margin:8px 0;font:14px system-ui"><a href="consolidated-grades.html" style="color:#5d2984;font-weight:700">Consolidated Student Grades →</a> <span style="color:#65586e">(approved grades and Behaviour report)</span></div>
 <header><div><h1>UPS Marks System</h1><p class="sub">Class Records · Secure Login · Development Testing</p></div><span class="pill">DEVELOPMENT TESTING · SECURE SAVE FUNCTIONS AVAILABLE</span></header>
-<section id="specialRecords" class="card hidden" style="padding:20px;margin:12px 0"><h2 id="specialTitle">Arabic / Islamic Class Record</h2><p class="hint">Secure Arab and Non-Arab teaching-group records. Draft saves do not submit or lock grades.</p><button type="button" id="specialSave">Save Class Record</button><button type="button" id="specialReload">Reload Saved Record</button><span id="specialStatus" role="status" style="margin-left:12px"></span><div style="overflow:auto;margin-top:16px"><table id="specialTable" style="min-width:1450px"></table></div></section>
+<section id="specialRecords" class="panel hidden"><div class="toolbar"><div><h2>Student Score Entry</h2><p class="hint" id="specialTitle">Arabic / Islamic Class Record</p><p class="hint">Use the same Class Record controls as other subjects. Only the assessment columns and approved subject weights differ. Arab and Non-Arab group records stay separate.</p></div><span class="pill" id="specialEditBadge">Saved and pending scores</span></div><div class="toolbar" style="margin:14px 0;gap:12px"><div><button type="button" id="specialSave">Save Class Record</button> <button type="button" class="secondary" id="specialReload">Reload Saved Record</button></div><span id="specialStatus" role="status" class="hint"></span></div><div class="tablewrap"><table id="specialTable"></table></div><p class="hint" style="margin-top:12px">Saved entries remain visible after reopening. Blank cells stay blank; Behaviour is independent of the academic grade. Final grade submission requires complete records.</p></section>
 <div class="warning"><strong>Protected student information.</strong> Sign in using a school-authorized test account. This development build reads school records through protected Supabase endpoints. Assessment and student-score edits remain local until you select the appropriate Save action; saving then writes to Supabase using protected functions. Behaviour edits use Save Pending Scores too. Submission and administrator approval are separate actions. The full grading workflow has not yet passed authenticated end-to-end testing. Do not share screenshots containing actual student names.</div>
 <section class="panel login-card" id="loginPanel" aria-label="Teacher and administrator sign in">
   <div class="login-brand-side">
@@ -339,37 +339,38 @@ function showSpecialMode(){
  for(const p of ['TERM_1','TERM_2','TERM_3']){const op=node('option',p.replace('_',' '));op.value=p;$('term').append(op);}
  if(['TERM_1','TERM_2','TERM_3'].includes(old))$('term').value=old;
 }
+function updateSpecialPendingBadge(){const controls=[...$('specialTable').querySelectorAll('input[data-setup],input[data-perfect],input[data-score-slot],input[data-behaviour]')];let count=0;for(const el of controls){if(el.hasAttribute('data-setup')){const saved=specialCache?.setup.get(el.dataset.setup);if(el.checked!==!!saved)count++;}else if(el.hasAttribute('data-perfect')){const saved=specialCache?.setup.get(el.dataset.perfect);if(el.value!==String(saved?.max_score??'')&&el.value.trim()!=='')count++;}else if(el.value!==String(el.dataset.original??''))count++;}$('specialEditBadge').textContent=count+' unsaved edit(s)';}
 async function loadSpecialRecord(){
  if(!isSpecial()||!client)return;
  const groupId=$('offering').value.slice(8),period=$('term').value,g=specialGroups.find(x=>x.group_id===groupId);
  if(!g)return;
  $('specialStatus').textContent='Loading saved assessments and scores…';$('specialSave').disabled=true;
  try{
-  const calls=await Promise.all([['setup','ups_my_specialized_assessment_setup_v1'],['grid','ups_my_specialized_score_grid_v1'],['behaviour','ups_my_specialized_behaviour_v1']].map(async ([name,fn])=>{const {data,error}=await client.rpc(fn,{p_group_id:groupId,p_period_code:period});if(error)throw Error(name+': '+error.message);return data;}));
+  const calls=await Promise.all([['setup','ups_my_specialized_assessment_setup_v1'],['grid','ups_my_specialized_score_grid_v1'],['behaviour','ups_my_specialized_behaviour_v1'],['grades','ups_my_specialized_grades_v1']].map(async ([name,fn])=>{const {data,error}=await client.rpc(fn,{p_group_id:groupId,p_period_code:period});if(error)throw Error(name+': '+error.message);return data;}));
   if(!isSpecial()||$('offering').value.slice(8)!==groupId||$('term').value!==period)return;
-  const [config,grid,behaviour]=calls,setup=new Map(config.filter(x=>x.assessment_code).map(x=>[x.assessment_code,x]));
+  const [config,grid,behaviour,grades]=calls,setup=new Map(config.filter(x=>x.assessment_code).map(x=>[x.assessment_code,x]));
   const students=new Map();for(const row of grid){if(!students.has(row.student_subject_enrollment_id))students.set(row.student_subject_enrollment_id,{id:row.student_subject_enrollment_id,name:row.student_name,gender:row.gender,scores:new Map()});if(row.assessment_id)students.get(row.student_subject_enrollment_id).scores.set(row.assessment_id,row);}
-  const bv=new Map(behaviour.map(x=>[x.student_subject_enrollment_id,x]));
+  const bv=new Map(behaviour.map(x=>[x.student_subject_enrollment_id,x]));const gradeMap=new Map(grades.map(x=>[x.student_subject_enrollment_id,x]));
   specialCache={groupId,period,g,setup,students,bv};
-  const table=$('specialTable');table.replaceChildren();const head=node('thead'),header=node('tr');for(const label of ['Student','Gender'])header.append(node('th',label));
+  const table=$('specialTable');table.replaceChildren();table.style.minWidth='1850px';const head=node('thead'),header=node('tr');for(const label of ['Student / School ID','Gender'])header.append(node('th',label));
   const slots=specLayouts[g.subject_code]||[];
   for(const [category,num] of slots)for(let i=0;i<num;i++){
-   const code=specCode(category,i),old=setup.get(code),th=node('th'),wrap=node('div');wrap.style.minWidth='105px';
-   wrap.append(node('strong',code));const toggle=node('input');toggle.type='checkbox';toggle.dataset.setup=code;toggle.checked=!!old;toggle.style.width='auto';wrap.append(toggle);
-   const max=node('input');max.type='number';max.min='0.01';max.placeholder='Perfect';max.dataset.perfect=code;max.value=old?.max_score??'';max.style.width='78px';wrap.append(max);th.append(wrap);header.append(th);
+   const code=specCode(category,i),old=setup.get(code),th=node('th',undefined,old?'':'off-col'),wrap=node('div',undefined,'head-controls');
+   wrap.append(node('span',code==='TERM_EXAM'?'Term Exam':code,'slot-title'));const label=node('label',undefined,'mini'),toggle=node('input');toggle.type='checkbox';toggle.dataset.setup=code;toggle.checked=!!old;toggle.setAttribute('aria-label',code+' used');label.append(toggle,document.createTextNode(' Used'));wrap.append(label);
+   wrap.append(node('span','Perfect Score','mini'));const max=node('input');max.type='number';max.min='0.01';max.step='any';max.placeholder='—';max.dataset.perfect=code;max.value=old?.max_score??'';max.disabled=!toggle.checked;max.setAttribute('aria-label',code+' perfect score');toggle.addEventListener('change',()=>{max.disabled=!toggle.checked;th.classList.toggle('off-col',!toggle.checked);updateSpecialPendingBadge();});max.addEventListener('input',updateSpecialPendingBadge);wrap.append(max);th.append(wrap);header.append(th);
   }
-  header.append(node('th','Behaviour /100'));head.append(header);table.append(head);
+  header.append(node('th','Behaviour / 100'));header.append(node('th','Initial Grade'));header.append(node('th','Transmuted Grade'));head.append(header);table.append(head);
   const body=node('tbody');
   for(const student of students.values()){
-   const tr=node('tr');tr.append(node('td',student.name),node('td',student.gender||'—'));
+   const tr=node('tr');const who=node('td');who.append(node('strong',student.name));tr.append(who,node('td',student.gender||'—'));
    for(const [category,num] of slots)for(let i=0;i<num;i++){
     const code=specCode(category,i),a=setup.get(code),row=a?student.scores.get(a.assessment_id):null,td=node('td');
     const inp=node('input');inp.type='number';inp.step='any';inp.min='0';inp.placeholder='—';inp.style.width='72px';inp.dataset.scoreSlot=code;inp.dataset.enrollment=student.id;
-    inp.dataset.original=row?.score??'';inp.dataset.timestamp=row?.score_updated_at??'';inp.value=row?.score??'';td.append(inp);tr.append(td);
+    inp.dataset.original=row?.score??'';inp.dataset.timestamp=row?.score_updated_at??'';inp.value=row?.score??'';inp.addEventListener('input',updateSpecialPendingBadge);td.classList.toggle('off-col',!a);td.append(inp);tr.append(td);
    }
-   const td=node('td'),b=bv.get(student.id),inp=node('input');inp.type='number';inp.min='0';inp.max='100';inp.step='any';inp.style.width='72px';inp.dataset.behaviour=student.id;inp.dataset.original=b?.score??'';inp.dataset.timestamp=b?.updated_at??'';inp.value=b?.score??'';td.append(inp);tr.append(td);body.append(tr);
+   const td=node('td'),b=bv.get(student.id),inp=node('input');inp.type='number';inp.min='0';inp.max='100';inp.step='any';inp.style.width='72px';inp.dataset.behaviour=student.id;inp.dataset.original=b?.score??'';inp.dataset.timestamp=b?.updated_at??'';inp.value=b?.score??'';inp.addEventListener('input',updateSpecialPendingBadge);td.append(inp);tr.append(td);const computed=gradeMap.get(student.id);for(const val of [computed?.initial_grade,computed?.term_grade]){const cell=node('td',val===null||val===undefined?'—':String(val),'result');cell.title=computed?.calculation_status||'INCOMPLETE';tr.append(cell);}body.append(tr);
   }
-  table.append(body);$('specialStatus').textContent=`${students.size} students · ${setup.size} saved assessments · ${grid.filter(r=>r.assessment_id&&r.score!==null).length} saved scores`;
+  table.append(body);updateSpecialPendingBadge();$('specialStatus').textContent=`${students.size} students · ${setup.size} saved assessments · ${grid.filter(r=>r.assessment_id&&r.score!==null).length} saved scores`;
  }catch(e){$('specialStatus').textContent='Load failed: '+e.message;}
  finally{$('specialSave').disabled=false;}
 }
