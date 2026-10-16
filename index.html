@@ -575,7 +575,7 @@ async function saveAssessmentSetup(){
  if(isMape()){await saveMapeAssessmentSetup();return;}
  if(failedLoad||!client){message('status','Assessment setup cannot be saved because the class record or login did not load successfully. Reload the class record and check the error above.',true);return;}
  const offer=$('offering').value,term=$('term').value;
- if(pendingCount()){message('status','Save pending scores before modifying assessment headers.',true);return;}
+ // Allow assessment setup before pending scores: scores need saved assessment IDs.
  if(!confirm('Save assessment configuration for this class and grading period? This changes real Supabase assessment records.'))return;
  $('saveConfig').disabled=true;
  try{
@@ -585,9 +585,18 @@ async function saveAssessmentSetup(){
   if(preview.data?.valid!==true||preview.data?.grading_period_locked)throw Error('Assessment configuration failed validation or is locked.');
   const out=await client.rpc('ups_save_assessment_config_v1',params);
   if(out.error)throw Error(out.error.message);
-  message('status','Saved assessment configuration. Refreshing class record…');
-  delete localRecords[recordKey()];delete recordSnapshots[recordKey()];
-  await loadClassRecord();
+  const pendingDraft=Object.keys(currentPending()).length>0||Object.keys(behaviourPending()).length>0;
+  if(pendingDraft){
+   const fresh=await client.rpc('ups_my_class_record_assessments_v1',{p_class_subject_id:offer,p_grading_period_code:term});
+   if(fresh.error||!Array.isArray(fresh.data))throw Error('Assessment saved, but cannot refresh assessment IDs: '+(fresh.error?.message||'Invalid response')+'. Do not discard pending scores.');
+   savedAssessments=fresh.data;
+   message('status','Assessment setup saved. Your unsaved scores were preserved. Click Save Pending Scores now.');
+   $('draftWarning').textContent='Assessment setup saved to Supabase. Pending student scores are still here; click Save Pending Scores.';
+  }else{
+   message('status','Assessment setup saved. Reloading the latest record.');
+   delete localRecords[recordKey()];delete recordSnapshots[recordKey()];
+   await loadClassRecord();
+  }
  }catch(e){message('status','Assessment setup not saved: '+e.message,true);}finally{setWriteState();}
 }
 async function savePendingScores(){
@@ -595,7 +604,7 @@ async function savePendingScores(){
  const pending=currentPending(),entries=Object.entries(pending),bPending=behaviourPending(),bEntries=Object.entries(bPending);
  if(!entries.length&&!bEntries.length){message('status','No unsaved academic or Behaviour scores yet. Enter a score first, then click Save Pending Scores.');return;}
  const available=new Map(savedAssessments.filter(a=>!isMape()||a.mape_component_code===part()).filter(a=>a.active!==false&&a.assessment_active!==false).map(a=>[a.assessment_code,a]));
- for(const [,d] of entries){if(!available.has(d.slot)){message('status','Assessment '+d.slot+' is not saved/active. Create or save the assessment setup first.',true);return;}}
+ for(const [,d] of entries){if(!available.has(d.slot)){const notice='Assessment '+d.slot+' is not yet saved. Click Save Assessment Setup first; your entered scores will be preserved.';message('status',notice,true);$('draftWarning').textContent=notice;return;}}
  if(entries.some(([key])=>currentSnapshot()[key]?.assessment_id&&!currentSnapshot()[key].updated_at)){
   message('status','Server score snapshot lacks updated_at. Saving is blocked until a fresh timestamp-enabled read RPC is available.',true);return;
  }
