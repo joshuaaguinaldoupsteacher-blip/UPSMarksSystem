@@ -454,7 +454,19 @@ async function loadSpecialRecord(){
   }
   header.append(node('th','Behaviour / 100'));header.append(node('th','Initial Grade'));header.append(node('th','Term Grade'));head.append(header);table.append(head);
   const body=node('tbody');
-  for(const student of students.values()){
+  const genderOrder=g=>{const value=String(g||'').trim().toUpperCase();return value==='MALE'||value==='BOY'?0:value==='FEMALE'||value==='GIRL'?1:2;};
+  const isSandboxGroup=/TEST CLASS|SANDBOX/i.test(String(g.section_name||''));
+  const orderedStudents=[...students.values()].sort((a,b)=>{
+   if(isSandboxGroup){
+    const extract=name=>Number((String(name||'').match(/TEST STUDENT\s+(\d+)/i)||[])[1]);
+    const aNumber=extract(a.name),bNumber=extract(b.name);
+    if(Number.isFinite(aNumber)&&Number.isFinite(bNumber))return aNumber-bNumber;
+   }
+   return genderOrder(a.gender)-genderOrder(b.gender)
+    ||String(a.name||'').localeCompare(String(b.name||''),undefined,{sensitivity:'base',numeric:true})
+    ||String(a.id).localeCompare(String(b.id));
+  });
+  for(const student of orderedStudents){
    const tr=node('tr');const who=node('td');who.append(node('strong',student.name));tr.append(who);
    for(const [category,num] of slots)for(let i=0;i<num;i++){
     const code=specCode(category,i),a=setup.get(code),row=a?student.scores.get(a.assessment_id):null,td=node('td');
