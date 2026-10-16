@@ -168,6 +168,29 @@ const PUBLISHABLE_KEY = 'sb_publishable_vI2aQgqrBcWqwGcpkATnlA_fUZT4GaK';
 const $=id=>document.getElementById(id);
 const slots=[...Array.from({length:5},(_,i)=>({code:'WW'+(i+1),group:'WW',fixed:false})),...Array.from({length:3},(_,i)=>({code:'PT'+(i+1),group:'PT',fixed:false})),{code:'ST1',group:'EX',fixed:false},{code:'ST2',group:'EX',fixed:false},{code:'TERM_EXAM',group:'EX',fixed:false}];
 const examWeights={ST1:.30,ST2:.30,TERM_EXAM:.40};
+const sharedMapeExamCodes=new Set(['ST1','ST2','TERM_EXAM']);
+function synchronizeMapeExamSetting(code,used,max){
+ if(!isMape()||!sharedMapeExamCodes.has(code))return;
+ const base=$('offering').value+'|'+$('term').value+'|';
+ for(const component of ['MUSIC','ARTS','PE']){
+  const key=base+component,rec=localRecords[key]||(localRecords[key]=blankRecord());
+  rec.settings[code].used=used;rec.settings[code].max=max;
+ }
+}
+function synchronizeMapeExamScore(studentId,code,value){
+ if(!isMape()||!sharedMapeExamCodes.has(code))return;
+ const base=$('offering').value+'|'+$('term').value+'|';
+ for(const component of ['MUSIC','ARTS','PE']){
+  const key=base+component,rec=localRecords[key]||(localRecords[key]=blankRecord());
+  (rec.scores[studentId]||(rec.scores[studentId]={}))[code]=value;
+  const pendingKey=studentId+'|'+code;
+  const old=recordSnapshots[key]?.[pendingKey];
+  const pending=pendingScores[key]||(pendingScores[key]={});
+  if(old&&Number(old.score)===value)delete pending[pendingKey];
+  else pending[pendingKey]={student_id:studentId,slot:code,score:value};
+ }
+}
+
 const intervals=[
 [0,4.67,60],[4.68,9.34,61],[9.35,14,62],[14.01,18.67,63],[18.68,23.34,64],
 [23.35,28,65],[28.01,32.67,66],[32.68,37.33,67],[37.34,42,68],[42.01,46.66,69],
@@ -575,12 +598,12 @@ function render(){
  }
  const host=$('table');host.replaceChildren();const rec=record(),table=node('table');table.style.minWidth='1910px';const head=node('thead'),tr=node('tr');tr.append(node('th','Student / School ID'));
 for(const s of slots){const st=rec.settings[s.code],on=slotIsFixed(s)||st.used,th=node('th',undefined,on?'':'off-col'),box=node('div',undefined,'head-controls');box.append(node('span',s.code==='TERM_EXAM'?'Term Exam':s.code,'slot-title'));
-if(!slotIsFixed(s)){const label=node('label',undefined,'mini'),ck=node('input');ck.type='checkbox';ck.checked=st.used;ck.setAttribute('aria-label',s.code+' used');ck.addEventListener('change',()=>{st.used=ck.checked;resetValidationResult();render();});label.append(ck,document.createTextNode(' Used'));box.append(label);}else box.append(node('span','Always used','mini'));
-box.append(node('span','Perfect Score','mini'));const max=node('input');max.type='number';max.min='0.01';max.step='any';max.placeholder='—';max.disabled=!on;max.value=st.max;max.setAttribute('aria-label',s.code+' perfect score');max.addEventListener('change',()=>{if(max.value&&!goodMax(max.value)){alert('Perfect score must be greater than zero and at most 10,000.');max.value=st.max;return;}st.max=max.value;resetValidationResult();render();});box.append(max);th.append(box);tr.append(th);}
+if(!slotIsFixed(s)){const label=node('label',undefined,'mini'),ck=node('input');ck.type='checkbox';ck.checked=st.used;ck.setAttribute('aria-label',s.code+' used');ck.addEventListener('change',()=>{st.used=ck.checked;synchronizeMapeExamSetting(s.code,st.used,st.max);resetValidationResult();render();});label.append(ck,document.createTextNode(' Used'));box.append(label);}else box.append(node('span','Always used','mini'));
+box.append(node('span','Perfect Score','mini'));const max=node('input');max.type='number';max.min='0.01';max.step='any';max.placeholder='—';max.disabled=!on;max.value=st.max;max.setAttribute('aria-label',s.code+' perfect score');max.addEventListener('change',()=>{if(max.value&&!goodMax(max.value)){alert('Perfect score must be greater than zero and at most 10,000.');max.value=st.max;return;}st.max=max.value;synchronizeMapeExamSetting(s.code,st.used,st.max);resetValidationResult();render();});box.append(max);th.append(box);tr.append(th);}
 tr.append(node('th','Behaviour / 100'));for(const title of ['WW %','PT %','Exam %','Initial Grade','Term Grade',...(isMape()?['Music','Arts','PE','MAPE Term']:[])])tr.append(node('th',title));head.append(tr);table.append(head);
 const body=node('tbody'),q=$('search').value.trim().toLowerCase();let n=0;
 for(const student of roster){if(q&&!((student.student_name||'').toLowerCase().includes(q)||(student.school_student_id||'').toLowerCase().includes(q)))continue;n++;const row=node('tr'),who=node('td');who.append(node('strong',student.student_name||'(Unnamed)'),node('div',student.school_student_id||'No school ID','mini'));row.append(who);const scores=rec.scores[student.student_subject_enrollment_id]||(rec.scores[student.student_subject_enrollment_id]={});
-for(const s of slots){const setting=rec.settings[s.code],on=slotIsFixed(s)||setting.used,td=node('td',undefined,on?'':'off-cell');const inp=node('input');inp.type='number';inp.min='0';inp.step='any';inp.placeholder=on?'—':'Unused';inp.disabled=!on||!goodMax(setting.max);inp.value=scores[s.code]===undefined?'':scores[s.code];inp.setAttribute('aria-label',student.student_name+' '+s.code+' score');inp.addEventListener('change',()=>{const raw=inp.value;if(raw===''){if(scores[s.code]!==undefined){alert('Clearing a saved score is not supported yet. Leave existing scores unchanged.');inp.value=scores[s.code];}return;}const num=Number(raw);if(!Number.isFinite(num)||num<0||num>Number(setting.max)){alert('Score must be between 0 and '+setting.max+'.');inp.value=scores[s.code]??'';return;}scores[s.code]=num;const key=student.student_subject_enrollment_id+'|'+s.code;const old=currentSnapshot()[key];if(old&&Number(old.score)===num){delete currentPending()[key];}else{currentPending()[key]={student_id:student.student_subject_enrollment_id,slot:s.code,score:num};}render();});td.append(inp);row.append(td);}
+for(const s of slots){const setting=rec.settings[s.code],on=slotIsFixed(s)||setting.used,td=node('td',undefined,on?'':'off-cell');const inp=node('input');inp.type='number';inp.min='0';inp.step='any';inp.placeholder=on?'—':'Unused';inp.disabled=!on||!goodMax(setting.max);inp.value=scores[s.code]===undefined?'':scores[s.code];inp.setAttribute('aria-label',student.student_name+' '+s.code+' score');inp.addEventListener('change',()=>{const raw=inp.value;if(raw===''){if(scores[s.code]!==undefined){alert('Clearing a saved score is not supported yet. Leave existing scores unchanged.');inp.value=scores[s.code];}return;}const num=Number(raw);if(!Number.isFinite(num)||num<0||num>Number(setting.max)){alert('Score must be between 0 and '+setting.max+'.');inp.value=scores[s.code]??'';return;}scores[s.code]=num;const key=student.student_subject_enrollment_id+'|'+s.code;const old=currentSnapshot()[key];if(old&&Number(old.score)===num){delete currentPending()[key];}else{currentPending()[key]={student_id:student.student_subject_enrollment_id,slot:s.code,score:num};}synchronizeMapeExamScore(student.student_subject_enrollment_id,s.code,num);render();});td.append(inp);row.append(td);}
 const id=student.student_subject_enrollment_id,beh=generalBehaviourRows.get(id),bcell=node('td'),binput=node('input');binput.type='number';binput.min='0';binput.max='100';binput.step='any';binput.style.width='72px';binput.value=behaviourPending()[id]??beh?.score??'';binput.setAttribute('aria-label',student.student_name+' Behaviour');binput.addEventListener('change',()=>{if(binput.value.trim()===''||!Number.isFinite(Number(binput.value))||Number(binput.value)<0||Number(binput.value)>100){alert('Behaviour must be from 0 to 100');binput.value=behaviourPending()[id]??beh?.score??'';return;}if(beh?.score!==null&&beh?.score!==undefined&&Number(beh.score)===Number(binput.value))delete behaviourPending()[id];else behaviourPending()[id]=Number(binput.value);render();});bcell.append(binput);row.append(bcell);const g=compute(rec,student);for(const val of g?[g.ww.toFixed(2)+'%',g.pt.toFixed(2)+'%',g.ex.toFixed(2)+'%',g.initial.toFixed(2),g.final===null?'—':String(g.final)]:['—','—','—','—','—'])row.append(node('td',val,'result '+(g?'good':'incomplete')));if(isMape()){const grades=mapeGradesFor(student);for(const val of [...grades.parts.map(x=>x??'—'),grades.term??'—'])row.append(node('td',String(val),'result '+(val==='—'?'incomplete':'good')));}body.append(row);}
 if(!n){const row=node('tr'),td=node('td',roster.length?'No students match search.':'No enrolled students returned for this offering. Check student-subject enrollments and roster eligibility in Supabase.','empty');td.colSpan=18;row.append(td);body.append(row);}table.append(body);host.append(table);if(classRecordLocked){for(const inp of host.querySelectorAll('input,select,textarea'))inp.disabled=true;}$('nStudents').textContent=roster.length;updateDraftSummary();updateMapeTermPanel();updateClassCompletionOverview();setWriteState();}
 async function passwordStatus(){
@@ -850,6 +873,17 @@ async function savePendingScores(){
 async function saveAllMapeClassRecord(){
  const btn=$('saveAllRecord'),offer=$('offering').value,term=$('term').value,prefix=offer+'|'+term+'|',currentComponent=part();
  const components=['MUSIC','ARTS','PE'];
+ // Shared exam input must never silently overwrite mismatched saved values.
+ for(const code of sharedMapeExamCodes){
+  const assessments=savedAssessments.filter(a=>a.assessment_code===code&&a.active!==false&&a.assessment_active!==false);
+  const maxima=new Set(assessments.map(a=>Number(a.max_score)));
+  if(maxima.size>1)throw Error(code+': existing component exam maximum scores disagree. Administrator reconciliation is required.');
+  for(const student of roster){
+   const existing=savedScores.filter(x=>assessments.some(a=>a.assessment_id===x.assessment_id)&&x.student_subject_enrollment_id===student.student_subject_enrollment_id);
+   const scores=new Set(existing.map(x=>Number(x.score)));
+   if(scores.size>1)throw Error(code+': previously saved component scores disagree for '+student.student_name+'. Resolve before enabling shared entry.');
+  }
+ }
  const allPending=components.flatMap(c=>Object.entries(pendingScores[prefix+c]||{}).map(([key,item])=>({component:c,key,item})));
  const behaviour=Object.entries(behaviourPending());
  const edits=[],creations=[];
@@ -1002,16 +1036,18 @@ async function loadAttainmentReport(){
   if(error)throw Error(error.message);
   if(!data?.available){$('attainmentNotice').textContent=data?.reason||'Report not available.';return;}
   const report=data.assessments||[];
-  $('attainmentNotice').textContent='Group attainment target: at least 75% of enrolled students scoring 65% or higher in each assessment. This is assessment attainment, not the final subject grade.';
+  $('attainmentNotice').textContent='Attainment Level is a school-level five-category summary based on students meeting minimum (65%+) and above standard (75%+); it is not an official ADEK inspection rating.';
   const table=node('table'),head=node('thead'),tr=node('tr');
-  for(const label of ['Component','Assessment','Completed','Below 65%','65%–<75%','75%+','Group attainment','Target'])tr.append(node('th',label));
+  for(const label of ['Component','Assessment','Completed','Below 65%','65%–<75%','75%+','Group attainment','Attainment Level'])tr.append(node('th',label));
   head.append(tr);table.append(head);
   const body=node('tbody');
   for(const a of report){
    const tr=node('tr'),rate=Number(a.group_attainment_pct);
+   const meets=Number(a.meeting_minimum||0)+Number(a.above_minimum||0),above=Number(a.above_minimum||0),total=Number(a.total_students||0);const meetRate=total?meets/total*100:0,aboveRate=total?above/total*100:0;
+   const attainmentLevel=Number(a.scored_students)!==total?'Incomplete':meetRate<75?'Weak':aboveRate<50?'Acceptable':aboveRate<=60?'Good':aboveRate<=74?'Very Good':'Outstanding';
    const vals=[a.mape_component,a.assessment_code==='TERM_EXAM'?'Term Exam':a.assessment_code,
     a.scored_students+' / '+a.total_students,a.below_minimum,a.meeting_minimum,a.above_minimum,
-    Number.isFinite(rate)?rate.toFixed(2)+'%':'—',Number.isFinite(rate)&&(a.scored_students===a.total_students)?(rate>=75?'Met':'Below target'):'Incomplete'];
+    Number.isFinite(rate)?rate.toFixed(2)+'%':'—',attainmentLevel];
    for(const v of vals)tr.append(node('td',String(v??'—')));body.append(tr);
   }
   table.append(body);$('attainmentTable').append(table);
