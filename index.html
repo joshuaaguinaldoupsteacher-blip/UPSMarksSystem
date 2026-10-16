@@ -181,7 +181,7 @@ function slotId(s){return (isMape()?part()+'|':'')+s;}
 function currentPending(){return pendingScores[snapshotKey()]||(pendingScores[snapshotKey()]={});}
 function currentSnapshot(){return recordSnapshots[snapshotKey()]||{};}
 function pendingCount(){return Object.keys(currentPending()).length;}
-function setWriteState(){const count=pendingCount()+Object.keys(behaviourPending()).length;$('editBadge').textContent=count+' unsaved score edit(s)';$('writeState').textContent=failedLoad?'Unavailable':count+' pending';$('saveScores').disabled=failedLoad||!count||busy; $('saveConfig').disabled=failedLoad||busy; $('validateConfig').disabled=isMape(); $('previewSave').disabled=isMape();}
+function setWriteState(){const count=pendingCount()+Object.keys(behaviourPending()).length;$('editBadge').textContent=count+' unsaved score edit(s)';$('writeState').textContent=failedLoad?'Unavailable':count+' pending';$('saveScores').disabled=false; $('saveConfig').disabled=false; $('saveScores').title=count?count+' unsaved edits to save':'No unsaved score edits'; $('saveConfig').title=failedLoad?'Class record loading incomplete; click for details':'Save selected assessment headers'; $('validateConfig').disabled=isMape(); $('previewSave').disabled=isMape();}
 
 const node=(tag,txt,cls)=>{const el=document.createElement(tag);if(txt!==undefined)el.textContent=txt;if(cls)el.className=cls;return el;};
 const message=(id,s,bad=false)=>{$(id).textContent=s;$(id).className=bad?'error':'hint';};
@@ -571,8 +571,9 @@ async function saveMapeAssessmentSetup(){
  }
 }
 async function saveAssessmentSetup(){
+ message('status','Checking assessment setup…');
  if(isMape()){await saveMapeAssessmentSetup();return;}
- if(failedLoad||!client)return;
+ if(failedLoad||!client){message('status','Assessment setup cannot be saved because the class record or login did not load successfully. Reload the class record and check the error above.',true);return;}
  const offer=$('offering').value,term=$('term').value;
  if(pendingCount()){message('status','Save pending scores before modifying assessment headers.',true);return;}
  if(!confirm('Save assessment configuration for this class and grading period? This changes real Supabase assessment records.'))return;
@@ -590,9 +591,9 @@ async function saveAssessmentSetup(){
  }catch(e){message('status','Assessment setup not saved: '+e.message,true);}finally{setWriteState();}
 }
 async function savePendingScores(){
- if(failedLoad||!client)return;
+ if(failedLoad||!client){message('status','Scores cannot be saved until the class record has loaded successfully. Check the loading status above.',true);return;}
  const pending=currentPending(),entries=Object.entries(pending),bPending=behaviourPending(),bEntries=Object.entries(bPending);
- if(!entries.length&&!bEntries.length)return;
+ if(!entries.length&&!bEntries.length){message('status','No unsaved academic or Behaviour scores yet. Enter a score first, then click Save Pending Scores.');return;}
  const available=new Map(savedAssessments.filter(a=>!isMape()||a.mape_component_code===part()).filter(a=>a.active!==false&&a.assessment_active!==false).map(a=>[a.assessment_code,a]));
  for(const [,d] of entries){if(!available.has(d.slot)){message('status','Assessment '+d.slot+' is not saved/active. Create or save the assessment setup first.',true);return;}}
  if(entries.some(([key])=>currentSnapshot()[key]?.assessment_id&&!currentSnapshot()[key].updated_at)){
