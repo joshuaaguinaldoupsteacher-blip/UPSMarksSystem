@@ -358,6 +358,7 @@ async function loadSpecialSubmissionReadiness(){
   if(error)throw Error(error.message);
   if($('offering').value!=='SPECIAL:'+groupId||$('term').value!==period)return;
   $('submissionState').textContent=data.status||'Draft';
+  setClassRecordLocked(['submitted','approved'].includes(data.status));
   $('submissionStudents').textContent=data.students??'—';$('submissionAssessments').textContent=data.active_assessments??'—';
   $('submissionScores').textContent='—';
   $('submissionNotice').textContent=(data.ready_for_academic_review?'Ready for review. ':'Incomplete academic scores. ')+(data.missing_academic_scores??0)+' missing academic scores; '+(data.missing_behaviour_scores??0)+' missing Behaviour entries.';
@@ -1004,16 +1005,25 @@ async function submitGradesForReview(){
  }catch(e){message('submissionNotice','Submission unsuccessful: '+(e.message||String(e)),true);}
  finally{await refreshSubmissionStatus();}
 }
+function setClassRecordLocked(locked){
+ const general=!isSpecial(),panel=$(general?'recordPanel':'specialRecords');
+ panel.classList.toggle('review-locked',!!locked);
+ for(const input of panel.querySelectorAll('input,select,textarea'))input.disabled=!!locked;
+ const save=$(general?'saveAllRecord':'specialSave');if(save)save.disabled=!!locked;
+ const msgId=general?'status':'specialStatus';
+ if(locked)$(msgId).textContent='Read-only: this grading period has been submitted for review or approved. Only an authorized administrator can reopen it.';
+}
 async function refreshSubmissionStatus(){
  if(isSpecial()){await loadSpecialSubmissionReadiness();return;}
  if(!client||!$('offering').value||!$('term').value)return;
  const request=++submissionStatusRequest;
- $('submissionState').textContent='Loading';
+ $('submissionState').textContent='Loading';setClassRecordLocked(true);setClassRecordLocked(true);
  try{
   const {data,error}=await client.rpc('ups_grade_submission_status_v1',{p_class_subject_id:$('offering').value,p_grading_period_code:$('term').value});
   if(request!==submissionStatusRequest)return;
   if(error)throw Error(error.message);
   $('submissionState').textContent=(data.status||'Unknown').replaceAll('_',' ');
+  setClassRecordLocked(['submitted','approved'].includes(data.status));
   $('submissionStudents').textContent=data.active_students??'—';
   $('submissionAssessments').textContent=data.active_assessments??'—';
   $('submissionScores').textContent=data.saved_scores??'—';
