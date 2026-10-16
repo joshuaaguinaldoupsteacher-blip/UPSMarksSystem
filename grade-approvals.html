@@ -28,7 +28,7 @@ function gradeForReview(student,assessments,scheme,intervals){
  const calc=part=>{
   let initial=0;
   for(const [group,weight] of Object.entries(groups)){
-   const list=assessments.filter(a=>(!part||a.component===part)&&(group==='EX'?['ST1','ST2','TERM_EXAM'].includes(a.code):a.code.startsWith(group+'_')||a.code===group));
+   const list=assessments.filter(a=>(!part||a.component===part)&&(group==='EX'?['ST1','ST2','TERM_EXAM'].includes(a.code):a.code.startsWith(group+'_')||a.code.startsWith(group)&&['WW','PT'].includes(group)||a.code===group));
    if(!list.length)return null;
    let pct=0;
    if(group==='EX'){
