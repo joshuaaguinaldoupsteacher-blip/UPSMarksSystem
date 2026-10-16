@@ -143,7 +143,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 <section class="panel hidden" id="overview"><h2>Record Overview</h2><div class="stats"><div class="stat"><small>Eligible students</small><strong id="nStudents">0</strong></div><div class="stat"><small>Assessment slots</small><strong>11</strong></div><div class="stat"><small>Supabase score writes</small><strong id="writeState">Restricted</strong></div><div class="stat"><small>Grading weights</small><strong id="weight" style="font-size:19px">—</strong></div></div></section>
 <section class="panel hidden" id="serverPanel"><div class="toolbar"><div><h2>Saved Class Record Snapshot</h2><p class="hint">Existing assessments and scores loaded from Supabase. Only explicitly saved changes are written.</p></div><span class="pill">LOADED FROM SUPABASE</span></div><div class="stats"><div class="stat"><small>Saved assessments</small><strong id="serverAssessments">0</strong></div><div class="stat"><small>Saved score entries</small><strong id="serverScores">0</strong></div><div class="stat"><small>Saved score slots</small><strong id="serverSlots">0 / 11</strong></div><div class="stat"><small>Data status</small><strong id="serverState" style="font-size:16px">Not loaded</strong></div></div><p class="hint" id="serverNotes" style="margin-top:12px" role="status">Sign in to load the server snapshot.</p><details id="serverDetails"><summary style="color:#56277d;font-weight:650;cursor:pointer">Show saved assessment details</summary><div id="serverList" class="tablewrap" style="margin-top:9px"></div></details></section>
 <section class="panel hidden" id="mapeCreatePanel"><h2>MAPE Assessment Creation</h2><p class="hint">Choose Music, Arts, or PE above. Create an assessment for that component. Mark Used and set Perfect Score in the grid headers, then click Save Assessment Setup. Existing assessment editing is not yet available.</p><div class="gridform"><div class="field"><label for="mapeSlot">Assessment</label><select id="mapeSlot"><option>WW1</option><option>WW2</option><option>WW3</option><option>WW4</option><option>WW5</option><option>PT1</option><option>PT2</option><option>PT3</option><option>ST1</option><option>ST2</option><option>TERM_EXAM</option></select></div><div class="field"><label for="mapeMax">Perfect score</label><input id="mapeMax" type="number" min="0.01" step="any" placeholder="e.g. 20"></div><button type="button" id="createMape">Create MAPE assessment</button></div></section><section class="panel hidden" id="draftPanel"><div class="toolbar"><div><h2>Draft Completion Monitor</h2><p class="hint">Calculated from the loaded record and unsaved edits for the currently selected class and term. An unused WW/PT slot is excluded; all three examinations remain required.</p></div><button id="resetDraft" class="danger" type="button">Clear selected term draft</button></div><div class="stats"><div class="stat"><small>Active WW slots</small><strong id="activeWW">0 / 5</strong></div><div class="stat"><small>Active PT slots</small><strong id="activePT">0 / 3</strong></div><div class="stat"><small>Students with complete scores</small><strong id="completeStudents">0 / 0</strong></div><div class="stat"><small>Students incomplete</small><strong id="incompleteStudents">0</strong></div></div><p id="draftWarning" class="hint" role="status" style="margin-top:11px"></p>
-<div class="buttons" id="recordSaveActions" style="margin:15px 0;align-items:center"><button type="button" id="saveConfig">Save Assessment Setup</button><button type="button" id="saveScores">Save Pending Scores</button><span class="hint">Save any available assessment or student scores at any time, even if only one student has a score. Blank cells remain blank. All required assessments and scores are checked only at final grade submission.</span></div>
+<div class="buttons" id="recordSaveActions" style="margin:15px 0;align-items:center"><button type="button" id="saveAllRecord">Save Class Record</button><button type="button" id="saveConfig" style="display:none">Save Assessment Setup</button><button type="button" id="saveScores" style="display:none">Save Pending Scores</button><span class="hint">Save any available assessment or student scores at any time, even if only one student has a score. Blank cells remain blank. All required assessments and scores are checked only at final grade submission. One save stores assessment settings, academic entries, and Behaviour.</span></div>
 <div class="validation-row"><button type="button" id="validateConfig" class="validate-btn">Validate Assessment Configuration</button><button type="button" id="previewSave" class="validate-btn secondary-preview">Preview Save Changes</button><div id="validationResult" class="validation-result" role="status" aria-live="polite">Checks your current 11 assessment headers against Supabase. Validation only — nothing will be saved.</div><div id="savePreviewResult" class="validation-result preview-summary" role="status" aria-live="polite">Preview what would change in Supabase. No assessments or scores will be saved.</div></div><div id="savePreviewActions" class="preview-actions"></div></section>
 <section class="panel hidden" id="mapeTermPanel"><div class="toolbar"><div><h2>MAPE Term Grade Preview</h2><p class="hint">Music, Arts and PE are graded separately. The MAPE term grade is the rounded average of their three transmuted component grades, shown only when all three are complete. Draft preview only; this does not submit or store final grades.</p></div><span class="pill">3 components required</span></div><div class="stats"><div class="stat"><small>Music</small><strong id="mapeMusicGrade">—</strong></div><div class="stat"><small>Arts</small><strong id="mapeArtsGrade">—</strong></div><div class="stat"><small>Physical Education</small><strong id="mapePeGrade">—</strong></div><div class="stat"><small>Students complete (all 3)</small><strong id="mapeTermComplete">0 / 0</strong></div></div><p class="hint" style="margin-top:10px">The overview above shows completion for the currently displayed class. Individual student results are in the table below.</p></section>
 <section class="panel hidden" id="mapeAnnualPanel"><div class="toolbar"><div><h2>MAPE Annual Grade Preview</h2><p class="hint">Read-only calculation using saved Music, Arts and PE assessments across Terms 1–3. Annual result = rounded average of all nine transmuted component-term grades. Incomplete records remain blank.</p></div><button type="button" id="loadMapeAnnual" class="secondary">Load saved annual grades</button></div><p class="hint" id="mapeAnnualStatus" role="status">Select a MAPE class and click Load saved annual grades. Unsaved draft edits are excluded.</p><div class="tablewrap" id="mapeAnnualTable"></div></section>
@@ -628,6 +628,60 @@ async function savePendingScores(){
  else{message('status','Saved '+saved+' score entries. Incomplete students remain editable next time.');delete localRecords[recordKey()];delete recordSnapshots[recordKey()];await loadClassRecord();}
  setWriteState();
 }
+async function saveEntireClassRecord(){
+ if(!client||failedLoad){message('status','Cannot save: class record did not load successfully. Reload and check the status.',true);return;}
+ const btn=$('saveAllRecord'),offer=$('offering').value,term=$('term').value,component=part(),key=recordKey();
+ if(!offer||!term){message('status','Select a class and grading term first.',true);return;}
+ const pending=currentPending(),bPending=behaviourPending(),scoreEntries=Object.entries(pending),behEntries=Object.entries(bPending);
+ const wanted=buildSlots();
+ const current=new Map(savedAssessments.filter(a=>!isMape()||a.mape_component_code===component).map(a=>[a.assessment_code,a]));
+ const changed=slots.some(s=>{const now=wanted[s.code],old=current.get(s.code),active=!!now.active;return old? ((old.active!==false)!==active||(active&&Number(old.max_score)!==Number(now.max_score))) : active;});
+ if(!changed&&!scoreEntries.length&&!behEntries.length){message('status','No unsaved changes. Your last saved record is already stored in Supabase.');return;}
+ if(!confirm('Save this class record now? '+scoreEntries.length+' academic scores and '+behEntries.length+' Behaviour scores are pending. Blank cells will stay blank.'))return;
+ btn.disabled=true;message('status','Saving class record…');
+ let saved=0,errors=[];
+ try{
+  if(changed){
+   if(isMape()){
+    // The MAPE assessment editor has separate protected creation and edit procedures.
+    throw Error('MAPE assessment header changes require the MAPE component-specific editor. Save those headers first before saving scores.');
+   }
+   for(const [code,item] of Object.entries(wanted))if(item.active&&!(item.max_score>0))throw Error('Please enter a valid perfect score for activated '+code+'.');
+   const args={p_class_subject_id:offer,p_grading_period_code:term,p_slots:wanted};
+   const preview=await client.rpc('ups_preview_assessment_save_v1',args);
+   if(preview.error)throw Error(preview.error.message);
+   if(preview.data?.grading_period_locked||preview.data?.valid!==true)throw Error('Assessment configuration is locked or invalid.');
+   const update=await client.rpc('ups_save_assessment_config_v1',args);
+   if(update.error)throw Error(update.error.message);
+   const fresh=await client.rpc('ups_my_class_record_assessments_v1',{p_class_subject_id:offer,p_grading_period_code:term});
+   if(fresh.error||!Array.isArray(fresh.data))throw Error('Assessment setup saved, but assessment IDs could not reload. Keep this page open and retry. '+(fresh.error?.message||''));
+   savedAssessments=fresh.data;saved++;
+  }
+  const available=new Map(savedAssessments.filter(a=>(!isMape()||a.mape_component_code===component)&&a.active!==false&&a.assessment_active!==false).map(a=>[a.assessment_code,a]));
+  for(const [entryKey,item] of scoreEntries){
+   const assessment=available.get(item.slot),prior=currentSnapshot()[entryKey];
+   if(!assessment){errors.push(item.slot+' is not activated/saved');continue;}
+   if(prior?.assessment_id&&!prior.updated_at){errors.push(item.slot+' has no saved timestamp; reload before editing');continue;}
+   const response=await client.rpc('ups_save_score_checked_v1',{p_student_subject_enrollment_id:item.student_id,p_assessment_id:assessment.assessment_id,p_score:item.score,p_expected_exists:!!prior,p_expected_updated_at:prior?.updated_at??null});
+   if(response.error){errors.push(item.slot+': '+response.error.message);continue;}
+   currentSnapshot()[entryKey]={assessment_id:assessment.assessment_id,updated_at:response.data?.updated_at??null,score:item.score};
+   delete pending[entryKey];saved++;
+  }
+  for(const [id,score] of behEntries){
+   const prior=generalBehaviourRows.get(id);
+   const response=await client.rpc('ups_save_general_behaviour_v1',{p_class_subject_id:offer,p_period_code:term,p_enrollment_id:id,p_score:score,p_expected_updated_at:prior?.updated_at??null});
+   if(response.error){errors.push('Behaviour: '+response.error.message);continue;}
+   delete bPending[id];saved++;
+  }
+  if(errors.length){message('status','Saved '+saved+' item(s), but '+errors.length+' could not be saved: '+errors.slice(0,2).join(' | ')+'. Unsaved entries are retained.',true);return;}
+  delete localRecords[key];delete recordSnapshots[key];delete pendingScores[key];delete pendingBehaviour[behaviourKey()];
+  message('status','Saved '+saved+' change(s) to Supabase. Reloading your saved record…');
+  await loadClassRecord();
+  message('status','Class record saved. Reopen this class and term anytime to continue. Blank scores remain blank.');
+ }catch(e){message('status','Save incomplete: '+(e?.message||String(e))+'. Existing unsaved edits remain on this page.',true);}
+ finally{btn.disabled=false;setWriteState();}
+}
+
 async function createMapeAssessment(){
  if(!isMape()||failedLoad)return;
  const slot=$('mapeSlot').value,max=Number($('mapeMax').value);
@@ -803,6 +857,7 @@ if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Inva
 for(const id of ['email','password'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){$('signin').click();}});
 $('offering').addEventListener('change',()=>{resetValidationResult();showControls();loadClassRecord();});$('term').addEventListener('change',()=>{resetValidationResult();loadClassRecord();});$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadClassRecord);
 $('validateConfig').addEventListener('click',validateAssessmentConfig);
+$('saveAllRecord').addEventListener('click',saveEntireClassRecord);
 $('saveConfig').addEventListener('click',()=>{message('status','Save Assessment Setup clicked — checking class record and Supabase…');try{Promise.resolve(saveAssessmentSetup()).catch(e=>message('status','Assessment save error: '+e.message,true));}catch(e){message('status','Assessment handler error: '+e.message,true);}});
 $('saveScores').addEventListener('click',()=>{message('status','Save Pending Scores clicked — checking unsaved entries…');try{Promise.resolve(savePendingScores()).catch(e=>message('status','Score save error: '+e.message,true));}catch(e){message('status','Score handler error: '+e.message,true);}});
 document.addEventListener('click',event=>{const button=event.target.closest?.('#saveConfig,#saveScores');if(!button)return;const id=button.id;const result=$('draftWarning');if(result)result.textContent='Clicked '+(id==='saveConfig'?'Save Assessment Setup':'Save Pending Scores')+' at '+new Date().toLocaleTimeString()+'; see the Class Record status area for details.';},true);
