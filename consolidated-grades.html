@@ -27,9 +27,12 @@ async function refresh(){
  const body=$('rows');body.replaceChildren();$('status').textContent='Loading consolidated Term Grades…';
  const {data,error}=await db.rpc('ups_consolidated_grades_v1',{p_class_id:$('class').value,p_period_code:$('term').value});
  if(error){$('status').textContent=error.message;return;}
- const subjects=[...new Set(data.filter(x=>x.subject_name!=='Behaviour').map(x=>x.subject_name))].sort();
+ const selectedClassLabel=$('class').selectedOptions[0]?.textContent||'';
+ const selectedGrade=Number((selectedClassLabel.match(/Grade\s+(\d+)/i)||[])[1]);
+ const reportSubject=name=>name==='GMRC / Values Education'?(selectedGrade>=1&&selectedGrade<=6?'GMRC':selectedGrade>=7&&selectedGrade<=10?'Values Education':name):name;
+ const subjects=[...new Set(data.filter(x=>x.subject_name!=='Behaviour').map(x=>reportSubject(x.subject_name)))].sort();
  const students=new Map();
- for(const x of data){if(!students.has(x.student_id))students.set(x.student_id,{name:x.student_name,grades:new Map()});students.get(x.student_id).grades.set(x.subject_name,x.grade);}
+ for(const x of data){if(!students.has(x.student_id))students.set(x.student_id,{name:x.student_name,grades:new Map()});students.get(x.student_id).grades.set(reportSubject(x.subject_name),x.grade);}
  const header=$('reportHeader');header.textContent='Universal Philippine School, Al Ain · Grade '+$('class').selectedOptions[0]?.textContent.replace(/^Grade /,'')+' · '+$('term').selectedOptions[0]?.textContent;
  const tr=$('gradeHead');tr.replaceChildren();for(const label of ['Student Name',...subjects,'Final Average']){const th=document.createElement('th');th.textContent=label;tr.append(th);}
  const exported=[['UNIVERSAL PHILIPPINE SCHOOL, AL AIN'],['Consolidated Term Grade Report'],[$('reportHeader').textContent],['Student Name',...subjects,'Final Average']];
