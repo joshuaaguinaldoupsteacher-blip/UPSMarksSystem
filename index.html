@@ -316,14 +316,14 @@ function updateDraftSummary(){
  $('activeWW').textContent=ww.length+' / 5';$('activePT').textContent=pt.length+' / 3';
  $('completeStudents').textContent=complete+' / '+roster.length;
  $('incompleteStudents').textContent=String(roster.length-complete);
- const required=[...ww,...pt,...slots.filter(s=>s.group==='EX')];
- const missingMax=required.filter(s=>!goodMax(rec.settings[s.code].max)).map(s=>s.code);
+ const active=slots.filter(s=>rec.settings[s.code].used||slotIsFixed(s));
+ const missingMax=active.filter(s=>!goodMax(rec.settings[s.code].max)).map(s=>s.code);
  const issues=[];
- if(!ww.length)issues.push('Activate at least one Written Work slot');
- if(!pt.length)issues.push('Activate at least one Performance Task slot');
- if(missingMax.length)issues.push('Set valid perfect scores for '+missingMax.join(', '));
- if(!issues.length&&complete===roster.length&&roster.length)issues.push('Every student has complete locally calculated scores. Save any pending edits before leaving.');
- $('draftWarning').textContent=issues.join(' · ')||'Enter student scores to complete the local draft.';
+ if(missingMax.length)issues.push('Set a valid perfect score for activated assessment(s): '+missingMax.join(', '));
+ if(!active.length)issues.push('Activate an assessment to begin recording scores, or return later.');
+ if(!issues.length)issues.push('Draft saving is available anytime. '+complete+' of '+roster.length+' students currently have complete grade previews; incomplete students can be saved.');
+ $('draftWarning').textContent=issues.join(' · ');
+
 }
 function showControls(){$('mapeChooser').classList.toggle('hidden',!isMape());$('mapeCreatePanel').classList.add('hidden');const r=selectedOffering(),terms=catalog.filter(x=>x.class_subject_id===$('offering').value);const prev=$('term').value;$('term').replaceChildren();for(const x of terms){const op=node('option',x.grading_period_code.replace('_',' '));op.value=x.grading_period_code;$('term').append(op);}if(terms.some(x=>x.grading_period_code===prev))$('term').value=prev;$('scheme').value=(r?.scheme_code||'')+' · '+(r?.scheme_approved?'Approved':'Not approved');$('weight').textContent=weightsFor(r?.scheme_code).join(' / ');}
 let annualRequestId=0;
