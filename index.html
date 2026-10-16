@@ -366,6 +366,14 @@ async function loadSpecialSubmissionReadiness(){
 }
 async function submitSpecialGroupForReview(){
  if(!specialCache||!isSpecial())return;
+ // Submission must never ignore unsaved assessment, academic, or Behaviour edits.
+ const currentInputs=[...$('specialTable').querySelectorAll('input[data-setup],input[data-perfect],input[data-score-slot],input[data-behaviour]')];
+ const unsaved=currentInputs.some(el=>{
+  if(el.hasAttribute('data-setup'))return el.checked!==!!specialCache.setup.get(el.dataset.setup);
+  if(el.hasAttribute('data-perfect'))return el.value!==String(specialCache.setup.get(el.dataset.perfect)?.max_score??'');
+  return el.value!==String(el.dataset.original??'');
+ });
+ if(unsaved)throw Error('Unsaved class record changes are present. Click Save Class Record and verify the saved values before submitting.');
  const {groupId,period}=specialCache;
  const {data,error}=await client.rpc('ups_my_specialized_submission_readiness_v1',{p_group_id:groupId,p_period_code:period});
  if(error||!data?.ready_for_academic_review)throw Error(error?.message||'Specialized scores are incomplete.');
