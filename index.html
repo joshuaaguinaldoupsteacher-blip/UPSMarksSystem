@@ -794,8 +794,9 @@ if(!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg?.url||''))throw Error('Inva
 for(const id of ['email','password'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter'){$('signin').click();}});
 $('offering').addEventListener('change',()=>{resetValidationResult();showControls();loadClassRecord();});$('term').addEventListener('change',()=>{resetValidationResult();loadClassRecord();});$('search').addEventListener('input',render);$('refresh').addEventListener('click',loadClassRecord);
 $('validateConfig').addEventListener('click',validateAssessmentConfig);
-$('saveConfig').addEventListener('click',saveAssessmentSetup);
-$('saveScores').addEventListener('click',savePendingScores);
+$('saveConfig').addEventListener('click',()=>{message('status','Save Assessment Setup clicked — checking class record and Supabase…');try{Promise.resolve(saveAssessmentSetup()).catch(e=>message('status','Assessment save error: '+e.message,true));}catch(e){message('status','Assessment handler error: '+e.message,true);}});
+$('saveScores').addEventListener('click',()=>{message('status','Save Pending Scores clicked — checking unsaved entries…');try{Promise.resolve(savePendingScores()).catch(e=>message('status','Score save error: '+e.message,true));}catch(e){message('status','Score handler error: '+e.message,true);}});
+document.addEventListener('click',event=>{const button=event.target.closest?.('#saveConfig,#saveScores');if(!button)return;const id=button.id;const result=$('draftWarning');if(result)result.textContent='Clicked '+(id==='saveConfig'?'Save Assessment Setup':'Save Pending Scores')+' at '+new Date().toLocaleTimeString()+'; see the Class Record status area for details.';},true);
 $('loadMapeAnnual').addEventListener('click',loadMapeAnnual);
 $('refreshSubmissionStatus').addEventListener('click',refreshSubmissionStatus);
 $('submitGrades').addEventListener('click',submitGradesForReview);
