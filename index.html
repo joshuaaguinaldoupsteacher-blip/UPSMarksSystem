@@ -390,7 +390,30 @@ function updateMapeTermPanel(){
  $('mapeTermComplete').textContent=complete+' / '+roster.length;
  for(const id of ['mapeMusicGrade','mapeArtsGrade','mapePeGrade'])$(id).textContent='Per student';
 }
-function render(){const host=$('table');host.replaceChildren();const rec=record(),table=node('table');table.style.minWidth='1910px';const head=node('thead'),tr=node('tr');tr.append(node('th','Student / School ID'));
+function render(){
+ // Reconcile the visible table with the latest authenticated Supabase snapshot.
+ // Never overwrite a cell the teacher has edited but not yet saved.
+ if(!failedLoad&&savedAssessments.length){
+  const rec=record(),assessmentById=new Map();
+  for(const a of savedAssessments){
+   if(isMape()&&a.mape_component_code!==part())continue;
+   if(a.assessment_active===false||a.active===false)continue;
+   if(!rec.settings[a.assessment_code])continue;
+   assessmentById.set(a.assessment_id,a);
+   rec.settings[a.assessment_code].used=true;
+   if(!goodMax(rec.settings[a.assessment_code].max))rec.settings[a.assessment_code].max=String(a.max_score);
+  }
+  const pending=currentPending();
+  for(const saved of savedScores){
+   const a=assessmentById.get(saved.assessment_id);
+   if(!a)continue;
+   const key=saved.student_subject_enrollment_id+'|'+a.assessment_code;
+   if(Object.hasOwn(pending,key))continue;
+   const row=rec.scores[saved.student_subject_enrollment_id]||(rec.scores[saved.student_subject_enrollment_id]={});
+   row[a.assessment_code]=Number(saved.score);
+  }
+ }
+ const host=$('table');host.replaceChildren();const rec=record(),table=node('table');table.style.minWidth='1910px';const head=node('thead'),tr=node('tr');tr.append(node('th','Student / School ID'));
 for(const s of slots){const st=rec.settings[s.code],on=slotIsFixed(s)||st.used,th=node('th',undefined,on?'':'off-col'),box=node('div',undefined,'head-controls');box.append(node('span',s.code==='TERM_EXAM'?'Term Exam':s.code,'slot-title'));
 if(!slotIsFixed(s)){const label=node('label',undefined,'mini'),ck=node('input');ck.type='checkbox';ck.checked=st.used;ck.setAttribute('aria-label',s.code+' used');ck.addEventListener('change',()=>{st.used=ck.checked;resetValidationResult();render();});label.append(ck,document.createTextNode(' Used'));box.append(label);}else box.append(node('span','Always used','mini'));
 box.append(node('span','Perfect Score','mini'));const max=node('input');max.type='number';max.min='0.01';max.step='any';max.placeholder='—';max.disabled=!on;max.value=st.max;max.setAttribute('aria-label',s.code+' perfect score');max.addEventListener('change',()=>{if(max.value&&!goodMax(max.value)){alert('Perfect score must be greater than zero and at most 10,000.');max.value=st.max;return;}st.max=max.value;resetValidationResult();render();});box.append(max);th.append(box);tr.append(th);}
