@@ -584,6 +584,7 @@ async function saveAssessmentSetup(){
   const out=await client.rpc('ups_save_assessment_config_v1',params);
   if(out.error)throw Error(out.error.message);
   message('status','Saved assessment configuration. Refreshing class record…');
+  delete localRecords[recordKey()];delete recordSnapshots[recordKey()];
   await loadClassRecord();
  }catch(e){message('status','Assessment setup not saved: '+e.message,true);}finally{setWriteState();}
 }
