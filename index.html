@@ -143,6 +143,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 <div class="buttons" id="recordSaveActions" style="margin:15px 0;align-items:center"><button type="button" id="saveConfig">Save Assessment Setup</button><button type="button" id="saveScores">Save Pending Scores</button><span class="hint">Changes are saved only when you click a save button.</span></div>
 <div class="validation-row"><button type="button" id="validateConfig" class="validate-btn">Validate Assessment Configuration</button><button type="button" id="previewSave" class="validate-btn secondary-preview">Preview Save Changes</button><div id="validationResult" class="validation-result" role="status" aria-live="polite">Checks your current 11 assessment headers against Supabase. Validation only — nothing will be saved.</div><div id="savePreviewResult" class="validation-result preview-summary" role="status" aria-live="polite">Preview what would change in Supabase. No assessments or scores will be saved.</div></div><div id="savePreviewActions" class="preview-actions"></div></section>
 <section class="panel hidden" id="mapeTermPanel"><div class="toolbar"><div><h2>MAPE Term Grade Preview</h2><p class="hint">Music, Arts and PE are graded separately. The MAPE term grade is the rounded average of their three transmuted component grades, shown only when all three are complete. Draft preview only; this does not submit or store final grades.</p></div><span class="pill">3 components required</span></div><div class="stats"><div class="stat"><small>Music</small><strong id="mapeMusicGrade">—</strong></div><div class="stat"><small>Arts</small><strong id="mapeArtsGrade">—</strong></div><div class="stat"><small>Physical Education</small><strong id="mapePeGrade">—</strong></div><div class="stat"><small>Students complete (all 3)</small><strong id="mapeTermComplete">0 / 0</strong></div></div><p class="hint" style="margin-top:10px">The overview above shows completion for the currently displayed class. Individual student results are in the table below.</p></section>
+<section class="panel hidden" id="mapeAnnualPanel"><div class="toolbar"><div><h2>MAPE Annual Grade Preview</h2><p class="hint">Read-only calculation using saved Music, Arts and PE assessments across Terms 1–3. Annual result = rounded average of all nine transmuted component-term grades. Incomplete records remain blank.</p></div><button type="button" id="loadMapeAnnual" class="secondary">Load saved annual grades</button></div><p class="hint" id="mapeAnnualStatus" role="status">Select a MAPE class and click Load saved annual grades. Unsaved draft edits are excluded.</p><div class="tablewrap" id="mapeAnnualTable"></div></section>
 <section class="panel hidden" id="recordPanel"><div class="toolbar"><div><h2>Student Score Entry</h2><p class="hint">For each subject (and each separate Music, Arts, or PE component), five WW columns, three PT columns, and fixed ST1, ST2, Term Exam. The <strong>Used</strong> checkbox and <strong>Perfect Score</strong> fields sit inside each column header. Existing scores load from Supabase. Changes are drafts until Save Pending Scores is clicked. Blank scores are never automatically converted to zero.</p></div><span class="pill" id="editBadge">Unsaved edits stay in this browser tab</span></div><div class="tablewrap" id="table"></div><p class="hint" style="margin-top:12px">Displayed grades are local previews; score values are saved only through the authorized Supabase RPC. The official Grade 1–10 General weights are 20/50/30; HELE/TLE and MAPE are 20/60/20. Music, Arts, and PE each use the same 11 assessment slots. Final MAPE aggregation is a separate grading calculation.</p></section>
 <div class="foot">Universal Philippine School, Al Ain · Authenticated roster and protected assessment and score-saving workflows · School use only</div></div>
 <script type="module">
@@ -318,6 +319,52 @@ function updateDraftSummary(){
  $('draftWarning').textContent=issues.join(' · ')||'Enter student scores to complete the local draft.';
 }
 function showControls(){$('mapeChooser').classList.toggle('hidden',!isMape());$('mapeCreatePanel').classList.add('hidden');const r=selectedOffering(),terms=catalog.filter(x=>x.class_subject_id===$('offering').value);const prev=$('term').value;$('term').replaceChildren();for(const x of terms){const op=node('option',x.grading_period_code.replace('_',' '));op.value=x.grading_period_code;$('term').append(op);}if(terms.some(x=>x.grading_period_code===prev))$('term').value=prev;$('scheme').value=(r?.scheme_code||'')+' · '+(r?.scheme_approved?'Approved':'Not approved');$('weight').textContent=weightsFor(r?.scheme_code).join(' / ');}
+let annualRequestId=0;
+function buildSavedMapeRecord(payload,component){
+ const rec=blankRecord(), assessments=new Map();
+ for(const a of payload.assessments||[]){
+  const name=a.mape_component_code||a.mape_component;
+  if(name!==component||a.active===false)continue;
+  if(!slots.some(slot=>slot.code===a.assessment_code))continue;
+  rec.settings[a.assessment_code]={used:true,max:String(a.max_score)};
+  assessments.set(a.assessment_id,a.assessment_code);
+ }
+ for(const score of payload.scores||[]){
+  const slot=assessments.get(score.assessment_id);
+  if(!slot)continue;
+  (rec.scores[score.student_subject_enrollment_id]||(rec.scores[score.student_subject_enrollment_id]={}))[slot]=Number(score.score);
+ }
+ return rec;
+}
+async function loadMapeAnnual(){
+ if(!client||!isMape()||failedLoad)return;
+ const selected=$('offering').value,token=++annualRequestId;
+ const button=$('loadMapeAnnual');button.disabled=true;
+ $('mapeAnnualStatus').textContent='Loading three grading periods from Supabase…';
+ $('mapeAnnualTable').replaceChildren();
+ try{
+  const periods=['TERM_1','TERM_2','TERM_3'];
+  const payloads=await Promise.all(periods.map(code=>boundedRequest('MAPE '+code,()=>client.rpc('ups_my_mape_record_v1',{p_class_subject_id:selected,p_grading_period_code:code}))));
+  if(token!==annualRequestId||$('offering').value!==selected||!isMape())return;
+  const matrix=payloads.map(payload=>['MUSIC','ARTS','PE'].map(comp=>buildSavedMapeRecord(payload,comp)));
+  const table=node('table'),head=node('thead'),hrow=node('tr');
+  for(const heading of ['Student','T1 Music','T1 Arts','T1 PE','T2 Music','T2 Arts','T2 PE','T3 Music','T3 Arts','T3 PE','Annual'])hrow.append(node('th',heading));
+  head.append(hrow);table.append(head);
+  const body=node('tbody');let ready=0;
+  for(const student of roster){
+   const tr=node('tr');tr.append(node('td',student.student_name||student.school_student_id||'Student'));
+   const values=matrix.flatMap(terms=>terms.map(rec=>compute(rec,student)?.final??null));
+   for(const value of values)tr.append(node('td',value===null?'—':String(value),value===null?'incomplete':'good'));
+   const complete=values.every(v=>v!==null);
+   const annual=complete?Math.round(values.reduce((sum,v)=>sum+v,0)/9):null;
+   if(complete)ready++;
+   tr.append(node('td',annual===null?'—':String(annual),annual===null?'incomplete':'result good'));body.append(tr);
+  }
+  table.append(body);$('mapeAnnualTable').append(table);
+  $('mapeAnnualStatus').textContent=ready+' / '+roster.length+' students have all nine component-term grades. Saved values only; no records were changed.';
+ }catch(e){$('mapeAnnualStatus').textContent='Annual preview unavailable: '+(e.message||String(e));}
+ finally{button.disabled=false;}
+}
 function mapeGradesFor(student){
  const base=$('offering').value+'|'+$('term').value+'|';
  const parts=['MUSIC','ARTS','PE'].map(code=>{
@@ -329,7 +376,7 @@ function mapeGradesFor(student){
 }
 function updateMapeTermPanel(){
  const panel=$('mapeTermPanel');if(!panel)return;
- panel.classList.toggle('hidden',!isMape());
+ panel.classList.toggle('hidden',!isMape());$('mapeAnnualPanel').classList.toggle('hidden',!isMape());
  if(!isMape())return;
  let complete=0;
  for(const student of roster)if(mapeGradesFor(student).term!==null)complete++;
@@ -637,6 +684,7 @@ $('offering').addEventListener('change',()=>{resetValidationResult();showControl
 $('validateConfig').addEventListener('click',validateAssessmentConfig);
 $('saveConfig').addEventListener('click',saveAssessmentSetup);
 $('saveScores').addEventListener('click',savePendingScores);
+$('loadMapeAnnual').addEventListener('click',loadMapeAnnual);
 $('mapePart').addEventListener('change',()=>{
  // Every MAPE component has a separate local record key. Switching tabs
  // must not reload the entire class or discard any unsaved scores/headers.
