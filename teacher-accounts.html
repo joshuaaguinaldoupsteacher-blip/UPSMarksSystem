@@ -15,7 +15,7 @@
 import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
 const PROJECT_URL='https://gbrxtfrpthcgbfluriod.supabase.co';
 const PUBLISHABLE_KEY='sb_publishable_vI2aQgqrBcWqwGcpkATnlA_fUZT4GaK';
-const supabase=createClient(PROJECT_URL,PUBLISHABLE_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+const supabase=createClient(PROJECT_URL,PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
 const $=id=>document.getElementById(id);
 let temporary='';
 const tell=(id,msg,error=false)=>{const el=$(id);el.textContent=msg;el.className=error?'error':'muted'};
@@ -74,4 +74,4 @@ $('reload').onclick=loadTeachers;
 $('signOut').onclick=async()=>{hideResult();await supabase.auth.signOut();$('workspace').classList.add('hidden');$('login').classList.remove('hidden');tell('loginMessage','Signed out.')};
 $('copyPassword').onclick=async()=>{if(!temporary)return;try{await navigator.clipboard.writeText(temporary);tell('status','Temporary password copied. Clear your clipboard after sharing.')}catch{tell('status','Copy unavailable. Select the displayed password manually.',true)}};
 $('hidePassword').onclick=hideResult;
-</script></body></html>
+(async()=>{const {data}=await supabase.auth.getSession();if(!data?.session){location.replace('index.html');return;}try{const check=await supabase.rpc('ups_super_admin_teacher_accounts_v1');if(check.error)throw Error('Superadmin permission required');$('login').classList.add('hidden');$('workspace').classList.remove('hidden');await loadTeachers();}catch(e){tell('loginMessage',e.message,true);}})();</script></body></html>
