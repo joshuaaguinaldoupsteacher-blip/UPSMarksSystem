@@ -174,7 +174,7 @@ const intervals=[
 let client=null,catalog=[],roster=[],busy=false,localRecords={},savedAssessments=[],savedScores=[],loadVersion=0;
 let recordSnapshots={}, pendingScores={}, failedLoad=false;
 const isMape=()=>selectedOffering()?.scheme_code==='UPS_MAPE';
-const slotIsFixed=s=>isMape()&&s.group==='EX';
+const slotIsFixed=s=>false;
 const part=()=>$('mapePart').value;
 const snapshotKey=()=>recordKey();
 function slotId(s){return (isMape()?part()+'|':'')+s;}
@@ -655,8 +655,77 @@ async function savePendingScores(){
  else{message('status','Saved '+saved+' score entries. Incomplete students remain editable next time.');delete localRecords[recordKey()];delete recordSnapshots[recordKey()];await loadClassRecord();}
  setWriteState();
 }
+async function saveAllMapeClassRecord(){
+ const btn=$('saveAllRecord'),offer=$('offering').value,term=$('term').value,prefix=offer+'|'+term+'|',currentComponent=part();
+ const components=['MUSIC','ARTS','PE'];
+ const allPending=components.flatMap(c=>Object.entries(pendingScores[prefix+c]||{}).map(([key,item])=>({component:c,key,item})));
+ const behaviour=Object.entries(behaviourPending());
+ const edits=[],creations=[];
+ for(const c of components){
+  const local=localRecords[prefix+c];if(!local)continue;
+  const existing=new Map(savedAssessments.filter(a=>a.mape_component_code===c).map(a=>[a.assessment_code,a]));
+  for(const slot of slots){
+   const st=local.settings[slot.code],active=!!st.used,old=existing.get(slot.code);
+   if(active&&!goodMax(st.max))throw Error(c+' / '+slot.code+': enter a valid perfect score before saving.');
+   if(old){
+    const newMax=active?Number(st.max):Number(old.max_score);
+    if((old.active!==false)!==active||(active&&Number(old.max_score)!==newMax)){
+     if(savedScores.some(score=>score.assessment_id===old.assessment_id))throw Error(c+' / '+slot.code+': assessment already has scores; its settings cannot be changed.');
+     edits.push({component:c,slot:slot.code,assessment_id:old.assessment_id,old_max:Number(old.max_score),old_active:old.active!==false,new_max:newMax,new_active:active});
+    }
+   }else if(active)creations.push({component:c,slot:slot.code,max:Number(st.max),group:slot.group});
+  }
+ }
+ if(!edits.length&&!creations.length&&!allPending.length&&!behaviour.length){message('status','No unsaved changes. The latest saved MAPE records are already in Supabase.');return;}
+ if(!confirm('Save Music, Arts and PE progress? '+(edits.length+creations.length)+' assessment changes, '+allPending.length+' academic scores and '+behaviour.length+' Behaviour scores. Blank entries remain blank.'))return;
+ btn.disabled=true;let saved=0;const failures=[];
+ try{
+  message('status','Saving MAPE assessment settings…');
+  for(const edit of edits){
+   const {data,error}=await client.rpc('ups_edit_mape_assessment_v1',{p_assessment_id:edit.assessment_id,p_expected_max_score:edit.old_max,p_expected_active:edit.old_active,p_new_max_score:edit.new_max,p_new_active:edit.new_active});
+   if(error||data?.saved!==true){failures.push(edit.component+' '+edit.slot+': '+(error?.message||'Edit rejected'));continue;}saved++;
+  }
+  for(const item of creations){
+   const {data,error}=await client.rpc('ups_create_mape_assessment_v1',{p_class_subject_id:offer,p_grading_period_code:term,p_mape_component_code:item.component,p_component_code:item.group,p_assessment_code:item.slot,p_max_score:item.max,p_assessment_date:null});
+   if(error||!data){failures.push(item.component+' '+item.slot+': '+(error?.message||'Creation rejected'));continue;}saved++;
+  }
+  if(edits.length||creations.length){
+   const {data,error}=await client.rpc('ups_my_mape_record_v1',{p_class_subject_id:offer,p_grading_period_code:term});
+   if(error||!Array.isArray(data?.assessments))throw Error('Settings may have saved but could not reload from Supabase: '+(error?.message||'invalid response'));
+   savedAssessments=data.assessments.map(a=>({...a,mape_component_code:a.mape_component_code||a.mape_component,component_code:a.component_code||a.component,assessment_active:a.active}));
+   savedScores=Array.isArray(data.scores)?data.scores:[];
+  }
+  message('status','Saving MAPE student scores…');
+  for(const pending of allPending){
+   const a=savedAssessments.find(a=>a.mape_component_code===pending.component&&a.assessment_code===pending.item.slot&&a.active!==false&&a.assessment_active!==false);
+   const snap=recordSnapshots[prefix+pending.component]||(recordSnapshots[prefix+pending.component]={});
+   const prior=snap[pending.key];
+   if(!a){failures.push(pending.component+' '+pending.item.slot+': assessment not saved or inactive');continue;}
+   if(prior?.assessment_id&&!prior.updated_at){failures.push(pending.component+' '+pending.item.slot+': missing concurrency timestamp');continue;}
+   const {data,error}=await client.rpc('ups_save_score_checked_v1',{p_student_subject_enrollment_id:pending.item.student_id,p_assessment_id:a.assessment_id,p_score:pending.item.score,p_expected_exists:!!prior,p_expected_updated_at:prior?.updated_at??null});
+   if(error){failures.push(pending.component+' '+pending.item.slot+': '+error.message);continue;}
+   snap[pending.key]={assessment_id:a.assessment_id,score:pending.item.score,updated_at:data?.updated_at??null};
+   delete pendingScores[prefix+pending.component][pending.key];saved++;
+  }
+  for(const [id,score] of behaviour){
+   const prior=generalBehaviourRows.get(id);
+   const {error}=await client.rpc('ups_save_general_behaviour_v1',{p_class_subject_id:offer,p_period_code:term,p_enrollment_id:id,p_score:score,p_expected_updated_at:prior?.updated_at??null});
+   if(error){failures.push('Behaviour: '+error.message);continue;}
+   delete behaviourPending()[id];saved++;
+  }
+  if(failures.length){message('status','Saved '+saved+' changes; '+failures.length+' failed: '+failures.slice(0,2).join(' | ')+'. Pending entries are retained.',true);return;}
+  for(const c of components){delete localRecords[prefix+c];delete recordSnapshots[prefix+c];delete pendingScores[prefix+c];}
+  delete pendingBehaviour[behaviourKey()];
+  await loadClassRecord();
+  $('mapePart').value=currentComponent;prepareServerRecord();render();
+  message('status','Saved MAPE class record to Supabase. All three components can be reopened to continue.');
+ }catch(e){message('status','MAPE save interrupted: '+(e.message||String(e))+'. Keep this page open until resolved.',true);}
+ finally{btn.disabled=false;setWriteState();}
+}
+
 async function saveEntireClassRecord(){
  if(!client||failedLoad){message('status','Cannot save: class record did not load successfully. Reload and check the status.',true);return;}
+ if(isMape()){await saveAllMapeClassRecord();return;}
  const btn=$('saveAllRecord'),offer=$('offering').value,term=$('term').value,component=part(),key=recordKey();
  if(!offer||!term){message('status','Select a class and grading term first.',true);return;}
  const pending=currentPending(),bPending=behaviourPending(),scoreEntries=Object.entries(pending),behEntries=Object.entries(bPending);
