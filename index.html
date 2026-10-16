@@ -144,7 +144,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 <div class="validation-row"><button type="button" id="validateConfig" class="validate-btn">Validate Assessment Configuration</button><button type="button" id="previewSave" class="validate-btn secondary-preview">Preview Save Changes</button><div id="validationResult" class="validation-result" role="status" aria-live="polite">Checks your current 11 assessment headers against Supabase. Validation only — nothing will be saved.</div><div id="savePreviewResult" class="validation-result preview-summary" role="status" aria-live="polite">Preview what would change in Supabase. No assessments or scores will be saved.</div></div><div id="savePreviewActions" class="preview-actions"></div></section>
 <section class="panel hidden" id="mapeTermPanel"><div class="toolbar"><div><h2>MAPE Term Grade Preview</h2><p class="hint">Music, Arts and PE are graded separately. The MAPE term grade is the rounded average of their three transmuted component grades, shown only when all three are complete. Draft preview only; this does not submit or store final grades.</p></div><span class="pill">3 components required</span></div><div class="stats"><div class="stat"><small>Music</small><strong id="mapeMusicGrade">—</strong></div><div class="stat"><small>Arts</small><strong id="mapeArtsGrade">—</strong></div><div class="stat"><small>Physical Education</small><strong id="mapePeGrade">—</strong></div><div class="stat"><small>Students complete (all 3)</small><strong id="mapeTermComplete">0 / 0</strong></div></div><p class="hint" style="margin-top:10px">The overview above shows completion for the currently displayed class. Individual student results are in the table below.</p></section>
 <section class="panel hidden" id="mapeAnnualPanel"><div class="toolbar"><div><h2>MAPE Annual Grade Preview</h2><p class="hint">Read-only calculation using saved Music, Arts and PE assessments across Terms 1–3. Annual result = rounded average of all nine transmuted component-term grades. Incomplete records remain blank.</p></div><button type="button" id="loadMapeAnnual" class="secondary">Load saved annual grades</button></div><p class="hint" id="mapeAnnualStatus" role="status">Select a MAPE class and click Load saved annual grades. Unsaved draft edits are excluded.</p><div class="tablewrap" id="mapeAnnualTable"></div></section>
-<section class="panel hidden" id="submissionPanel"><div class="toolbar"><div><h2>Grade Submission Status</h2><p class="hint">Authorized, read-only status of this class and grading period. Submission and approval controls will be enabled only after complete validation and locking tests.</p></div><button type="button" id="refreshSubmissionStatus" class="secondary">Refresh status</button></div><div class="stats"><div class="stat"><small>Current status</small><strong id="submissionState">Not loaded</strong></div><div class="stat"><small>Students</small><strong id="submissionStudents">—</strong></div><div class="stat"><small>Saved assessments</small><strong id="submissionAssessments">—</strong></div><div class="stat"><small>Saved scores</small><strong id="submissionScores">—</strong></div></div><p class="hint" id="submissionNotice" role="status">Select a class and term to inspect its submission state.</p></section>
+<section class="panel hidden" id="submissionPanel"><div class="toolbar"><div><h2>Grade Submission Status</h2><p class="hint">Authorized, read-only status of this class and grading period. Submission and approval controls will be enabled only after complete validation and locking tests.</p></div><div class="buttons"><button type="button" id="refreshSubmissionStatus" class="secondary">Refresh status</button><button type="button" id="submitGrades" disabled>Submit Grades for Review</button></div></div><div class="stats"><div class="stat"><small>Current status</small><strong id="submissionState">Not loaded</strong></div><div class="stat"><small>Students</small><strong id="submissionStudents">—</strong></div><div class="stat"><small>Saved assessments</small><strong id="submissionAssessments">—</strong></div><div class="stat"><small>Saved scores</small><strong id="submissionScores">—</strong></div></div><p class="hint" id="submissionNotice" role="status">Select a class and term to inspect its submission state.</p></section>
 <section class="panel hidden" id="recordPanel"><div class="toolbar"><div><h2>Student Score Entry</h2><p class="hint">For each subject (and each separate Music, Arts, or PE component), five WW columns, three PT columns, and fixed ST1, ST2, Term Exam. The <strong>Used</strong> checkbox and <strong>Perfect Score</strong> fields sit inside each column header. Existing scores load from Supabase. Changes are drafts until Save Pending Scores is clicked. Blank scores are never automatically converted to zero.</p></div><span class="pill" id="editBadge">Unsaved edits stay in this browser tab</span></div><div class="tablewrap" id="table"></div><p class="hint" style="margin-top:12px">Displayed grades are local previews; score values are saved only through the authorized Supabase RPC. The official Grade 1–10 General weights are 20/50/30; HELE/TLE and MAPE are 20/60/20. Music, Arts, and PE each use the same 11 assessment slots. Final MAPE aggregation is a separate grading calculation.</p></section>
 <div class="foot">Universal Philippine School, Al Ain · Authenticated roster and protected assessment and score-saving workflows · School use only</div></div>
 <script type="module">
@@ -633,6 +633,26 @@ function boundedRequest(label, operation, ms=18000){
  ]);
 }
 let submissionStatusRequest=0;
+async function submitGradesForReview(){
+ if(!client||!$('offering').value||failedLoad)return;
+ const keyPrefix=$('offering').value+'|'+$('term').value+'|';
+ if(Object.keys(pendingScores).some(k=>k.startsWith(keyPrefix)&&Object.keys(pendingScores[k]||{}).length)){
+  message('submissionNotice','Save pending scores in every component before submitting.',true);return;
+ }
+ $('submitGrades').disabled=true;
+ try{
+  const args={p_class_subject_id:$('offering').value,p_grading_period_code:$('term').value};
+  const review=await client.rpc('ups_grade_submission_readiness_v1',args);
+  if(review.error||review.data?.ready!==true)throw Error(review.error?.message||review.data?.reason||'Submission not ready');
+  if(!confirm('Submit this entire class-subject grading period for administrator review? This will lock assessment and score editing until an authorized administrator reopens it.'))return;
+  const result=await client.rpc('ups_submit_grade_record_v1',args);
+  if(result.error||result.data?.submitted!==true)throw Error(result.error?.message||'Submission failed');
+  message('submissionNotice','Grades submitted for administrator review. Editing is now locked.');
+  await refreshSubmissionStatus();
+  await loadClassRecord();
+ }catch(e){message('submissionNotice','Submission unsuccessful: '+(e.message||String(e)),true);}
+ finally{await refreshSubmissionStatus();}
+}
 async function refreshSubmissionStatus(){
  if(!client||!$('offering').value||!$('term').value)return;
  const request=++submissionStatusRequest;
@@ -646,6 +666,11 @@ async function refreshSubmissionStatus(){
   $('submissionAssessments').textContent=data.active_assessments??'—';
   $('submissionScores').textContent=data.saved_scores??'—';
   $('submissionNotice').textContent=data.reason||'Status retrieved from Supabase.';
+  const readiness=await client.rpc('ups_grade_submission_readiness_v1',{p_class_subject_id:$('offering').value,p_grading_period_code:$('term').value});
+  if(request!==submissionStatusRequest)return;
+  if(readiness.error)throw Error(readiness.error.message);
+  $('submitGrades').disabled=readiness.data?.ready!==true||failedLoad;
+  $('submissionNotice').textContent=readiness.data?.reason||data.reason||'Submission readiness retrieved.';
  }catch(e){if(request!==submissionStatusRequest)return;$('submissionState').textContent='Unavailable';$('submissionNotice').textContent='Could not load submission status: '+(e.message||String(e));}
 }
 async function loadClassRecord(){
@@ -725,6 +750,7 @@ $('saveConfig').addEventListener('click',saveAssessmentSetup);
 $('saveScores').addEventListener('click',savePendingScores);
 $('loadMapeAnnual').addEventListener('click',loadMapeAnnual);
 $('refreshSubmissionStatus').addEventListener('click',refreshSubmissionStatus);
+$('submitGrades').addEventListener('click',submitGradesForReview);
 $('mapePart').addEventListener('change',()=>{
  // Every MAPE component has a separate local record key. Switching tabs
  // must not reload the entire class or discard any unsaved scores/headers.
