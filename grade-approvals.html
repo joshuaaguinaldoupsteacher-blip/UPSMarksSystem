@@ -106,7 +106,7 @@ async function transition(item,action){
  const response=await reviewConfirm({
   title:action==='approve'?'Approve Term Grades':'Reopen Grade Submission',
   description:(action==='approve'?'Approve and lock ':'Reopen for correction: ')+label+'?',
-  sandbox:/\\btest\\b|sandbox|demo/i.test(item.class_name),
+  sandbox:/\btest\b|sandbox|demo/i.test(item.class_name),
   reasonRequired:action==='reopen',
   confirmLabel:action==='approve'?'Approve Grades':'Reopen Record'
  });
