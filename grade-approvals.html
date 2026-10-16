@@ -23,17 +23,45 @@ async function load(){
   msg((data||[]).length+' submission records found.');
  }catch(e){msg(e.message||String(e),true)}
 }
+function gradeForReview(student,assessments,scheme,intervals){
+ const groups=scheme==='UPS_ARABIC'?{LISTEN_SPEAK:10,WRITING:40,READING:10,EX:40}:scheme==='UPS_ISLAMIC'?{RECITATION:10,MEMORIZATION:15,VALUES:5,WQA:30,EX:40}:{WW:20,PT:scheme==='UPS_GENERAL'?50:60,EX:scheme==='UPS_GENERAL'?30:20};
+ const calc=part=>{
+  let initial=0;
+  for(const [group,weight] of Object.entries(groups)){
+   const list=part?assessments.filter(a=>a.component===part&&(group==='EX'?['ST1','ST2','TERM_EXAM'].includes(a.code):a.code.startsWith(group+'_')||(!a.component.includes('MUSIC')&&!a.component.includes('ARTS')&&!a.component.includes('PE')&&group==='WW'&&a.code.startsWith('WW')))):assessments.filter(a=>group==='EX'?['ST1','ST2','TERM_EXAM'].includes(a.code):a.code.startsWith(group+'_')||a.code.startsWith(group)&&group!=='EX');
+   if(!list.length)return null;
+   let pct=0;
+   if(group==='EX'){
+    const weights={ST1:.3,ST2:.3,TERM_EXAM:.4};
+    if(list.length!==3)return null;
+    for(const a of list){const score=student.scores?.[a.id];if(score===null||score===undefined||!(Number(a.max)>0))return null;pct+=100*Number(score)/Number(a.max)*weights[a.code];}
+   }else{
+    let got=0,max=0;for(const a of list){const score=student.scores?.[a.id];if(score===null||score===undefined||!(Number(a.max)>0))return null;got+=Number(score);max+=Number(a.max);}pct=100*got/max;
+   }
+   initial+=pct*weight/100;
+  }
+  const rounded=Math.round((initial+Number.EPSILON)*100)/100;
+  const band=intervals.find(r=>rounded>=Number(r[0])&&rounded<=Number(r[1]));
+  return band?Number(band[2]):null;
+ };
+ if(scheme==='UPS_MAPE'){const terms=['MUSIC','ARTS','PE'].map(c=>calc(c));return terms.every(x=>x!==null)?Math.round(terms.reduce((a,b)=>a+b,0)/3):null;}
+ return calc(null);
+}
 async function checkMarks(item){
  $('marksPanel').classList.remove('hidden');$('marksTitle').textContent='Grade '+item.grade_level+' '+item.class_name+' · '+item.subject_name+' · '+item.period_code;
  $('marksStatus').textContent='Loading submitted marks…';$('marksGrid').replaceChildren();
  try{
   const {data,error}=await db.rpc('ups_admin_submission_marks_review_v1',{p_submission_id:item.submission_id});if(error)throw Error(error.message);
-  const assessments=data.assessments||[],students=data.students||[],tbl=document.createElement('table'),head=document.createElement('thead'),hr=document.createElement('tr');
-  for(const label of ['Student / ID',...assessments.map(a=>(a.component?a.component+' · ':'')+a.code+' / '+a.max)]){const th=document.createElement('th');th.textContent=label;hr.append(th);}
+  const assessments=data.assessments||[],students=data.students||[],intervals=data.intervals||[],scheme=data.scheme;
+  const examGroups=scheme==='UPS_MAPE'?['MUSIC','ARTS','PE']:[''];
+  const tbl=document.createElement('table'),head=document.createElement('thead'),hr=document.createElement('tr');
+  const columns=examGroups.flatMap(part=>['ST1','ST2','TERM_EXAM'].map(code=>({part,code,assessment:assessments.find(a=>a.code===code&&(!part||a.component===part))})));
+  for(const label of ['Student / ID',...columns.map(x=>(x.part?x.part+' · ':'')+(x.code==='TERM_EXAM'?'TE':x.code)), 'Term Grade']){const th=document.createElement('th');th.textContent=label;hr.append(th);}
   head.append(hr);tbl.append(head);const body=document.createElement('tbody');
   for(const student of students){const tr=document.createElement('tr'),name=document.createElement('td');name.textContent=student.name+' · '+(student.school_id||'—');tr.append(name);
-   for(const a of assessments){const td=document.createElement('td'),value=student.scores?.[a.id];td.textContent=value===null||value===undefined?'—':String(value);tr.append(td);}body.append(tr);}
-  tbl.append(body);$('marksGrid').append(tbl);$('marksStatus').textContent=students.length+' students · '+assessments.length+' active assessments. Blank values represent missing scores.';
+   for(const column of columns){const td=document.createElement('td'),a=column.assessment,value=a?student.scores?.[a.id]:null;td.textContent=value===null||value===undefined?'—':String(value);tr.append(td);}
+   const grade=document.createElement('td'),result=gradeForReview(student,assessments,scheme,intervals);grade.textContent=result===null?'—':String(result);grade.style.fontWeight='700';tr.append(grade);body.append(tr);}
+  tbl.append(body);$('marksGrid').append(tbl);$('marksStatus').textContent=students.length+' students · ST1, ST2, TE and calculated Term Grade. A dash means incomplete or unavailable. MAPE shows separate exam marks for Music, Arts and PE.';
  }catch(e){$('marksStatus').textContent='Unable to load marks: '+(e.message||String(e));}
  $('marksPanel').scrollIntoView({behavior:'smooth',block:'start'});
 }
