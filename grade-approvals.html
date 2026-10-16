@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UPS Marks · Grade Approvals</title><style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#32223f;background:#f6f2fa}*{box-sizing:border-box}body{margin:0}.wrap{max-width:1150px;margin:32px auto;padding:0 20px}.panel{background:#fff;border:1px solid #e5d7ee;border-radius:16px;padding:24px;margin:16px 0;box-shadow:0 5px 18px #4020500b}h1,h2{color:#5b2a83}h1{margin:0;font-size:26px}h2{font-size:19px}.sub{color:#7b6c83;font-size:13px}label{display:block;font-weight:650;margin-top:12px;margin-bottom:5px}input,textarea{width:100%;padding:11px;border:1px solid #d9c9e5;border-radius:9px;font:inherit}button{border:0;border-radius:9px;padding:10px 14px;background:#64338e;color:white;font-weight:600;cursor:pointer}button:disabled{opacity:.55}.secondary{background:#eee6f6;color:#522a76}.hidden{display:none}.bar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.scroll{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border-bottom:1px solid #eee4f4;padding:11px;text-align:left}th{background:#f7f1fc;color:#59307d}.badge{background:#efe5f8;border-radius:20px;padding:5px 9px;font-size:12px}.error{color:#a5223c}.actions{display:flex;gap:6px;flex-wrap:wrap}#login{max-width:440px;margin:9vh auto}</style></head><body><div class="wrap">
+<section id="login" class="panel"><h1>UPS Grade Approvals</h1><p class="sub">Authorized Admin and Super Admin</p><label for="email">School email</label><input id="email" type="email" autocomplete="username"><label for="pass">Password</label><input id="pass" type="password" autocomplete="current-password"><p><button id="signIn">Sign in</button></p><p id="loginStatus" role="status"></p></section>
+<section id="workspace" class="hidden"><div class="bar"><div><h1>Grade Submission Review</h1><p class="sub">Review submitted records, approve final grades, or reopen with a documented reason.</p></div><div class="actions"><button class="secondary" id="refresh">Refresh records</button><button class="secondary" id="signOut">Sign out</button></div></div>
+<div class="panel"><p class="sub">Approving a submission keeps the grade record locked. Reopening allows the assigned teacher to correct and resubmit it. Approval requires the complete assessment and score checks to pass.</p><p id="notice" role="status"></p><div class="scroll"><table><thead><tr><th>Class</th><th>Subject</th><th>Period</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></div><p><a href="index.html">Class Records</a> · <a href="teacher-accounts.html">Teacher Accounts</a></p></section>
+</div><script type="module">
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+const db=createClient('https://gbrxtfrpthcgbfluriod.supabase.co','sb_publishable_vI2aQgqrBcWqwGcpkATnlA_fUZT4GaK',{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+const $=s=>document.getElementById(s);const msg=(s,bad=false)=>{$('notice').textContent=s;$('notice').className=bad?'error':'sub'};
+async function load(){
+ $('rows').replaceChildren();msg('Loading submissions…');
+ try{
+  const {data,error}=await db.rpc('ups_admin_submissions_v1');if(error)throw Error(error.message);
+  for(const item of data||[]){
+   const tr=document.createElement('tr');const values=[`Grade ${item.grade_level} · ${item.class_name}`,item.subject_name,item.period_code,item.submission_status,item.submitted_at?new Date(item.submitted_at).toLocaleString():'—'];
+   for(const value of values){const td=document.createElement('td');td.textContent=value;tr.append(td)}
+   const td=document.createElement('td'),actions=document.createElement('div');actions.className='actions';
+   if(item.submission_status==='submitted')addAction(actions,'Approve',()=>transition(item,'approve'));
+   if(['submitted','approved'].includes(item.submission_status))addAction(actions,'Reopen',()=>transition(item,'reopen'),true);
+   td.append(actions);tr.append(td);$('rows').append(tr);
+  }
+  msg((data||[]).length+' submission records found.');
+ }catch(e){msg(e.message||String(e),true)}
+}
+function addAction(host,label,handler,secondary=false){const b=document.createElement('button');b.textContent=label;b.className=secondary?'secondary':'';b.onclick=handler;host.append(b)}
+async function transition(item,action){
+ let reason=null;
+ if(action==='reopen'){
+  reason=prompt('Enter a reason for reopening (10–500 characters).');
+  if(reason===null)return;
+  reason=reason.trim();if(reason.length<10||reason.length>500){msg('Reopening reason must be 10–500 characters.',true);return}
+ }
+ const label=`Grade ${item.grade_level} ${item.class_name} · ${item.subject_name} · ${item.period_code}`;
+ if(!confirm((action==='approve'?'Approve and lock ':'Reopen for editing ')+label+'?'))return;
+ msg('Applying '+action+'…');
+ const {data,error}=await db.rpc('ups_admin_grade_transition_v1',{p_submission_id:item.submission_id,p_action:action,p_reason:reason});
+ if(error||data?.success!==true){msg(error?.message||'Transition failed.',true);return;}
+ await load();msg('Submission successfully '+(action==='approve'?'approved':'reopened')+'.');
+}
+$('signIn').onclick=async()=>{
+ $('signIn').disabled=true;$('loginStatus').textContent='Signing in…';
+ try{
+  const {data,error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('pass').value});
+  if(error||!data.session)throw Error(error?.message||'Authentication failed');
+  const probe=await db.rpc('ups_admin_submissions_v1');if(probe.error)throw Error(probe.error.message);
+  $('pass').value='';$('login').classList.add('hidden');$('workspace').classList.remove('hidden');await load();
+ }catch(e){$('loginStatus').textContent=e.message||String(e);await db.auth.signOut()}finally{$('signIn').disabled=false}
+};
+for(const id of ['email','pass'])$(id).addEventListener('keydown',e=>{if(e.key==='Enter')$('signIn').click()});
+$('refresh').onclick=load;
+$('signOut').onclick=async()=>{await db.auth.signOut();$('workspace').classList.add('hidden');$('login').classList.remove('hidden');$('loginStatus').textContent='Signed out.'};
+</script></body></html>
