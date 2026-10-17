@@ -456,6 +456,29 @@ function renderSpecialExamAttainment(students,setup){
  table.append(body);host.append(table);
  $('attainmentNotice').textContent='Below Expectations: below 65%. Minimum Expectations: at least 65% (including students above 75%). Above Expectations: at least 75% (a subset of Minimum Expectations). Do not add the overlapping columns. Missing scores remain in the denominator. Attainment Level is a school summary, not an official ADEK inspection judgment.';
 }
+// Read-only saved-score component contributions. Mirrors the approved specialized SQL:
+ // non-exam categories use sum(scores) / sum(perfect scores), exams use 30/30/40.
+ // Never substitute zero for an unrecorded score.
+const specializedWeights={
+ ARABIC:[['LISTEN_SPEAK',10,'Listening & Speaking'],['WRITING',40,'Writing'],['READING',10,'Reading'],['EX',40,'Exam']],
+ ISLAMIC:[['RECITATION',10,'Recitation'],['MEMORIZATION',15,'Memorization'],['VALUES',5,'Values'],['WQA',30,'Worksheets / Quizzes / Activities'],['EX',40,'Exam']]
+};
+function specializedContribution(student,setup,category,weight){
+ const active=[...setup.values()].filter(a=>a.component_code===category&&Number(a.max_score)>0);
+ if(!active.length||category==='EX'&&(!['ST1','ST2','TERM_EXAM'].every(code=>active.some(a=>a.assessment_code===code))||active.length!==3))return null;
+ let earned=0,possible=0,examPercent=0;
+ for(const a of active){
+  const score=student.scores.get(a.assessment_id)?.score;
+  if(score===null||score===undefined||!Number.isFinite(Number(score)))return null;
+  earned+=Number(score);possible+=Number(a.max_score);
+  if(category==='EX'){
+   const factor={ST1:.30,ST2:.30,TERM_EXAM:.40}[a.assessment_code];
+   if(factor===undefined)return null;
+   examPercent+=factor*Number(score)/Number(a.max_score)*100;
+  }
+ }
+ return (category==='EX'?examPercent:100*earned/possible)*weight/100;
+}
 async function loadSpecialRecord(){
  if(!isSpecial()||!client)return;
  const groupId=$('offering').value.slice(8),period=$('term').value,g=specialGroups.find(x=>x.group_id===groupId);
@@ -481,7 +504,7 @@ async function loadSpecialRecord(){
    wrap.append(node('span',code==='TERM_EXAM'?'Term Exam':code,'slot-title'));const label=node('label',undefined,'mini'),toggle=node('input');toggle.type='checkbox';toggle.dataset.setup=code;toggle.checked=!!old;toggle.setAttribute('aria-label',code+' used');label.append(toggle,document.createTextNode(' Used'));wrap.append(label);
    wrap.append(node('span','Perfect Score','mini'));const max=node('input');max.type='number';max.min='0.01';max.step='any';max.placeholder='—';max.dataset.perfect=code;max.value=old?.max_score??'';max.disabled=!toggle.checked;max.setAttribute('aria-label',code+' perfect score');toggle.addEventListener('change',()=>{max.disabled=!toggle.checked;th.classList.toggle('off-col',!toggle.checked);for(const cell of table.querySelectorAll('input[data-score-slot="'+code+'"]')){cell.disabled=!toggle.checked||classRecordLocked;cell.placeholder=toggle.checked?'—':'Unused';cell.closest('td')?.classList.toggle('off-col',!toggle.checked);}updateSpecialPendingBadge();});max.addEventListener('input',updateSpecialPendingBadge);wrap.append(max);th.append(wrap);header.append(th);
   }
-  header.append(node('th','Behaviour / 100'));header.append(node('th','Initial Grade'));header.append(node('th','Term Grade'));head.append(header);table.append(head);
+  header.append(node('th','Behaviour / 100'));const specializedColumns=specializedWeights[g.subject_code]||[];for(const [category,weight,label] of specializedColumns)header.append(node('th',label+' ('+weight+'%)'));header.append(node('th','Initial Grade'));header.append(node('th','Term Grade'));head.append(header);table.append(head);
   const body=node('tbody');
   const genderOrder=g=>{const value=String(g||'').trim().toUpperCase();return value==='MALE'||value==='BOY'?0:value==='FEMALE'||value==='GIRL'?1:2;};
   const isSandboxGroup=/TEST CLASS|SANDBOX/i.test(String(g.section_name||''));
@@ -511,7 +534,7 @@ async function loadSpecialRecord(){
     });
     td.classList.toggle('off-col',!a);td.append(inp);tr.append(td);
    }
-   const td=node('td'),b=bv.get(student.id),inp=node('input');inp.type='number';inp.min='0';inp.max='100';inp.step='any';inp.style.width='72px';inp.dataset.behaviour=student.id;inp.dataset.original=b?.score??'';inp.dataset.timestamp=b?.updated_at??'';inp.value=b?.score??'';inp.addEventListener('input',updateSpecialPendingBadge);td.append(inp);tr.append(td);const computed=gradeMap.get(student.id);for(const val of [computed?.initial_grade,computed?.term_grade]){const cell=node('td',val===null||val===undefined?'—':String(val),'result');cell.title=computed?.calculation_status||'INCOMPLETE';tr.append(cell);}body.append(tr);
+   const td=node('td'),b=bv.get(student.id),inp=node('input');inp.type='number';inp.min='0';inp.max='100';inp.step='any';inp.style.width='72px';inp.dataset.behaviour=student.id;inp.dataset.original=b?.score??'';inp.dataset.timestamp=b?.updated_at??'';inp.value=b?.score??'';inp.addEventListener('input',updateSpecialPendingBadge);td.append(inp);tr.append(td);for(const [category,weight] of specializedColumns){const contribution=specializedContribution(student,setup,category,weight);const value=contribution===null?'—':contribution.toFixed(2)+'%';const cell=node('td',value,'result '+(contribution===null?'incomplete':'good'));cell.title=contribution===null?'Incomplete saved component scores':'Weighted contribution from saved scores';tr.append(cell);}const computed=gradeMap.get(student.id);for(const val of [computed?.initial_grade,computed?.term_grade]){const cell=node('td',val===null||val===undefined?'—':String(val),'result');cell.title=computed?.calculation_status||'INCOMPLETE';tr.append(cell);}body.append(tr);
   }
   table.append(body);if(classRecordLocked){for(const inp of table.querySelectorAll('input,select,textarea'))inp.disabled=true;}updateSpecialPendingBadge();loadSpecialSubmissionReadiness();$('specialStatus').textContent=`${students.size} students · ${setup.size} saved assessments · ${grid.filter(r=>r.assessment_id&&r.score!==null).length} saved scores`;
  }catch(e){$('specialStatus').textContent='Load failed: '+e.message;}
