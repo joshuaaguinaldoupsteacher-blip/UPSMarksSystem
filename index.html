@@ -114,6 +114,7 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 
 .ups-dialog{border:1px solid #d9c6e8;border-radius:18px;padding:0;width:min(460px,92vw);max-height:85vh;box-shadow:0 24px 75px #24113455;color:#32223f;background:#fff}
 .ups-dialog::backdrop{background:#28153999}.ups-dialog-inner{padding:26px}.ups-dialog-inner h2{font-size:20px;color:#5b2a83;margin:0 0 12px}.ups-dialog-inner p{color:#584c64;white-space:pre-wrap;line-height:1.6;margin:0}.ups-dialog-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+@media print{#table .ups-print-unused,#specialTable .ups-print-unused{display:none!important}}
 </style></head><body class="login-mode"><div class="wrap">
 <header><div class="ups-header-brand"><img class="ups-header-logo" src="data:image/png;base64,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" alt="Universal Philippine School logo"><div><h1>UPS Marks System</h1><p class="sub">Universal Philippine School · Al Ain</p><p class="sub">Class Records · Secure Login · Development Testing</p></div></div><span class="pill">DEVELOPMENT TESTING · SECURE SAVE FUNCTIONS AVAILABLE</span></header>
 
@@ -1379,4 +1380,31 @@ $('resetDraft').addEventListener('click',async()=>{
  localRecords[recordKey()]=blankRecord();delete pendingScores[recordKey()];delete pendingBehaviour[behaviourKey()];delete recordSnapshots[recordKey()];resetValidationResult();render();message('status','Discarded local draft for '+label+'. Click Reload Class Record snapshot to restore saved scores.');
 });
 $('logout').addEventListener('click',async()=>{if(activeManagementPage)closeManagementPage();$('managementMenu').classList.add('hidden');if(client)await client.auth.signOut();client=null;catalog=[];roster=[];savedAssessments=[];savedScores=[];loadVersion++;localRecords={};recordSnapshots={};pendingScores={};pendingBehaviour={};generalBehaviourRows=new Map();failedLoad=false;resetValidationResult();$('password').value='';$('loginPanel').classList.remove('hidden');document.body.classList.add('login-mode');for(const id of ['dashboard','overview','serverPanel','draftPanel','recordPanel','mapeCreatePanel'])$(id).classList.add('hidden');message('loginStatus','Signed out. Local draft scores cleared.');});
+
+// Print-only compact layout: hide entire unused assessment columns,
+// including their heading and every student's corresponding cell.
+function prepareCompactClassRecordPrint(){
+ for(const id of ['table','specialTable']){
+  const host=document.getElementById(id);
+  const table=host?.tagName==='TABLE'?host:host?.querySelector('table');
+  if(!table)continue;
+  table.querySelectorAll('.ups-print-unused').forEach(cell=>cell.classList.remove('ups-print-unused'));
+  const headers=[...table.querySelectorAll('thead tr:first-child > th')];
+  const rows=[...table.querySelectorAll('tr')];
+  headers.forEach((th,index)=>{
+   const checkbox=th.querySelector('input[type="checkbox"]');
+   if(!checkbox||checkbox.checked)return;
+   for(const row of rows){
+    const cell=row.children[index];
+    if(cell&&(cell.tagName==='TH'||cell.tagName==='TD'))cell.classList.add('ups-print-unused');
+   }
+  });
+ }
+}
+function restoreClassRecordAfterPrint(){
+ document.querySelectorAll('#table .ups-print-unused,#specialTable .ups-print-unused')
+  .forEach(cell=>cell.classList.remove('ups-print-unused'));
+}
+window.addEventListener('beforeprint',prepareCompactClassRecordPrint);
+window.addEventListener('afterprint',restoreClassRecordAfterPrint);
 </script></body></html>
