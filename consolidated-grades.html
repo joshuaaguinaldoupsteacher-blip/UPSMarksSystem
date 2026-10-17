@@ -32,14 +32,21 @@ async function refresh(){
  const reportSubject=name=>name==='GMRC / Values Education'?(selectedGrade>=1&&selectedGrade<=6?'GMRC':selectedGrade>=7&&selectedGrade<=10?'Values Education':name):name;
  const subjects=[...new Set(data.filter(x=>x.subject_name!=='Behaviour').map(x=>reportSubject(x.subject_name)))].sort();
  const students=new Map();
- for(const x of data){if(!students.has(x.student_id))students.set(x.student_id,{name:x.student_name,grades:new Map()});students.get(x.student_id).grades.set(reportSubject(x.subject_name),x.grade);}
+ for(const x of data){if(!students.has(x.student_id))students.set(x.student_id,{name:x.student_name,grades:new Map(),statuses:new Map()});students.get(x.student_id).grades.set(reportSubject(x.subject_name),x.grade);students.get(x.student_id).statuses.set(reportSubject(x.subject_name),x.record_status);}
  const header=$('reportHeader');header.textContent='Universal Philippine School, Al Ain · Grade '+$('class').selectedOptions[0]?.textContent.replace(/^Grade /,'')+' · '+$('term').selectedOptions[0]?.textContent;
- const tr=$('gradeHead');tr.replaceChildren();for(const label of ['Student Name',...subjects,'Final Average']){const th=document.createElement('th');th.textContent=label;tr.append(th);}
- const exported=[['UNIVERSAL PHILIPPINE SCHOOL, AL AIN'],['Consolidated Term Grade Report'],[$('reportHeader').textContent],['Student Name',...subjects,'Final Average']];
+ const tr=$('gradeHead');tr.replaceChildren();for(const label of ['Student Name',...subjects,'Final Average','Approval Status']){const th=document.createElement('th');th.textContent=label;tr.append(th);}
+ const exported=[['UNIVERSAL PHILIPPINE SCHOOL, AL AIN'],['Consolidated Term Grade Report'],[$('reportHeader').textContent],['Student Name',...subjects,'Final Average','Approval Status']];
  for(const st of [...students.values()].sort((a,b)=>a.name.localeCompare(b.name))){
   const tr=document.createElement('tr'),name=document.createElement('td');name.textContent=st.name;tr.append(name);const excelRow=[st.name];let sum=0,count=0,complete=true;
   for(const subject of subjects){const val=st.grades.get(subject),td=document.createElement('td');td.textContent=val===null||val===undefined?'—':Number(val).toFixed(0);if(val===null||val===undefined){complete=false;excelRow.push(null);}else{sum+=Number(val);count++;excelRow.push(Number(val));}tr.append(td);}
-  const avg=document.createElement('td');avg.textContent=complete&&count===subjects.length&&count>0?String(Math.round(sum/count)):'—';avg.style.fontWeight='700';tr.append(avg);body.append(tr);excelRow.push(complete&&count===subjects.length&&count>0?Math.round(sum/count):null);exported.push(excelRow);
+  const avg=document.createElement('td');avg.textContent=complete&&count===subjects.length&&count>0?String(Math.round(sum/count)):'—';avg.style.fontWeight='700';tr.append(avg);
+  const pending=subjects.filter(subject=>st.grades.get(subject)===null||st.grades.get(subject)===undefined);
+  const approval=document.createElement('td');
+  approval.textContent=pending.length?'Pending: '+pending.map(subject=>subject+' ('+(st.statuses.get(subject)||'DRAFT').toLowerCase().replaceAll('_',' ')+')').join(', '):'All subjects approved';
+  approval.style.color=pending.length?'#935e17':'#21794c';approval.style.fontWeight='600';
+  tr.append(approval);body.append(tr);
+  excelRow.push(complete&&count===subjects.length&&count>0?Math.round(sum/count):null);
+  excelRow.push(approval.textContent);exported.push(excelRow);
  }
  exportRows=exported;exportClass=$('class').value;exportPeriod=$('term').value;$('exportExcel').disabled=students.size===0;
  $('status').textContent=students.size+' students · '+subjects.length+' academic subjects. Final Average is displayed only when every applicable academic Term Grade is approved and finalized. Behaviour is reported separately.';
