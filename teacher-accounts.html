@@ -8,6 +8,7 @@
 <section id="workspace" class="hidden">
 <div class="bar"><div><h1>Teacher Account Management</h1><p class="muted">UPS School Marks System · Staff Account Management</p></div><div class="row"><button id="reload" class="secondary">Refresh list</button><button id="signOut" class="secondary">Sign out</button></div></div>
 <div class="panel"><h2>Teacher access</h2><div class="notice">Resetting a teacher's password immediately replaces their previous password. Share the temporary password privately; the teacher must change it at first sign-in. Avoid resetting an account while its owner is working.</div><p id="status" role="status"></p><div class="scroll"><table><thead><tr><th>Teacher</th><th>School email</th><th>Password status</th><th>Action</th></tr></thead><tbody id="teachers"></tbody></table></div></div>
+<div class="panel"><h2>Bulk initial password setup</h2><p class="muted">Super Admin only. Set the same temporary password for all 25 teachers. This immediately invalidates their old passwords and requires each teacher to change the password before accessing grades. Administrator passwords remain unchanged.</p><button type="button" id="bulkResetTeachers">Reset all 25 teachers to shared initial password</button><p id="bulkResetStatus" role="status"></p></div>
 <div id="resultPanel" class="panel hidden"><h2>New temporary password</h2><p id="issuedFor"></p><div class="pass" id="temporaryPassword"></div><div class="row" style="margin-top:12px"><button id="copyPassword">Copy password</button><button class="secondary" id="hidePassword">Hide password</button></div><p class="muted">This password is displayed only in this result. It is not stored by this page. Share it through a private, secure channel.</p></div>
 <p class="muted"><a href="index.html">Return to UPS class records</a></p>
 </section></main>
@@ -39,6 +40,26 @@ try{
 }catch(e){tell('status',e.message||String(e),true)}
 }
 function askAccountAction(message){return new Promise(resolve=>{const d=document.getElementById('accountConfirm');document.getElementById('accountConfirmMessage').textContent=message;const done=value=>{d.close();resolve(value);};document.getElementById('accountCancel').onclick=()=>done(false);document.getElementById('accountProceed').onclick=()=>done(true);d.oncancel=e=>{e.preventDefault();done(false)};d.showModal();});}
+async function bulkResetTeachers(){
+ const button=$('bulkResetTeachers');
+ if(!await askAccountAction('Reset ALL 25 teachers to the shared initial password ups12345678? Existing teacher passwords will stop working immediately. Every teacher will be required to change their password upon first login. The Super Admin will not be changed.'))return;
+ button.disabled=true;
+ tell('bulkResetStatus','Applying teacher password reset…');
+ try{
+   const session=await currentSession();
+   const response=await fetch(PROJECT_URL+'/functions/v1/ups-password-manager',{
+     method:'POST',
+     headers:{'Content-Type':'application/json',apikey:PUBLISHABLE_KEY,Authorization:'Bearer '+session.access_token},
+     body:JSON.stringify({action:'bulk_reset_teacher_passwords',confirmation:'RESET_25_TEACHERS',temporary_password:'ups12345678'})
+   });
+   const body=await response.json().catch(()=>({}));
+   if(!response.ok||body.success!==true)throw Error((body.error||body.message||'Bulk reset incomplete')+' ('+(body.reset_count||0)+' successful, '+(body.failed_count||0)+' failed).');
+   tell('bulkResetStatus','Successfully reset '+body.reset_count+' teachers. Each must change the initial password on first login.');
+   await loadTeachers();
+ }catch(e){tell('bulkResetStatus',e.message||String(e),true);}
+ finally{button.disabled=false;}
+}
+$('bulkResetTeachers').addEventListener('click',bulkResetTeachers);
 async function resetTeacher(teacher,button){
 hideResult();
 if(!await askAccountAction(`Issue a NEW temporary password for ${teacher.display_name||teacher.school_email} (${teacher.school_email})? The previous password will stop working immediately.`))return;
