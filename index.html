@@ -139,6 +139,48 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 #dashboard #recordSaveActions .score-clear-tools label{font-size:12px;font-weight:650;color:#f2e9fc;white-space:nowrap}
 #dashboard #generalClearColumn{width:auto;min-width:130px;max-width:230px;height:33px;min-height:33px;padding:4px 7px;font-size:12px;border-radius:7px}
 @media(max-width:600px){#dashboard #recordSaveActions .score-clear-tools{width:100%}#dashboard #generalClearColumn{flex:1;min-width:110px}}
+/* Floating MAPE component switcher: accessible while scrolling through the class record. */
+#dashboard #mapeChooser{
+  position:fixed;
+  right:max(18px,env(safe-area-inset-right));
+  bottom:max(18px,env(safe-area-inset-bottom));
+  z-index:1000;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:9px;
+  width:max-content;
+  max-width:calc(100vw - 32px);
+  padding:12px 14px;
+  margin:0;
+  border:1px solid #d9c2ed;
+  border-radius:14px;
+  background:#4d2377;
+  box-shadow:0 9px 28px rgba(32,12,54,.28);
+}
+#dashboard #mapeChooser label{color:#fff;font-size:13px;font-weight:750;white-space:nowrap}
+#dashboard #mapeChooser select{
+  width:auto;
+  min-width:175px;
+  max-width:210px;
+  min-height:38px;
+  padding:7px 9px;
+  border-radius:8px;
+  font-size:13px;
+  background:#fff;
+  color:#33223e;
+}
+#dashboard #mapeChooser select:focus-visible{outline:3px solid #e5c9ff;outline-offset:2px}
+@media(max-width:480px){
+  #dashboard #mapeChooser{
+    right:max(12px,env(safe-area-inset-right));
+    bottom:max(12px,env(safe-area-inset-bottom));
+    gap:7px;
+    padding:10px 11px;
+  }
+  #dashboard #mapeChooser select{min-width:150px;max-width:190px}
+}
+@media print{#mapeChooser{display:none!important}}
 </style></head><body class="login-mode"><div class="wrap">
 <header><div class="ups-header-brand"><img class="ups-header-logo" src="data:image/png;base64,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" alt="Universal Philippine School logo"><div><h1>UPS Marks System</h1><p class="sub">Universal Philippine School · Al Ain</p><p class="sub">School Marks and Class Records</p></div></div><span class="pill">DEVELOPMENT TESTING · SECURE SAVE FUNCTIONS AVAILABLE</span></header>
 
