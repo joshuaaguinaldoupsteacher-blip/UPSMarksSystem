@@ -1162,6 +1162,19 @@ async function saveAllMapeClassRecord(){
    if(error||data?.saved!==true)throw Error('Academic corrections not saved: '+(error?.message||'Unconfirmed server response'));
    academicSaved=true;
    for(const pending of scoreEntries)delete pendingScores[prefix+pending.component][pending.key];
+   // Refresh the authoritative state immediately, even if Behaviour saving
+   // later fails. A retry must not resubmit already-saved academic corrections.
+   const fresh=await client.rpc('ups_my_mape_record_v1',{
+    p_class_subject_id:offer,p_grading_period_code:term
+   });
+   if(fresh.error||!Array.isArray(fresh.data?.assessments)||!Array.isArray(fresh.data?.scores))
+    throw Error('Academic corrections saved, but the updated record could not be reloaded. Refresh the page before attempting another save.');
+   savedAssessments=fresh.data.assessments.map(a=>({...a,
+    mape_component_code:a.mape_component_code||a.mape_component,
+    component_code:a.component_code||a.component,assessment_active:a.active}));
+   savedScores=fresh.data.scores;
+   hydrateAllMapeComponents();
+   render();renderServerSnapshot();
   }
   const behaviourFailures=[];
   for(const [id,score] of behaviourEntries){
