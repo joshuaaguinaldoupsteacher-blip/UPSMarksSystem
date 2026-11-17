@@ -890,7 +890,7 @@ function updateClassCompletionOverview(){
  }
 }
 function applyAssessmentColumnStyle(cell,code){
- if(code==='PT1')cell.classList.add('component-divider');
+ if(code==='PT1'||code==='ST1')cell.classList.add('component-divider');
  if(['ST1','ST2','TERM_EXAM'].includes(code))cell.classList.add('exam-highlight');
 }
 function render(){
