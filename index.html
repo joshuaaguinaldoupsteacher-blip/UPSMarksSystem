@@ -1090,82 +1090,109 @@ async function savePendingScores(){
  setWriteState();
 }
 async function saveAllMapeClassRecord(){
- const btn=$('saveAllRecord'),offer=$('offering').value,term=$('term').value,prefix=offer+'|'+term+'|',currentComponent=part();
- const components=['MUSIC','ARTS','PE'];
- // Shared exam input must never silently overwrite mismatched saved values.
- for(const code of sharedMapeExamCodes){
-  const assessments=savedAssessments.filter(a=>a.assessment_code===code&&a.active!==false&&a.assessment_active!==false);
-  const maxima=new Set(assessments.map(a=>Number(a.max_score)));
-  if(maxima.size>1)throw Error(code+': the saved Music, Arts and PE perfect scores differ ('+[...maxima].join(', ')+'). Ask the grading administrator to reconcile them. No changes were saved.');
-  for(const student of roster){
-   const existing=savedScores.filter(x=>assessments.some(a=>a.assessment_id===x.assessment_id)&&x.student_subject_enrollment_id===student.student_subject_enrollment_id);
-   const scores=new Set(existing.map(x=>Number(x.score)));
-   if(scores.size>1)throw Error(code+': saved Music, Arts and PE scores differ for '+student.student_name+'. Ask the grading administrator to reconcile the values before saving shared exam scores.');
-  }
- }
- const allPending=components.flatMap(c=>Object.entries(pendingScores[prefix+c]||{}).map(([key,item])=>({component:c,key,item})));
- const behaviour=Object.entries(behaviourPending());
+ const btn=$('saveAllRecord'),offer=$('offering').value,term=$('term').value;
+ const prefix=offer+'|'+term+'|',selectedComponent=part(),components=['MUSIC','ARTS','PE'];
+ const scoreEntries=components.flatMap(component=>Object.entries(pendingScores[prefix+component]||{})
+  .map(([key,item])=>({component,key,item})));
+ const behaviourEntries=Object.entries(behaviourPending());
  const edits=[],creations=[];
- for(const c of components){
-  const local=localRecords[prefix+c];if(!local)continue;
-  const existing=new Map(savedAssessments.filter(a=>a.mape_component_code===c).map(a=>[a.assessment_code,a]));
+ for(const component of components){
+  const local=localRecords[prefix+component];
+  if(!local)continue;
+  const existing=new Map(savedAssessments.filter(a=>a.mape_component_code===component).map(a=>[a.assessment_code,a]));
   for(const slot of slots){
-   const st=local.settings[slot.code],active=!!st.used,old=existing.get(slot.code);
-   if(active&&!goodMax(st.max))throw Error(c+' / '+slot.code+': enter a valid perfect score before saving.');
+   const setting=local.settings[slot.code],active=!!setting.used,old=existing.get(slot.code);
+   if(active&&!goodMax(setting.max))throw Error(component+' / '+slot.code+': enter a valid perfect score.');
    if(old){
-    const newMax=active?Number(st.max):Number(old.max_score);
-    if((old.active!==false)!==active||(active&&Number(old.max_score)!==newMax)){
-     if(savedScores.some(score=>score.assessment_id===old.assessment_id))throw Error(c+' / '+slot.code+': the saved perfect score is '+old.max_score+' and this assessment already contains student scores. Supabase blocks changing its perfect score. Restore '+old.max_score+' to save score edits, or ask the grading administrator to reconcile this assessment. Your entered scores are retained.');
-     edits.push({component:c,slot:slot.code,assessment_id:old.assessment_id,old_max:Number(old.max_score),old_active:old.active!==false,new_max:newMax,new_active:active});
+    const maximum=active?Number(setting.max):Number(old.max_score);
+    if((old.active!==false)!==active||(active&&Number(old.max_score)!==maximum)){
+     edits.push({assessment_id:old.assessment_id,expected_max_score:Number(old.max_score),
+      expected_active:old.active!==false,new_max_score:maximum,new_active:active});
     }
-   }else if(active)creations.push({component:c,slot:slot.code,max:Number(st.max),group:slot.group});
+   }else if(active)creations.push({component,slot:slot.code,max:Number(setting.max),group:slot.group});
   }
  }
- if(!edits.length&&!creations.length&&!allPending.length&&!behaviour.length){message('status','No unsaved changes. The latest saved MAPE records are already in Supabase.');return;}
- if(!await upsConfirm('Save Music, Arts and PE progress? '+(edits.length+creations.length)+' assessment changes, '+allPending.length+' academic scores and '+behaviour.length+' Behaviour scores. Blank entries remain blank.'))return;
- btn.disabled=true;let saved=0;const failures=[];
+ if(!edits.length&&!creations.length&&!scoreEntries.length&&!behaviourEntries.length){
+  message('status','No unsaved changes. The latest saved MAPE records are already in Supabase.');return;
+ }
+ const notice='Save '+edits.length+' assessment corrections, '+creations.length+
+  ' new assessments, '+scoreEntries.length+' student score changes and '+behaviourEntries.length+
+  ' Behaviour scores? Saved scores and grades will be recalculated using the final perfect scores. Changes to submitted or approved terms remain blocked.';
+ if(!await upsConfirm(notice))return;
+ btn.disabled=true;
+ let academicSaved=false,behaviourSaved=0;
  try{
-  message('status','Saving MAPE assessment settings…');
-  for(const edit of edits){
-   const {data,error}=await client.rpc('ups_edit_mape_assessment_v1',{p_assessment_id:edit.assessment_id,p_expected_max_score:edit.old_max,p_expected_active:edit.old_active,p_new_max_score:edit.new_max,p_new_active:edit.new_active});
-   if(error||data?.saved!==true){failures.push(edit.component+' '+edit.slot+': '+(error?.message||'Edit rejected'));continue;}saved++;
-  }
+  // New assessments must have server IDs before the transactional correction RPC.
   for(const item of creations){
-   const {data,error}=await client.rpc('ups_create_mape_assessment_v1',{p_class_subject_id:offer,p_grading_period_code:term,p_mape_component_code:item.component,p_component_code:item.group,p_assessment_code:item.slot,p_max_score:item.max,p_assessment_date:null});
-   if(error||!data){failures.push(item.component+' '+item.slot+': '+(error?.message||'Creation rejected'));continue;}saved++;
+   message('status','Creating '+item.component+' / '+item.slot+' assessment…');
+   const {data,error}=await client.rpc('ups_create_mape_assessment_v1',{
+    p_class_subject_id:offer,p_grading_period_code:term,
+    p_mape_component_code:item.component,p_component_code:item.group,
+    p_assessment_code:item.slot,p_max_score:item.max,p_assessment_date:null
+   });
+   if(error||!data)throw Error(item.component+' / '+item.slot+': '+(error?.message||'Assessment could not be created'));
   }
-  if(edits.length||creations.length){
-   const {data,error}=await client.rpc('ups_my_mape_record_v1',{p_class_subject_id:offer,p_grading_period_code:term});
-   if(error||!Array.isArray(data?.assessments))throw Error('Settings may have saved but could not reload from Supabase: '+(error?.message||'invalid response'));
+  if(creations.length){
+   const {data,error}=await client.rpc('ups_my_mape_record_v1',{
+    p_class_subject_id:offer,p_grading_period_code:term
+   });
+   if(error||!Array.isArray(data?.assessments))throw Error('New assessments were created, but the updated assessment list could not be loaded. Refresh before retrying.');
    savedAssessments=data.assessments.map(a=>({...a,mape_component_code:a.mape_component_code||a.mape_component,component_code:a.component_code||a.component,assessment_active:a.active}));
    savedScores=Array.isArray(data.scores)?data.scores:[];
   }
-  message('status','Saving MAPE student scores…');
-  for(const pending of allPending){
-   const a=savedAssessments.find(a=>a.mape_component_code===pending.component&&a.assessment_code===pending.item.slot&&a.active!==false&&a.assessment_active!==false);
-   const snap=recordSnapshots[prefix+pending.component]||(recordSnapshots[prefix+pending.component]={});
-   const prior=snap[pending.key];
-   if(!a){failures.push(pending.component+' '+pending.item.slot+': assessment not saved or inactive');continue;}
-   if(prior?.assessment_id&&!prior.updated_at){failures.push(pending.component+' '+pending.item.slot+': missing concurrency timestamp');continue;}
-   const {data,error}=await client.rpc('ups_save_score_checked_v1',{p_student_subject_enrollment_id:pending.item.student_id,p_assessment_id:a.assessment_id,p_score:pending.item.score,p_expected_exists:!!prior,p_expected_updated_at:prior?.updated_at??null});
-   if(error){failures.push(pending.component+' '+pending.item.slot+': '+error.message);continue;}
-   snap[pending.key]={assessment_id:a.assessment_id,score:pending.item.score,updated_at:data?.updated_at??null};
-   delete pendingScores[prefix+pending.component][pending.key];saved++;
+  const scoreCorrections=[];
+  for(const pending of scoreEntries){
+   const assessment=savedAssessments.find(a=>a.mape_component_code===pending.component
+    &&a.assessment_code===pending.item.slot&&a.active!==false&&a.assessment_active!==false);
+   if(!assessment)throw Error(pending.component+' / '+pending.item.slot+': assessment unavailable or inactive.');
+   const old=recordSnapshots[prefix+pending.component]?.[pending.key];
+   if(old?.assessment_id&&!old.updated_at)throw Error(pending.component+' / '+pending.item.slot+': missing saved score timestamp. Reload before saving.');
+   const newMaximum=localRecords[prefix+pending.component]?.settings[pending.item.slot]?.max;
+   if(!goodMax(newMaximum)||pending.item.score<0||pending.item.score>Number(newMaximum))
+    throw Error(pending.component+' / '+pending.item.slot+': student score exceeds the new perfect score of '+newMaximum+'.');
+   scoreCorrections.push({assessment_id:assessment.assessment_id,student_id:pending.item.student_id,
+    score:pending.item.score,expected_exists:!!old,expected_updated_at:old?.updated_at??null});
   }
-  for(const [id,score] of behaviour){
-   const prior=generalBehaviourRows.get(id);
-   const {error}=await client.rpc('ups_save_general_behaviour_v1',{p_class_subject_id:offer,p_period_code:term,p_enrollment_id:id,p_score:score,p_expected_updated_at:prior?.updated_at??null});
-   if(error){failures.push('Behaviour: '+error.message);continue;}
-   delete behaviourPending()[id];saved++;
+  if(edits.length||scoreCorrections.length){
+   message('status','Saving MAPE perfect scores and student score corrections together…');
+   const {data,error}=await client.rpc('ups_save_mape_corrections_v1',{
+    p_class_subject_id:offer,p_grading_period_code:term,
+    p_changes:{assessments:edits,scores:scoreCorrections}
+   });
+   if(error||data?.saved!==true)throw Error('Academic corrections not saved: '+(error?.message||'Unconfirmed server response'));
+   academicSaved=true;
+   for(const pending of scoreEntries)delete pendingScores[prefix+pending.component][pending.key];
   }
-  if(failures.length){message('status','Saved '+saved+' changes; '+failures.length+' failed: '+failures.slice(0,2).join(' | ')+'. Pending entries are retained.',true);return;}
-  for(const c of components){delete localRecords[prefix+c];delete recordSnapshots[prefix+c];delete pendingScores[prefix+c];}
+  const behaviourFailures=[];
+  for(const [id,score] of behaviourEntries){
+   const before=generalBehaviourRows.get(id);
+   const {error}=await client.rpc('ups_save_general_behaviour_v1',{
+    p_class_subject_id:offer,p_period_code:term,p_enrollment_id:id,
+    p_score:score,p_expected_updated_at:before?.updated_at??null
+   });
+   if(error){behaviourFailures.push(error.message);continue;}
+   delete behaviourPending()[id];behaviourSaved++;
+  }
+  if(behaviourFailures.length){
+   message('status','Academic corrections saved. '+behaviourFailures.length+
+    ' Behaviour entries could not save: '+behaviourFailures[0]+'. Keep this page open to retry.',true);
+   return;
+  }
+  for(const component of components){
+   delete localRecords[prefix+component];delete recordSnapshots[prefix+component];delete pendingScores[prefix+component];
+  }
   delete pendingBehaviour[behaviourKey()];
+  $('mapePart').value=selectedComponent;
+  message('status','Corrections saved. Reloading Supabase scores and recalculated grades…');
   await loadClassRecord();
-  $('mapePart').value=currentComponent;prepareServerRecord();render();
-  message('status','Saved MAPE class record to Supabase. All three components can be reopened to continue.');
- }catch(e){message('status','MAPE save interrupted: '+(e.message||String(e))+'. Keep this page open until resolved.',true);}
- finally{btn.disabled=classRecordLocked;setWriteState();}
+  message('status','MAPE record saved. Perfect scores, updated student scores and calculated grades have been refreshed from Supabase.');
+ }catch(e){
+  message('status','MAPE save not completed: '+(e.message||String(e))+
+   (academicSaved?' Academic scores were saved; any remaining unsaved items are retained.':' Unsaved score corrections remain in this browser tab.'),true);
+ }finally{
+  btn.disabled=classRecordLocked;
+  setWriteState();
+ }
 }
 
 async function saveEntireClassRecord(){
