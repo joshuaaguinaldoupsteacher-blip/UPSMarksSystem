@@ -923,7 +923,7 @@ async function loadSpecialRecord(){
     inp.addEventListener('change',updateSpecialPendingBadge);
     td.classList.toggle('off-col',!a);td.append(inp);tr.append(td);
    }
-   const td=node('td'),b=bv.get(student.id),inp=node('input');inp.type='number';inp.min='0';inp.max='100';inp.step='any';inp.style.width='72px';inp.dataset.behaviour=student.id;inp.dataset.original=b?.score??'';inp.dataset.timestamp=b?.updated_at??'';inp.value=b?.score??'';inp.addEventListener('input',updateSpecialPendingBadge);td.append(inp);tr.append(td);for(const [category,weight] of specializedColumns){const contribution=specializedContribution(student,setup,category,weight);const value=contribution===null?'—':contribution.toFixed(2)+'%';const cell=node('td',value,'result '+(contribution===null?'incomplete':'good'));cell.title=contribution===null?'Incomplete saved component scores':'Weighted contribution from saved scores';tr.append(cell);}const computed=gradeMap.get(student.id);for(const val of [computed?.initial_grade,computed?.term_grade]){const cell=node('td',val===null||val===undefined?'—':String(val),'result');cell.title=computed?.calculation_status||'INCOMPLETE';tr.append(cell);}body.append(tr);
+   const td=node('td'),b=bv.get(student.id),inp=node('input');inp.type='text';inp.inputMode='decimal';inp.style.width='72px';inp.dataset.behaviour=student.id;inp.dataset.original=b?.score??'';inp.dataset.timestamp=b?.updated_at??'';inp.value=b?.score??'';setupScoreGridInput(inp,student.id,'BEHAVIOUR',[...table.querySelectorAll('thead input[data-setup]')].length);inp.addEventListener('input',updateSpecialPendingBadge);td.append(inp);tr.append(td);for(const [category,weight] of specializedColumns){const contribution=specializedContribution(student,setup,category,weight);const value=contribution===null?'—':contribution.toFixed(2)+'%';const cell=node('td',value,'result '+(contribution===null?'incomplete':'good'));cell.title=contribution===null?'Incomplete saved component scores':'Weighted contribution from saved scores';tr.append(cell);}const computed=gradeMap.get(student.id);for(const val of [computed?.initial_grade,computed?.term_grade]){const cell=node('td',val===null||val===undefined?'—':String(val),'result');cell.title=computed?.calculation_status||'INCOMPLETE';tr.append(cell);}body.append(tr);
   }
   table.append(body);filterSpecialStudents();if(classRecordLocked){for(const inp of table.querySelectorAll('input,select,textarea'))inp.disabled=true;}updateSpecialPendingBadge();loadSpecialSubmissionReadiness();$('specialStatus').textContent=`${students.size} students · ${setup.size} saved assessments · ${grid.filter(r=>r.assessment_id&&r.score!==null).length} saved scores`;
  }catch(e){$('specialStatus').textContent='Load failed: '+e.message;}
@@ -944,7 +944,7 @@ async function saveSpecialRecord(){
   if(x.value.trim()!==''&&(!check.checked||!Number.isFinite(Number(x.value))||Number(x.value)<0||Number(x.value)>Number(max.value))){$('specialStatus').textContent='Invalid score in '+x.dataset.scoreSlot;return;}
   scores.push(x);
  }
- for(const x of $('specialTable').querySelectorAll('input[data-behaviour]'))if(x.value.trim()!==''&&(x.dataset.original===''||Number(x.value)!==Number(x.dataset.original))){if(!Number.isFinite(Number(x.value))||Number(x.value)<0||Number(x.value)>100){$('specialStatus').textContent='Invalid Behaviour score.';return;}behaviours.push(x);}
+ for(const x of $('specialTable').querySelectorAll('input[data-behaviour]'))if(x.value.trim()!==String(x.dataset.original??'')){if(x.value.trim()!==''&&(!Number.isFinite(Number(x.value))||Number(x.value)<0||Number(x.value)>100)){$('specialStatus').textContent='Invalid Behaviour score.';return;}behaviours.push(x);}
  if(!configs.length&&!scores.length&&!behaviours.length){$('specialStatus').textContent='No unsaved changes.';return;}
  if(!await upsConfirm(`Save ${configs.length} assessment settings, ${scores.length} academic scores, ${behaviours.length} Behaviour scores?`))return;
  specialBusy=true;$('specialSave').disabled=true;let saved=0,errors=[];
@@ -959,7 +959,7 @@ async function saveSpecialRecord(){
     :await client.rpc('ups_save_specialized_score_v1',{p_group_id:groupId,p_assessment_id:a.assessment_id,p_student_subject_enrollment_id:x.dataset.enrollment,p_score:Number(x.value),p_expected_updated_at:x.dataset.timestamp||null});
    if(r.error){errors.push(x.dataset.scoreSlot+': '+r.error.message);continue;}saved++;x.dataset.original=x.value;
   }
-  for(const x of behaviours){const r=await client.rpc('ups_save_specialized_behaviour_v1',{p_group_id:groupId,p_period_code:period,p_enrollment_id:x.dataset.behaviour,p_score:Number(x.value),p_expected_updated_at:x.dataset.timestamp||null});if(r.error){errors.push('Behaviour: '+r.error.message);continue;}saved++;x.dataset.original=x.value;}
+  for(const x of behaviours){const r=await client.rpc('ups_save_specialized_behaviour_v1',{p_group_id:groupId,p_period_code:period,p_enrollment_id:x.dataset.behaviour,p_score:x.value.trim()===''?null:Number(x.value),p_expected_updated_at:x.dataset.timestamp||null});if(r.error){errors.push('Behaviour: '+r.error.message);continue;}saved++;x.dataset.original=x.value;}
   if(errors.length){$('specialStatus').textContent=`Saved ${saved}; ${errors.length} failed: ${errors.slice(0,2).join(' | ')}. Keep page open.`;return;}
   await loadSpecialRecord();$('specialStatus').textContent='Saved to Supabase. Reopen this group and term to continue.';
  }catch(e){$('specialStatus').textContent='Save interrupted after '+saved+' writes: '+e.message;}
@@ -1102,7 +1102,17 @@ for(const s of slots){const setting=rec.settings[s.code],on=slotIsFixed(s)||sett
  synchronizeMapeExamScore(studentId,s.code,num);
  render();
 });td.append(inp);row.append(td);}
-const id=student.student_subject_enrollment_id,beh=generalBehaviourRows.get(id),bcell=node('td'),binput=node('input');binput.type='number';binput.min='0';binput.max='100';binput.step='any';binput.style.width='72px';binput.value=behaviourPending()[id]??beh?.score??'';binput.setAttribute('aria-label',student.student_name+' Behaviour');binput.addEventListener('change',()=>{if(binput.value.trim()===''||!Number.isFinite(Number(binput.value))||Number(binput.value)<0||Number(binput.value)>100){upsAlert('Behaviour must be from 0 to 100');binput.value=behaviourPending()[id]??beh?.score??'';return;}if(beh?.score!==null&&beh?.score!==undefined&&Number(beh.score)===Number(binput.value))delete behaviourPending()[id];else behaviourPending()[id]=Number(binput.value);render();});bcell.append(binput);row.append(bcell);const g=compute(rec,student);for(const val of g?[(g.ww*weightsFor(selectedOffering()?.scheme_code)[0]/100).toFixed(2)+'%',(g.pt*weightsFor(selectedOffering()?.scheme_code)[1]/100).toFixed(2)+'%',(g.ex*weightsFor(selectedOffering()?.scheme_code)[2]/100).toFixed(2)+'%',g.initial.toFixed(2),g.final===null?'—':String(g.final)]:['—','—','—','—','—'])row.append(node('td',val,'result '+(g?'good':'incomplete')));if(isMape()){const grades=mapeGradesFor(student);for(const val of [...grades.parts.map(x=>x??'—'),grades.term??'—'])row.append(node('td',String(val),'result '+(val==='—'?'incomplete':'good')));}body.append(row);}
+const id=student.student_subject_enrollment_id,beh=generalBehaviourRows.get(id),bcell=node('td'),binput=node('input');binput.type='text';binput.inputMode='decimal';binput.style.width='72px';binput.value=behaviourPending()[id]??beh?.score??'';binput.setAttribute('aria-label',student.student_name+' Behaviour');setupScoreGridInput(binput,id,'BEHAVIOUR',slots.length);binput.addEventListener('change',()=>{
+ const raw=binput.value.trim(),original=beh?.score;
+ if(raw!==''&&(!Number.isFinite(Number(raw))||Number(raw)<0||Number(raw)>100)){
+  upsAlert('Behaviour must be from 0 to 100');
+  binput.value=behaviourPending()[id]??original??'';return;
+ }
+ const next=raw===''?null:Number(raw);
+ if(next===null?(original===null||original===undefined):(original!==null&&original!==undefined&&Number(original)===next))delete behaviourPending()[id];
+ else behaviourPending()[id]=next;
+ render();
+});bcell.append(binput);row.append(bcell);const g=compute(rec,student);for(const val of g?[(g.ww*weightsFor(selectedOffering()?.scheme_code)[0]/100).toFixed(2)+'%',(g.pt*weightsFor(selectedOffering()?.scheme_code)[1]/100).toFixed(2)+'%',(g.ex*weightsFor(selectedOffering()?.scheme_code)[2]/100).toFixed(2)+'%',g.initial.toFixed(2),g.final===null?'—':String(g.final)]:['—','—','—','—','—'])row.append(node('td',val,'result '+(g?'good':'incomplete')));if(isMape()){const grades=mapeGradesFor(student);for(const val of [...grades.parts.map(x=>x??'—'),grades.term??'—'])row.append(node('td',String(val),'result '+(val==='—'?'incomplete':'good')));}body.append(row);}
 if(!n){const row=node('tr'),td=node('td',roster.length?'No students match search.':'No enrolled students returned for this offering. Check student-subject enrollments and roster eligibility in Supabase.','empty');td.colSpan=18;row.append(td);body.append(row);}table.append(body);host.append(table);if(classRecordLocked){for(const inp of host.querySelectorAll('input,select,textarea'))inp.disabled=true;}$('nStudents').textContent=roster.length;updateDraftSummary();updateMapeTermPanel();updateClassCompletionOverview();setWriteState();}
 async function passwordStatus(){
  const result=await client.rpc('ups_my_password_status_v1');
@@ -1538,7 +1548,7 @@ async function saveEntireClassRecord(){
  const current=new Map(savedAssessments.filter(a=>!isMape()||a.mape_component_code===component).map(a=>[a.assessment_code,a]));
  const changed=slots.some(s=>{const now=wanted[s.code],old=current.get(s.code),active=!!now.active;return old? ((old.active!==false)!==active||(active&&Number(old.max_score)!==Number(now.max_score))) : active;});
  if(!changed&&!scoreEntries.length&&!behEntries.length){message('status','No unsaved changes. Your last saved record is already stored in Supabase.');return;}
- if(!await upsConfirm('Save this class record now? '+scoreEntries.length+' academic score changes ('+scoreEntries.filter(([,item])=>item.score===null).length+' cleared) and '+behEntries.length+' Behaviour scores are pending. Blank previously saved cells will be deleted.'))return;
+ if(!await upsConfirm('Save this class record now? '+scoreEntries.length+' academic score changes ('+scoreEntries.filter(([,item])=>item.score===null).length+' cleared) and '+behEntries.length+' Behaviour changes ('+behEntries.filter(([,value])=>value===null).length+' cleared) are pending. Blank previously saved cells will be deleted.'))return;
  btn.disabled=true;message('status','Saving class record…');
  let saved=0,errors=[];
  try{
