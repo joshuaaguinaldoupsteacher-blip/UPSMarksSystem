@@ -356,6 +356,43 @@ body.login-mode .login-card{max-width:none;width:100%;margin:0!important;min-hei
 @media print{
  #mapeChooser #saveAllRecord,#mapeChooser #specialSave{display:none!important}
 }
+/* Compact Excel-like score boxes; only the score input cells change. */
+#recordPanel #table input.excel-score-cell,
+#specialRecords #specialTable input.excel-score-cell{
+ appearance:none;
+ -moz-appearance:textfield;
+ width:70px;
+ min-width:58px;
+ height:32px;
+ padding:4px 6px;
+ box-sizing:border-box;
+ border:1px solid #d8c8e6;
+ border-radius:3px;
+ background:#fff;
+ color:#33223e;
+ text-align:center;
+ font-size:13px;
+ font-variant-numeric:tabular-nums;
+ cursor:cell;
+}
+#recordPanel #table input.excel-score-cell:focus,
+#specialRecords #specialTable input.excel-score-cell:focus{
+ outline:2px solid #7842ac;
+ outline-offset:-2px;
+ background:#f6efff;
+ box-shadow:0 0 0 1px #7842ac;
+}
+#recordPanel #table input.excel-score-cell:disabled,
+#specialRecords #specialTable input.excel-score-cell:disabled{
+ background:#eeeaf0;
+ border-color:#e1dde5;
+ color:#999;
+ cursor:not-allowed;
+}
+@media print{
+ #recordPanel #table input.excel-score-cell,
+ #specialRecords #specialTable input.excel-score-cell{outline:0!important;box-shadow:none!important}
+}
 </style></head><body class="login-mode"><div class="wrap">
 <header><div class="ups-header-brand"><img class="ups-header-logo" src="data:image/png;base64,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" alt="Universal Philippine School logo"><div><h1>UPS Marks System</h1><p class="sub">Universal Philippine School · Al Ain</p><p class="sub">School Marks and Class Records</p></div></div><span class="pill">DEVELOPMENT TESTING · SECURE SAVE FUNCTIONS AVAILABLE</span></header>
 
@@ -720,6 +757,79 @@ async function submitSpecialGroupForReview(){
  $('submissionNotice').textContent='Teaching group submitted and locked for administrator review.';
 }
 function updateSpecialPendingBadge(){const controls=[...$('specialTable').querySelectorAll('input[data-setup],input[data-perfect],input[data-score-slot],input[data-behaviour]')];let count=0;for(const el of controls){if(el.hasAttribute('data-setup')){const saved=specialCache?.setup.get(el.dataset.setup);if(el.checked!==!!saved)count++;}else if(el.hasAttribute('data-perfect')){const saved=specialCache?.setup.get(el.dataset.perfect);if(el.value!==String(saved?.max_score??'')&&el.value.trim()!=='')count++;}else if(el.value!==String(el.dataset.original??''))count++;}$('specialEditBadge').textContent=count+' unsaved edit(s)';}
+/* Excel-style entry: a focused box is selected, arrows move between active
+   score boxes, and drafts still save only through Save Class Record. */
+function scoreGridInputs(table){
+ return [...table.querySelectorAll('tbody input[data-grid-cell]')]
+  .filter(input=>!input.disabled && !input.closest('tr')?.hidden && input.offsetParent!==null);
+}
+function scoreGridFocus(table,rowId,colId){
+ const target=scoreGridInputs(table).find(x=>x.dataset.gridRow===rowId&&x.dataset.gridCol===colId);
+ if(target){target.focus({preventScroll:true});target.select();target.scrollIntoView({block:'nearest',inline:'nearest'});}
+}
+function scoreGridKeydown(event){
+ const input=event.currentTarget,table=input.closest('table');
+ if(!table||input.disabled||classRecordLocked)return;
+ const key=event.key,arrows=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'];
+ if(key==='Delete'||key==='Backspace'){
+  // Clearing is a draft edit; no database operation occurs until Save.
+  if(input.value!==''){
+   event.preventDefault();input.value='';
+   input.dispatchEvent(new Event('change',{bubbles:true}));
+   scoreGridFocus(table,input.dataset.gridRow,input.dataset.gridCol);
+  }
+  return;
+ }
+ if(!arrows.includes(key)&&key!=='Enter'&&key!=='Tab')return;
+ const currentRow=input.dataset.gridRow,currentCol=Number(input.dataset.gridIndex);
+ const all=scoreGridInputs(table);
+ const rows=[...new Set(all.map(x=>x.dataset.gridRow))];
+ const rowIndex=rows.indexOf(currentRow);
+ const sameRow=all.filter(x=>x.dataset.gridRow===currentRow).sort((a,b)=>Number(a.dataset.gridIndex)-Number(b.dataset.gridIndex));
+ const sameIndex=sameRow.indexOf(input);
+ let dest=null;
+ if(key==='ArrowLeft'||(key==='Tab'&&event.shiftKey))dest=sameRow[sameIndex-1];
+ else if(key==='ArrowRight'||key==='Tab')dest=sameRow[sameIndex+1];
+ else {
+  const direction=(key==='ArrowUp')?-1:1;
+  for(let ri=rowIndex+direction;ri>=0&&ri<rows.length;ri+=direction){
+   const candidates=all.filter(x=>x.dataset.gridRow===rows[ri]);
+   dest=candidates.find(x=>Number(x.dataset.gridIndex)===currentCol)
+    ||candidates.sort((a,b)=>Math.abs(Number(a.dataset.gridIndex)-currentCol)-Math.abs(Number(b.dataset.gridIndex)-currentCol))[0];
+   if(dest)break;
+  }
+ }
+ // At row ends, Tab and Shift+Tab move to the next or previous student.
+ if(!dest&&(key==='Tab'||key==='ArrowRight'||key==='ArrowLeft')){
+  const direction=(key==='ArrowLeft'||event.shiftKey&&key==='Tab')?-1:1;
+  const nextRow=rows[rowIndex+direction];
+  const candidates=all.filter(x=>x.dataset.gridRow===nextRow).sort((a,b)=>Number(a.dataset.gridIndex)-Number(b.dataset.gridIndex));
+  dest=direction===1?candidates[0]:candidates[candidates.length-1];
+ }
+ if(!dest)return;
+ event.preventDefault();
+ const nextRow=dest.dataset.gridRow,nextCol=dest.dataset.gridCol;
+ // The general record redraws after a cell change; resolve the destination
+ // from the newly rendered grid instead of focusing a detached input.
+ if(input.value!==input.dataset.gridBaseline){
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+ }else{
+  // Still refresh pending state on specialized grids without redrawing.
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+ }
+ scoreGridFocus(document.getElementById(table.id)||table,nextRow,nextCol);
+}
+function setupScoreGridInput(input,rowId,colId,colIndex){
+ input.dataset.gridCell='score';
+ input.dataset.gridRow=String(rowId);
+ input.dataset.gridCol=String(colId);
+ input.dataset.gridIndex=String(colIndex);
+ input.dataset.gridBaseline=input.value;
+ input.classList.add('excel-score-cell');
+ input.autocomplete='off';
+ input.addEventListener('focus',()=>input.select());
+ input.addEventListener('keydown',scoreGridKeydown);
+}
 function renderSpecialExamAttainment(students,setup){
  if(!isSpecial())return;
  const host=$('attainmentTable');host.replaceChildren();
@@ -808,8 +918,8 @@ async function loadSpecialRecord(){
    const tr=node('tr');tr.dataset.studentName=student.name||'';const who=node('td');who.append(node('strong',student.name));tr.append(who);
    for(const [category,num] of slots)for(let i=0;i<num;i++){
     const code=specCode(category,i),a=setup.get(code),row=a?student.scores.get(a.assessment_id):null,td=node('td');applyAssessmentColumnStyle(td,code);
-    const inp=node('input');inp.type='number';inp.step='any';inp.min='0';inp.placeholder='—';inp.style.width='72px';inp.dataset.scoreSlot=code;inp.dataset.enrollment=student.id;
-    inp.dataset.original=row?.score??'';inp.dataset.timestamp=row?.score_updated_at??'';inp.value=row?.score??'';inp.disabled=!a||classRecordLocked;inp.placeholder=a?'—':'Unused';inp.addEventListener('input',updateSpecialPendingBadge);
+    const inp=node('input');inp.type='text';inp.inputMode='decimal';inp.placeholder='—';inp.style.width='72px';inp.dataset.scoreSlot=code;inp.dataset.enrollment=student.id;
+    inp.dataset.original=row?.score??'';inp.dataset.timestamp=row?.score_updated_at??'';inp.value=row?.score??'';inp.disabled=!a||classRecordLocked;inp.placeholder=a?'—':'Unused';setupScoreGridInput(inp,student.id,code,[...slots].reduce((n,[,qty],idx)=>n+(slots.slice(0,idx).reduce((q,[,v])=>q+v,0)),0));inp.dataset.gridIndex=String([...table.querySelectorAll('thead input[data-setup]')].findIndex(el=>el.dataset.setup===code));inp.addEventListener('input',updateSpecialPendingBadge);
     // Keep edited and cleared scores as drafts until Save Class Record.
     inp.addEventListener('change',updateSpecialPendingBadge);
     td.classList.toggle('off-col',!a);td.append(inp);tr.append(td);
@@ -973,7 +1083,7 @@ box.append(node('span','Perfect Score','mini'));const max=node('input');max.type
 tr.append(node('th','Behaviour / 100'));const contributionWeights=weightsFor(current?.scheme_code);for(const title of [`WW (${contributionWeights[0]}%)`,`PT (${contributionWeights[1]}%)`,`Exam (${contributionWeights[2]}%)`,'Initial Grade','Term Grade',...(isMape()?['Music','Arts','PE','MAPE Term']:[])])tr.append(node('th',title));head.append(tr);table.append(head);
 const body=node('tbody'),q=$('search').value.trim().toLowerCase();let n=0;
 for(const student of roster){if(q&&!((student.student_name||'').toLowerCase().includes(q)||(student.school_student_id||'').toLowerCase().includes(q)))continue;n++;const row=node('tr'),who=node('td');who.append(node('strong',student.student_name||'(Unnamed)'),node('div',student.school_student_id||'No school ID','mini'));row.append(who);const scores=rec.scores[student.student_subject_enrollment_id]||(rec.scores[student.student_subject_enrollment_id]={});
-for(const s of slots){const setting=rec.settings[s.code],on=slotIsFixed(s)||setting.used,td=node('td',undefined,on?'':'off-cell');applyAssessmentColumnStyle(td,s.code);const inp=node('input');inp.type='number';inp.min='0';inp.step='any';inp.placeholder=on?'—':'Unused';inp.disabled=!on||!goodMax(setting.max);inp.value=scores[s.code]===undefined?'':scores[s.code];inp.setAttribute('aria-label',student.student_name+' '+s.code+' score');inp.addEventListener('change',()=>{
+for(const s of slots){const setting=rec.settings[s.code],on=slotIsFixed(s)||setting.used,td=node('td',undefined,on?'':'off-cell');applyAssessmentColumnStyle(td,s.code);const inp=node('input');inp.type='text';inp.inputMode='decimal';inp.placeholder=on?'—':'Unused';inp.disabled=!on||!goodMax(setting.max);inp.value=scores[s.code]===undefined?'':scores[s.code];inp.setAttribute('aria-label',student.student_name+' '+s.code+' score');setupScoreGridInput(inp,student.student_subject_enrollment_id,s.code,slots.indexOf(s));inp.addEventListener('change',()=>{
  const raw=inp.value,studentId=student.student_subject_enrollment_id,key=studentId+'|'+s.code,old=currentSnapshot()[key];
  if(raw===''){
   delete scores[s.code];
