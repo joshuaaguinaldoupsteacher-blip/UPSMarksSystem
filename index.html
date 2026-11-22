@@ -776,7 +776,8 @@ function scoreGridKeydown(event){
   if(input.value!==''){
    event.preventDefault();input.value='';
    input.dispatchEvent(new Event('change',{bubbles:true}));
-   scoreGridFocus(table,input.dataset.gridRow,input.dataset.gridCol);
+   const refreshedTable=table.id==='specialTable'?document.getElementById('specialTable'):$('table').querySelector('table');
+   if(refreshedTable)scoreGridFocus(refreshedTable,input.dataset.gridRow,input.dataset.gridCol);
   }
   return;
  }
@@ -812,9 +813,6 @@ function scoreGridKeydown(event){
  // The general record redraws after a cell change; resolve the destination
  // from the newly rendered grid instead of focusing a detached input.
  if(input.value!==input.dataset.gridBaseline){
-  input.dispatchEvent(new Event('change',{bubbles:true}));
- }else{
-  // Still refresh pending state on specialized grids without redrawing.
   input.dispatchEvent(new Event('change',{bubbles:true}));
  }
  const refreshedTable=table.id==='specialTable'?document.getElementById('specialTable'):$('table').querySelector('table');
