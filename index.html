@@ -817,7 +817,8 @@ function scoreGridKeydown(event){
   // Still refresh pending state on specialized grids without redrawing.
   input.dispatchEvent(new Event('change',{bubbles:true}));
  }
- scoreGridFocus(document.getElementById(table.id)||table,nextRow,nextCol);
+ const refreshedTable=table.id==='specialTable'?document.getElementById('specialTable'):$('table').querySelector('table');
+ if(refreshedTable)scoreGridFocus(refreshedTable,nextRow,nextCol);
 }
 function setupScoreGridInput(input,rowId,colId,colIndex){
  input.dataset.gridCell='score';
@@ -919,7 +920,7 @@ async function loadSpecialRecord(){
    for(const [category,num] of slots)for(let i=0;i<num;i++){
     const code=specCode(category,i),a=setup.get(code),row=a?student.scores.get(a.assessment_id):null,td=node('td');applyAssessmentColumnStyle(td,code);
     const inp=node('input');inp.type='text';inp.inputMode='decimal';inp.placeholder='—';inp.style.width='72px';inp.dataset.scoreSlot=code;inp.dataset.enrollment=student.id;
-    inp.dataset.original=row?.score??'';inp.dataset.timestamp=row?.score_updated_at??'';inp.value=row?.score??'';inp.disabled=!a||classRecordLocked;inp.placeholder=a?'—':'Unused';setupScoreGridInput(inp,student.id,code,[...slots].reduce((n,[,qty],idx)=>n+(slots.slice(0,idx).reduce((q,[,v])=>q+v,0)),0));inp.dataset.gridIndex=String([...table.querySelectorAll('thead input[data-setup]')].findIndex(el=>el.dataset.setup===code));inp.addEventListener('input',updateSpecialPendingBadge);
+    inp.dataset.original=row?.score??'';inp.dataset.timestamp=row?.score_updated_at??'';inp.value=row?.score??'';inp.disabled=!a||classRecordLocked;inp.placeholder=a?'—':'Unused';setupScoreGridInput(inp,student.id,code,[...table.querySelectorAll('thead input[data-setup]')].findIndex(el=>el.dataset.setup===code));inp.addEventListener('input',updateSpecialPendingBadge);
     // Keep edited and cleared scores as drafts until Save Class Record.
     inp.addEventListener('change',updateSpecialPendingBadge);
     td.classList.toggle('off-col',!a);td.append(inp);tr.append(td);
